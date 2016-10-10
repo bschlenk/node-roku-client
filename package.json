@@ -1,0 +1,19 @@
+{
+  "name": "nodeku",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "tape 'test/**/*.spec.js' | tap-spec"
+  },
+  "keywords": [],
+  "author": "Ray Farias <rayrfarias@gmail.com> (http://github.com/sgnl)",
+  "license": "ISC",
+  "devDependencies": {
+    "tap-spec": "^4.1.1",
+    "tape": "^4.6.2"
+  },
+  "dependencies": {
+    "node-ssdp": "^2.8.0"
+  }
+}
