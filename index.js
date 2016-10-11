@@ -1,12 +1,6 @@
 
 const NodeSSDPClient = require('node-ssdp').Client
-
-class Device {
-  constructor(ip) {
-    this.ip = ip
-  }
-}
-
+const Device = require('./lib/device')
 
 module.exports = function(timeout, CustomClient) {
 
@@ -27,7 +21,7 @@ module.exports = function(timeout, CustomClient) {
         clearInterval(IntervalId)
         clearTimeout(TimeoutId)
 
-        return resolve(new Device(RokuUrl))
+        return resolve(Device(RokuUrl))
       }
     })
 

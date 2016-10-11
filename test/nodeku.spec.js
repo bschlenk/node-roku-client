@@ -7,13 +7,14 @@ Test('Nodeku initialization', t => {
   t.end()
 })
 
-Test('Nodeku Discovery and Device object', t => {
-  t.plan(2)
+Test('Nodeku Discovery', t => {
+  t.timeoutAfter(12000)
 
   Nodeku(null, Mocks.Client)
     .then(device => {
-      t.assert(device.constructor.name === 'Device', 'device returned is an instance of Device.')
-      t.assert(device.ip === '192.168.1.17:8060', 'device has an ip address.')
+      t.assert(typeof device === 'object', 'module received')
+      t.assert(device.ip() === '192.168.1.17:8060', 'device has an ip address')
+      t.end()
     })
     .catch(t.fail)
 })
