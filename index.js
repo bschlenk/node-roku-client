@@ -1,23 +1,18 @@
 
 const NodeSSDPClient = require('node-ssdp').Client
-const Client = new NodeSSDPClient();
 
-class RokuDevice {
-  constructor(url) {
-    this.url = url;
-  }
-}
-
-module.exports = function(timeout) {
+module.exports = function(timeout, CustomClient) {
 
   timeout = timeout || 10000
 
-  return new Promise(function(resolve, reject){
+  return new Promise((resolve, reject) => {
 
-    let RokuUrl;
+    let RokuUrl
+
+    let Client = new CustomClient || new NodeSSDPClient()
 
     Client.on('response', function inResponse(headers, code, rinfo) {
-      let ipAddress = /(\d+.*:8060)(?=\/)/.exec(headers.LOCATION);
+      let ipAddress = /(\d+.*:8060)(?=\/)/.exec(headers.LOCATION)
 
       if (!!~headers.SERVER.search(/Roku/) && ipAddress) {
         RokuUrl = ipAddress[0]
@@ -25,7 +20,7 @@ module.exports = function(timeout) {
         clearInterval(IntervalId)
         clearTimeout(TimeoutId)
 
-        return resolve(new RokuDevice(RokuUrl))
+        return resolve(RokuUrl)
       }
     })
 
