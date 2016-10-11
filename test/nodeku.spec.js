@@ -3,16 +3,17 @@ const Nodeku = require('../')
 const Mocks = require('./mocks')
 
 Test('Nodeku initialization', t => {
-  t.ok(typeof Nodeku === 'function', 'is ready.')
+  t.ok(typeof Nodeku === 'function', 'is ready')
   t.end()
 })
 
-Test('Nodeku Discovery', t => {
-  t.plan(1)
+Test('Nodeku Discovery and Device object', t => {
+  t.plan(2)
 
   Nodeku(null, Mocks.Client)
-    .then(deviceAddr => {
-      t.assert(deviceAddr === '192.168.1.17:8060')
+    .then(device => {
+      t.assert(device.constructor.name === 'Device', 'device returned is an instance of Device.')
+      t.assert(device.ip === '192.168.1.17:8060', 'device has an ip address.')
     })
     .catch(t.fail)
 })
