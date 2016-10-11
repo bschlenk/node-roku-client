@@ -5,7 +5,13 @@ Discover Roku devices via `ssdp` and control the device with methods that perfor
 ## usage
 ```javascript
 
-// TODO
+Nodeku()
+  .then(device => {
+    console.log(`device found at: ${device.ip()}`)
+  })
+  .catch(err => {
+    console.error(err.stack)
+  })
 
 ```
 
