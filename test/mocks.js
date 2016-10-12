@@ -6,14 +6,20 @@ class Client {
   constructor() {}
 
   /**
-   * stubs node-
-   * @param  {[type]} serviceType 'ssdp:all'
-   * @return null
+   * mock .search()
+   * @param  {String} serviceType 'ssdp:all'
+   * @return empty
    */
   search(serviceType) {
-
+    return;
   }
 
+  /**
+   * mock .on() event listener method
+   * @param  {String}   eventName 'response'
+   * @param  {Function} callback pass data back to callee
+   * @return {[type]}   mock data response
+   */
   on(eventName, callback) {
       callback({
         'CACHE-CONTROL': 'max-age=3600',
