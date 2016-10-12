@@ -9,5 +9,14 @@ module.exports = [
     get: function(match, data) {
       return { text: Fixtures.AppsXML }
     }
+  },
+  {
+    pattern: '192.168.1.17:8060/query/active-app',
+    fixtures: function(match, params, headers) {
+      return true;
+    },
+    get: function(match, data) {
+      return { text: Fixtures.ActiveApp }
+    }
   }
 ]

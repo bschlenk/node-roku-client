@@ -59,16 +59,16 @@ wrapper('-method: .apps()', (t, device) => {
     })
 })
 
-// wrapper('-method: .activeApp()', (t, device) => {
-//   return device
-//     .activeApp()
-//     .then(app => {
-//       t.true(Im.List.isList(app), 'returns list')
+wrapper('-method: .activeApp()', (t, device) => {
+  return device
+    .activeApp()
+    .then(app => {
+      t.true(Im.List.isList(app), 'returns list')
 
-//       let objectsHaveCorrectProps = isDeepEqual(app, ['id', 'name', 'type', 'version'])
-//       t.truthy(objectsHaveCorrectProps, 'maps has correct props')
-//     })
-// })
+      let objectsHaveCorrectProps = isDeepEqual(app, ['id', 'name', 'type', 'version'])
+      t.truthy(objectsHaveCorrectProps, 'maps has correct props')
+    })
+})
 
 // wrapper('-method: .info()', (t, device) => {
 //   return device
