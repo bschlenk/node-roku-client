@@ -7,6 +7,8 @@ module.exports = function nodeku(timeout) {
 
   return new Promise((resolve, reject) => {
 
+    console.log();
+
     let RokuUrl
 
     // MockSSDPClient is used for testing at the moment.
@@ -30,7 +32,7 @@ module.exports = function nodeku(timeout) {
       return reject(new Error(`Could not find any Roku devices. Time spent: ${timeout / 1000} seconds`))
     }, timeout)
 
-    Client.on('response', function inResponse(headers/*, code, rinfo*/) {
+    Client.on('response', (headers/*, code, rinfo*/) => {
       let ipAddress = /(\d+.*:8060)(?=\/)/.exec(headers.LOCATION)
 
       if (!!~headers.SERVER.search(/Roku/) && ipAddress) {
@@ -39,7 +41,7 @@ module.exports = function nodeku(timeout) {
         clearInterval(IntervalId)
         clearTimeout(TimeoutId)
 
-        return resolve(Device(RokuUrl))
+        return resolve(Device(RokuUrl, this.MockReq))
       }
     })
 
