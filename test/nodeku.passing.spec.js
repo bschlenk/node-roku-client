@@ -101,6 +101,22 @@ wrapper('-method: .info()', (t, device) => {
     })
 })
 
+wrapper('-method: .keypress(\'Info\')', (t, device) => {
+  return device
+    .keypress('Info')
+    .then(ok => {
+      t.true(ok, 'Info successful')
+    })
+})
+
+wrapper('-method: .keypress(\'Home\')', (t, device) => {
+  return device
+    .keypress('Home')
+    .then(ok => {
+      t.true(ok, 'Home successful')
+    })
+})
+
 function isDeepEqual(apps, legend) {
   return apps.every(app => {
     return !assert.deepEqual(Object.keys(app.toJS()), legend)
