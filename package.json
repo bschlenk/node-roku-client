@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "nyc ava test/*.spec.js",
-    "report": "nyc report --reporter=text-lcov --report-dir $CIRCLE_ARTIFACTS"
+    "report": "nyc report --reporter=html --report-dir $CIRCLE_ARTIFACTS"
   },
   "keywords": [],
   "author": "Ray Farias <rayrfarias@gmail.com> (http://github.com/sgnl)",
