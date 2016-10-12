@@ -8,7 +8,7 @@ function wrapper(description, fn) {
   Test(description, t => {
     Nodeku()
     .then(device => {
-      fn(t, device);
+      fn(t, device)
     })
     .catch(t.fail)
   })
