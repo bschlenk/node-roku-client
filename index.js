@@ -10,7 +10,13 @@ module.exports = function nodeku(timeout) {
     let RokuUrl
 
     // MockSSDPClient is used for testing at the moment.
-    let Client = new this.MockSSDPClient() || new NodeSSDPClient()
+    let Client
+
+    if (this.hasOwnProperty('MockSSDPClient')) {
+      Client = new this.MockSSDPClient()
+    } else {
+      Client = new NodeSSDPClient()
+    }
 
     const IntervalId = setInterval(_ => {
       Client.search('ssdp:all')
