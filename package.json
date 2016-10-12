@@ -13,6 +13,7 @@
     "ava": "^0.16.0",
     "tap-spec": "^4.1.1",
     "tape": "^4.6.2",
+    "xml2js": "^0.4.17"
   },
   "dependencies": {
     "node-ssdp": "^2.8.0",
