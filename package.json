@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "nyc ava test/*.spec.js",
+    "test": "nyc ava",
     "report": "nyc report --reporter=html --report-dir $CIRCLE_ARTIFACTS"
   },
   "keywords": [],
@@ -22,5 +22,11 @@
     "node-ssdp": "^2.8.0",
     "superagent": "^2.3.0",
     "xml2js": "^0.4.17"
+  },
+  "ava": {
+    "files": [
+      "test/*.spec.js"
+    ],
+    "concurrency": 10
   }
 }
