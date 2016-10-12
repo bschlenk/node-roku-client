@@ -16,17 +16,29 @@ const Nodeku = require('nodeku')
 Nodeku()
   .then(device => {
     console.log(`device found at: ${ device.ip() }`)
+    // 'xxx.xxx.xxx.xxx:8060'
+    return device.apps()
+  })
+  .then(apps => {
+    apps.forEach(app => console.log(app))
+    // [{ name, id, appl, version }, ...]
   })
   .catch(err => {
     console.error(err.stack)
   })
 
 ```
-## getting Started
+## getting started
 
 
-## Nodeku
+## nodeku
 invoking `Nodeku` will return a promise and on success it will pass a device module. This module will contain the methods needed to control a roku device. Commands are sent to the Roku device via `HTTP` protocol as found on the [docs][1].
+
+
+| **method name** | **return type** | **details** |
+|---|---|---|
+| `.ip()` | `String` | `xxx.xxx.xxx.xxx:8060` |
+| `.apps()` | `Array[{}, ...]` | `[{ name, id, appl, version }, ...]` |
 
 ## tests
 `$ npm test`
