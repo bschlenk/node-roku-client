@@ -4,4 +4,4 @@ machine:
 
 test:
   post:
-    - npm run report && cp coverage $CIRCLE_ARTIFACTS
+    - npm run report
