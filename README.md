@@ -21,7 +21,7 @@ Nodeku()
   })
   .then(apps => {
     apps.forEach(app => console.log(app))
-    // [{ name, id, appl, version }, ...]
+    // [{ id, name, type, version }, ...]
   })
   .catch(err => {
     console.error(err.stack)
