@@ -50,14 +50,33 @@ This project uses [immutablejs][2] which means all the data structures received 
 | `.keydown('...')`| String | `Boolean` | true if success, false if error |
 | `.keyup('...')` | String | `Boolean` | true if success, false if error |
 
+### keypress values
+- `Home`
+- `Rev`
+- `Fwd`
+- `Play`
+- `Select`
+- `Left`
+- `Right`
+- `Down`
+- `Up`
+- `Back`
+- `InstantReplay`
+- `Info`
+- `Backspace`
+- `Search`
+- `Enter`
+
 ## tests
 `$ npm test`
 
 
 ## references
 [Roku - External Control Service Commands][1]
+[Roku - Keypress Key Values][3]
 
 
 <!-- urls -->
 [1]: https://sdkdocs.roku.com/display/sdkdoc/External+Control+Guide#ExternalControlGuide-ExternalControlServiceCommands
 [2]: http://facebook.github.io/immutable-js/
+[3]: https://sdkdocs.roku.com/display/sdkdoc/External+Control+Guide#ExternalControlGuide-KeypressKeyValues
