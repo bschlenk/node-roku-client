@@ -1,29 +1,27 @@
-const Test = require('tape')
+const Test = require('ava')
 let Nodeku = require('../')
 const Mocks = require('./mocks')
+const assert = require('assert')
 
 Nodeku = Nodeku.bind({ MockSSDPClient: Mocks.Client });
 
 function wrapper(description, fn) {
   Test(description, t => {
-    Nodeku()
-    .then(device => {
-      fn(t, device)
-    })
-    .catch(t.fail)
+    return Nodeku()
+      .then(device => {
+        return fn(t, device)
+      })
   })
 }
 
 Test('initialization', t => {
-  t.plan(1)
-  t.ok(typeof Nodeku === 'function', 'is ready')
+  t.truthy(typeof Nodeku === 'function', 'is ready')
 })
 
 wrapper('methods: .ip()', (t, device) => {
-  t.plan(3)
-  t.ok(device.hasOwnProperty('ip'), 'exists')
-  t.ok(typeof device.ip === 'function' , 'is a function')
-  t.assert(device.ip() === '192.168.1.17:8060', 'ip address retreived')
+  t.truthy(device.hasOwnProperty('ip'), 'exists')
+  t.is(typeof device.ip, 'function' , 'is a function')
+  t.deepEqual(device.ip(), '192.168.1.17:8060', 'ip address retreived')
 })
 
 wrapper('discovery', (t, device) => {

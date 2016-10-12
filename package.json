@@ -4,14 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "tape 'test/*.spec.js' | tap-spec"
+    "test": "ava test/*.spec.js"
   },
   "keywords": [],
   "author": "Ray Farias <rayrfarias@gmail.com> (http://github.com/sgnl)",
   "license": "ISC",
   "devDependencies": {
+    "ava": "^0.16.0",
     "tap-spec": "^4.1.1",
-    "tape": "^4.6.2"
+    "tape": "^4.6.2",
   },
   "dependencies": {
     "node-ssdp": "^2.8.0",
