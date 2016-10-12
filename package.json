@@ -15,6 +15,7 @@
     "tape": "^4.6.2"
   },
   "dependencies": {
+    "immutable": "^3.8.1",
     "node-ssdp": "^2.8.0",
     "superagent": "^2.3.0",
     "xml2js": "^0.4.17"

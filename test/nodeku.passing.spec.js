@@ -3,6 +3,8 @@ let Nodeku = require('../')
 const Mocks = require('./mocks')
 const assert = require('assert')
 
+const Im = require('immutable')
+
 Nodeku = Nodeku.bind({ MockSSDPClient: Mocks.Client });
 
 function wrapper(description, fn) {
@@ -33,7 +35,7 @@ wrapper('-method: .apps()', (t, device) => {
   return device
     .apps()
     .then(apps => {
-      t.truthy(Array.isArray(apps), 'returns an array')
+      t.true(Im.List.isList(apps), 'returns a list')
 
       let containsOnlyObjects = apps.every(app => typeof app === 'object')
       t.truthy(containsOnlyObjects, 'array items are objects')
