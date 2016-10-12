@@ -26,5 +26,11 @@
       "test/*.spec.js"
     ],
     "concurrency": 10
+  },
+  "nyc": {
+     "include": [
+      "index.js",
+      "lib/device.js"
+    ]
   }
 }
