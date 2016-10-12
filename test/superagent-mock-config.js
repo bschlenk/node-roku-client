@@ -81,5 +81,23 @@ module.exports = [
     post: function(match, data) {
       return { status: 200 }
     }
+  },
+  {
+    pattern: '192.168.1.17:8060/query/icon/(.*)',
+    fixtures: function(match, params, headers) {
+      let validKeys = ['12']
+
+      if (!!~validKeys.indexOf(match[1])) {
+        return true;
+      } else {
+        let newErr = new Error(404);
+        newErr.response = 'invalid key identifier';
+        newErr.status = 404;
+        throw newErr
+      }
+    },
+    get: function(match, data) {
+      return { body: Fixtures.NetflixIcon }
+    }
   }
 ]
