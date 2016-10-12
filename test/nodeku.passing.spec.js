@@ -123,13 +123,13 @@ wrapper('-method: .keypress(\'Info\')', (t, device) => {
     })
 })
 
-// wrapper('-method: .keypress(\'Home\')', (t, device) => {
-//   return device
-//     .keypress('Home')
-//     .then(ok => {
-//       t.true(ok, 'Home successful')
-//     })
-// })
+wrapper('-method: .keypress(\'Home\')', (t, device) => {
+  return device
+    .keypress('Home')
+    .then(ok => {
+      t.true(ok, 'Home successful')
+    })
+})
 
 function isDeepEqual(apps, legend) {
   return apps.every(app => {

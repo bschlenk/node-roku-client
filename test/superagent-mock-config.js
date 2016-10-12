@@ -31,7 +31,7 @@ module.exports = [
   {
     pattern: '192.168.1.17:8060/keypress/(.*)',
     fixtures: function(match, params, headers) {
-      let validKeys = ['Info']
+      let validKeys = ['Info', 'Home']
 
       if (!!~validKeys.indexOf(match[1])) {
         return true;
