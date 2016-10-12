@@ -11,6 +11,7 @@ Discover Roku devices via `ssdp` and control the device with methods that perfor
   - a router/network that supports UPnP (for ssdp)
 
 ## usage
+
 ```javascript
 
 const Nodeku = require('nodeku')
@@ -31,7 +32,13 @@ Nodeku()
 
 ```
 ## getting started
+**installation: ** clone this project down, change into the directory, and run:
 
+`$ npm link`
+
+After you will be able to start a new project and install this package with the command:
+
+`$ npm link nodeku`
 
 ## nodeku
 invoking `Nodeku` will return a promise and on success it will pass a device module. This module will contain the methods needed to control a roku device. Commands are sent to the Roku device via `HTTP` protocol as found on the [docs][1].
@@ -74,6 +81,8 @@ This project uses [immutablejs][2] which means all the data structures received 
 ## references
 [Roku - External Control Service Commands][1]
 [Roku - Keypress Key Values][3]
+
+## dependencies
 
 
 <!-- urls -->
