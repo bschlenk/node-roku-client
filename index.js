@@ -2,16 +2,15 @@
 const NodeSSDPClient = require('node-ssdp').Client
 const Device = require('./lib/device')
 
-module.exports = (timeout, CustomClient) => {
-
+module.exports = function nodeku(timeout) {
   timeout = timeout || 10000
 
   return new Promise((resolve, reject) => {
 
     let RokuUrl
 
-    // CustomClient is used for testing at the moment.
-    let Client = new CustomClient || new NodeSSDPClient()
+    // MockSSDPClient is used for testing at the moment.
+    let Client = new this.MockSSDPClient() || new NodeSSDPClient()
 
     const IntervalId = setInterval(_ => {
       Client.search('ssdp:all')

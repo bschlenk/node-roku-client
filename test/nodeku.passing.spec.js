@@ -1,10 +1,12 @@
 const Test = require('tape')
-const Nodeku = require('../')
+let Nodeku = require('../')
 const Mocks = require('./mocks')
+
+Nodeku = Nodeku.bind({ MockSSDPClient: Mocks.Client });
 
 function wrapper(description, fn) {
   Test(description, t => {
-    Nodeku(null, Mocks.Client)
+    Nodeku()
     .then(device => {
       fn(t, device);
     })
