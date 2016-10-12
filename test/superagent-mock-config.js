@@ -16,7 +16,16 @@ module.exports = [
       return true;
     },
     get: function(match, data) {
-      return { text: Fixtures.ActiveApp }
+      return { text: Fixtures.ActiveAppXML }
+    }
+  },
+  {
+    pattern: '192.168.1.17:8060/query/device-info',
+    fixtures: function(match, params, headers) {
+      return true;
+    },
+    get: function(match, data) {
+      return { text: Fixtures.InfoXML }
     }
   }
 ]

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<device-info>
+  <udn>04546142-6001-1014-80ff-ac3a7a80ae09</udn>
+  <serial-number>4E652H070911</serial-number>
+  <device-id>4E652H070911</device-id>
+  <advertising-id>ec7f71ee-35d7-5a2b-bafd-e4b9f3947337</advertising-id>
+  <vendor-name>Roku</vendor-name>
+  <model-name>Roku 3</model-name>
+  <model-number>4230X</model-number>
+  <model-region>US</model-region>
+  <wifi-mac>ac:3a:7a:80:ae:09</wifi-mac>
+  <ethernet-mac>ac:3a:7a:80:ae:08</ethernet-mac>
+  <network-type>wifi</network-type>
+  <user-device-name/>
+  <software-version>7.2.0</software-version>
+  <software-build>4100</software-build>
+  <secure-device>true</secure-device>
+  <language>en</language>
+  <country>US</country>
+  <locale>en_US</locale>
+  <time-zone>US/Hawaii</time-zone>
+  <time-zone-offset>-600</time-zone-offset>
+  <power-mode>PowerOn</power-mode>
+  <supports-suspend>false</supports-suspend>
+  <developer-enabled>false</developer-enabled>
+  <keyed-developer-id/>
+  <search-enabled>true</search-enabled>
+  <voice-search-enabled>true</voice-search-enabled>
+  <notifications-enabled>true</notifications-enabled>
+  <notifications-first-use>true</notifications-first-use>
+  <headphones-connected>false</headphones-connected>
+</device-info>
