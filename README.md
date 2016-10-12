@@ -4,7 +4,7 @@
 Discover Roku devices via `ssdp` and control the device with methods that perform `http` requests to the device.
 
 **requirements:**
-  - node `6.0.0 or higher`
+  - node `6.1.0 or higher`
   - connected to the same network as the Roku device.
   - a router/network that supports UPnP (for ssdp)
 
