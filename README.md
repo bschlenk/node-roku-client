@@ -40,13 +40,15 @@ invoking `Nodeku` will return a promise and on success it will pass a device mod
 This project uses [immutablejs][2] which means all the data structures received through this module will be immutable.
 
 
-| **method name** | **return type** | **details** |
+| **method name** | **params** | **return type** | **details** |
 |---|---|---|
-| `.ip()` | `String` | network ip and port `xxx.xxx.xxx.xxx:8060` |
-| `.apps()` | `List[{}, ...]` | list of many objects with props: `id, name, type, version` |
-| `.activeApp()` | `List[{}]` | list with one object with props `id, name, type, version` |
-| `.info()` | `Map{}` | map with *too many(29) props* |
-| `.keypress('...')` | `Boolean` | true if success, false if error |
+| `.ip()`  | None | `String` | network ip and port `xxx.xxx.xxx.xxx:8060` |
+| `.apps()` | None | `List[{}, ...]` | list of many objects with props: `id, name, type, version` |
+| `.activeApp()` | None | `List[{}]` | list with one object with props `id, name, type, version` |
+| `.info()` | None | `Map{}` | map with *too many(29) props* |
+| `.keypress('...')` | String | `Boolean` | true if success, false if error |
+| `.keydown('...')`| String | `Boolean` | true if success, false if error |
+| `.keyup('...')` | String | `Boolean` | true if success, false if error |
 
 ## tests
 `$ npm test`
