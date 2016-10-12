@@ -139,6 +139,14 @@ wrapper('-method: .keyup(\'Home\')', (t, device) => {
     })
 })
 
+wrapper('-method: .icon()', (t, device) => {
+  return device
+    .icon('12')
+    .then(img => {
+      t.true(img instanceof Buffer)
+    })
+})
+
 function isDeepEqual(apps, legend) {
   return apps.every(app => {
     return !assert.deepEqual(Object.keys(app.toJS()), legend)
