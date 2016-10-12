@@ -12,11 +12,11 @@
   "devDependencies": {
     "ava": "^0.16.0",
     "tap-spec": "^4.1.1",
-    "tape": "^4.6.2",
-    "xml2js": "^0.4.17"
+    "tape": "^4.6.2"
   },
   "dependencies": {
     "node-ssdp": "^2.8.0",
-    "superagent": "^2.3.0"
+    "superagent": "^2.3.0",
+    "xml2js": "^0.4.17"
   }
 }
