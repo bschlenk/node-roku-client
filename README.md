@@ -1,7 +1,7 @@
 
 # nodeku
 
-[![CircleCI](https://circleci.com/gh/sgnl/nodeku.svg?style=svg)](https://circleci.com/gh/sgnl/nodeku)
+[![CircleCI](https://circleci.com/gh/sgnl/nodeku.svg?style=shield)](https://circleci.com/gh/sgnl/nodeku)
 
 Discover Roku devices via `ssdp` and control the device with methods that perform `http` requests to the device.
 
