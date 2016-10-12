@@ -10,7 +10,8 @@ const Req = require('superagent')
 var logger = function(log)  {
   console.log('superagent call', log);
 };
-// const MockReqTearDown = require('superagent-mock')(Req, ReqMockConfig, logger)
+
+const MockReqTearDown = require('superagent-mock')(Req, ReqMockConfig/*, logger*/)
 
 /* main star */
 let Nodeku = require('../')

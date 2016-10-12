@@ -1,7 +1,11 @@
 const Fs = require('fs')
 
-const AppsXML = Fs.readFileSync('./helpers/apps.xml')
+const XmlFiles = [
+  { name: 'AppsXML', location: './helpers/apps.xml' },
+  { name: 'ActiveApp', location: './helpers/active-app.xml' },
+]
 
-module.exports = {
-  appsXML: AppsXML
-}
+module.exports = XmlFiles.reduce((module, file) => {
+  module[file.name] = Fs.readFileSync(file.location)
+  return module
+}, {})
