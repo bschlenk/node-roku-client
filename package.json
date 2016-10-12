@@ -4,13 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "ava test/*.spec.js"
+    "test": "nyc ava test/*.spec.js",
+    "report": "nyc report --reporter=html"
   },
   "keywords": [],
   "author": "Ray Farias <rayrfarias@gmail.com> (http://github.com/sgnl)",
   "license": "ISC",
   "devDependencies": {
     "ava": "^0.16.0",
+    "nyc": "^8.3.1",
     "superagent-mock": "^1.12.0",
     "tap-spec": "^4.1.1",
     "tape": "^4.6.2"
