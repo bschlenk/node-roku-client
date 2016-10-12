@@ -7,14 +7,12 @@ module.exports = function nodeku(timeout) {
 
   return new Promise((resolve, reject) => {
 
-    console.log();
-
     let RokuUrl
 
-    // MockSSDPClient is used for testing at the moment.
     let Client
 
     if (this.hasOwnProperty('MockSSDPClient')) {
+      // used for testing
       Client = new this.MockSSDPClient()
     } else {
       Client = new NodeSSDPClient()
