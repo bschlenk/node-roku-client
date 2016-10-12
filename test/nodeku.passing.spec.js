@@ -37,15 +37,11 @@ wrapper('-method: .apps()', (t, device) => {
     .then(apps => {
       t.true(Im.List.isList(apps), 'returns a list')
 
-      let containsOnlyObjects = apps.every(app => typeof app === 'object')
-      t.truthy(containsOnlyObjects, 'array items are objects')
+      let containsOnlyObjects = apps.every(app => Im.Map.isMap(app))
+      t.truthy(containsOnlyObjects, 'list contains maps')
 
-      let objectsHaveCorrectProps = apps.every(app => {
-        let result = true;
-
-        return !assert.deepEqual(Object.keys(app), ['name', 'id', 'appl', 'version'])
-      })
-      t.truthy(objectsHaveCorrectProps, 'objects has proper keys')
+      let objectsHaveCorrectProps = isDeepEqual(apps, ['id', 'name', 'type', 'version'])
+      t.truthy(objectsHaveCorrectProps, 'maps has correct keys')
     })
 })
 
@@ -53,6 +49,15 @@ wrapper('-method: .activeApp()', (t, device) => {
   return device
     .activeApp()
     .then(app => {
-      t.is(typeof app, 'object', 'returns object')
+      t.true(Im.List.isList(app), 'returns list')
+
+      let objectsHaveCorrectProps = isDeepEqual(app, ['id', 'name', 'type', 'version'])
+      t.truthy(objectsHaveCorrectProps, 'maps has correct keys')
     })
 })
+
+function isDeepEqual(apps, legend) {
+  return apps.every(app => {
+    return !assert.deepEqual(Object.keys(app.toJS()), legend)
+  })
+}
