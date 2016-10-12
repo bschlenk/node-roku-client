@@ -18,7 +18,7 @@ let Nodeku = require('../')
 
 Nodeku = Nodeku.bind({
   MockSSDPClient: Mocks.Client,
-  // MockReq: Req,
+  MockReq: Req,
 });
 
 function wrapper(description, fn) {
@@ -115,17 +115,25 @@ wrapper('-method: .info()', (t, device) => {
     })
 })
 
-wrapper('-method: .keypress(\'Info\')', (t, device) => {
-  return device
-    .keypress('Info')
-    .then(ok => {
-      t.true(ok, 'Info successful')
-    })
-})
-
 wrapper('-method: .keypress(\'Home\')', (t, device) => {
   return device
     .keypress('Home')
+    .then(ok => {
+      t.true(ok, 'Home successful')
+    })
+})
+
+wrapper('-method: .keydown(\'Home\')', (t, device) => {
+  return device
+    .keydown('Home')
+    .then(ok => {
+      t.true(ok, 'Home successful')
+    })
+})
+
+wrapper('-method: .keyup(\'Home\')', (t, device) => {
+  return device
+    .keyup('Home')
     .then(ok => {
       t.true(ok, 'Home successful')
     })

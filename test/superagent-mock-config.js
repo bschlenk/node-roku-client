@@ -45,5 +45,41 @@ module.exports = [
     post: function(match, data) {
       return { status: 200 }
     }
+  },
+  {
+    pattern: '192.168.1.17:8060/keydown/(.*)',
+    fixtures: function(match, params, headers) {
+      let validKeys = ['Info', 'Home']
+
+      if (!!~validKeys.indexOf(match[1])) {
+        return true;
+      } else {
+        let newErr = new Error(404);
+        newErr.response = 'invalid key identifier';
+        newErr.status = 404;
+        throw newErr
+      }
+    },
+    post: function(match, data) {
+      return { status: 200 }
+    }
+  },
+  {
+    pattern: '192.168.1.17:8060/keyup/(.*)',
+    fixtures: function(match, params, headers) {
+      let validKeys = ['Info', 'Home']
+
+      if (!!~validKeys.indexOf(match[1])) {
+        return true;
+      } else {
+        let newErr = new Error(404);
+        newErr.response = 'invalid key identifier';
+        newErr.status = 404;
+        throw newErr
+      }
+    },
+    post: function(match, data) {
+      return { status: 200 }
+    }
   }
 ]
