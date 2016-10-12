@@ -24,18 +24,27 @@ wrapper('methods: .ip()', (t, device) => {
   t.deepEqual(device.ip(), '192.168.1.17:8060', 'ip address retreived')
 })
 
-wrapper('discovery', (t, device) => {
-  t.timeoutAfter(2000)
-  t.plan(2)
+wrapper('methods: .apps()', (t, device) => {
+  t.plan(5)
 
-  t.assert(typeof device === 'object', 'module received')
-  t.assert(device.ip() === '192.168.1.17:8060', 'ip address located')
+  t.truthy(device.hasOwnProperty('apps'), 'exists')
+  t.is(typeof device.apps, 'function' , 'is a function')
 
+  return device
+    .apps()
+    .then(apps => {
+      t.truthy(Array.isArray(apps), 'returns an array')
+
+      let containsOnlyObjects = apps.every(app => typeof app === 'object')
+      t.truthy(containsOnlyObjects, 'array items are objects')
+
+      let objectsHaveCorrectProps = apps.every(app => {
+        let result = true;
+
+        return !assert.deepEqual(Object.keys(app), ['name', 'id', 'appl', 'version'])
+      })
+      t.truthy(objectsHaveCorrectProps, 'objects has proper keys')
+    })
 })
 
-wrapper('apps', (t, device) => {
 
-
-
-  t.end();
-})
