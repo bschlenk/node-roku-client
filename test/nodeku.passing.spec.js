@@ -14,17 +14,17 @@ function wrapper(description, fn) {
   })
 }
 
-Test('initialization', t => {
+Test('Nodeku', t => {
   t.truthy(typeof Nodeku === 'function', 'is ready')
 })
 
-wrapper('methods: .ip()', (t, device) => {
+wrapper('-method: .ip()', (t, device) => {
   t.truthy(device.hasOwnProperty('ip'), 'exists')
   t.is(typeof device.ip, 'function' , 'is a function')
   t.deepEqual(device.ip(), '192.168.1.17:8060', 'ip address retreived')
 })
 
-wrapper('methods: .apps()', (t, device) => {
+wrapper('-method: .apps()', (t, device) => {
   t.plan(5)
 
   t.truthy(device.hasOwnProperty('apps'), 'exists')
@@ -47,4 +47,10 @@ wrapper('methods: .apps()', (t, device) => {
     })
 })
 
-
+wrapper('-method: .activeApp()', (t, device) => {
+  return device
+    .activeApp()
+    .then(app => {
+      t.is(typeof app, 'object', 'returns object')
+    })
+})
