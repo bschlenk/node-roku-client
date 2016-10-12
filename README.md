@@ -41,7 +41,8 @@ This project uses [immutablejs][2] which means all the data structures received 
 | **method name** | **return type** | **details** |
 |---|---|---|
 | `.ip()` | `String` | `xxx.xxx.xxx.xxx:8060` |
-| `.apps()` | `List[{}, ...]` | `[{ name, id, appl, version }, ...]` |
+| `.apps()` | `List[{}, ...]` | list of many objects with props: `id, name, type, version` |
+| `.activeApp()` | `List[{}] | list with one object with props `id, name, type, version` |
 
 ## tests
 `$ npm test`
