@@ -40,7 +40,7 @@ This project uses [immutablejs][2] which means all the data structures received 
 
 | **method name** | **return type** | **details** |
 |---|---|---|
-| `.ip()` | `String` | `xxx.xxx.xxx.xxx:8060` |
+| `.ip()` | `String` | network ip and port `xxx.xxx.xxx.xxx:8060` |
 | `.apps()` | `List[{}, ...]` | list of many objects with props: `id, name, type, version` |
 | `.activeApp()` | `List[{}]` | list with one object with props `id, name, type, version` |
 
