@@ -35,7 +35,7 @@ Test('Nodeku', t => {
 })
 
 wrapper('-method: .ip()', (t, device) => {
-  t.truthy(device.hasOwnProperty('ip'), 'exists')
+  t.true(device.hasOwnProperty('ip'), 'exists')
   t.is(typeof device.ip, 'function' , 'is a function')
   t.deepEqual(device.ip(), '192.168.1.17:8060', 'ip address retreived')
 })
@@ -43,7 +43,7 @@ wrapper('-method: .ip()', (t, device) => {
 wrapper('-method: .apps()', (t, device) => {
   t.plan(5)
 
-  t.truthy(device.hasOwnProperty('apps'), 'exists')
+  t.true(device.hasOwnProperty('apps'), 'exists')
   t.is(typeof device.apps, 'function' , 'is a function')
 
   return device
@@ -52,10 +52,10 @@ wrapper('-method: .apps()', (t, device) => {
       t.true(Im.List.isList(apps), 'returns a list')
 
       let containsOnlyObjects = apps.every(app => Im.Map.isMap(app))
-      t.truthy(containsOnlyObjects, 'list contains maps')
+      t.true(containsOnlyObjects, 'list contains maps')
 
       let objectsHaveCorrectProps = isDeepEqual(apps, ['id', 'name', 'type', 'version'])
-      t.truthy(objectsHaveCorrectProps, 'maps has correct props')
+      t.true(objectsHaveCorrectProps, 'maps has correct props')
     })
 })
 
@@ -66,7 +66,7 @@ wrapper('-method: .activeApp()', (t, device) => {
       t.true(Im.List.isList(app), 'returns list')
 
       let objectsHaveCorrectProps = isDeepEqual(app, ['id', 'name', 'type', 'version'])
-      t.truthy(objectsHaveCorrectProps, 'maps has correct props')
+      t.true(objectsHaveCorrectProps, 'maps has correct props')
     })
 })
 
@@ -111,7 +111,7 @@ wrapper('-method: .info()', (t, device) => {
       ]
 
       let mapHasCorrectProps = isDeepEqual([info], props)
-      t.truthy(mapHasCorrectProps, 'maps has correct props')
+      t.true(mapHasCorrectProps, 'maps has correct props')
     })
 })
 
