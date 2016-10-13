@@ -1,4 +1,4 @@
-const Fixtures = require('./fixtures')
+const Fixtures = require('./lib/fixtures')
 
 module.exports = [
   {

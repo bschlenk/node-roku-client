@@ -4,7 +4,7 @@ const assert = require('assert')
 const Im = require('immutable')
 
 /* mocks and fixtures */
-const Mocks = require('./mocks')
+const Mocks = require('./lib/mocks')
 const ReqMockConfig = require('./superagent-mock-config')
 const Req = require('superagent')
 var logger = function(log)  {
