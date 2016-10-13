@@ -35,7 +35,7 @@ function wrapper(description, fn) {
 }
 
 Test('Nodeku', t => {
-  t.truthy(typeof Nodeku === 'function', 'is ready')
+  t.is(typeof Nodeku, 'function', 'is ready')
 })
 
 wrapper('-method: .ip()', (t, device) => {
