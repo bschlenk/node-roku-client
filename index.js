@@ -3,7 +3,7 @@ const NodeSSDPClient = require('node-ssdp').Client
 const Device = require('./lib/device')
 
 module.exports = function nodeku(timeout) {
-  timeout = timeout || 10000
+  timeout = timeout || this._timeout || 10000
 
   return new Promise((resolve, reject) => {
 
@@ -32,7 +32,7 @@ module.exports = function nodeku(timeout) {
     }, timeout)
 
     Client.on('response', (headers/*, code, rinfo*/) => {
-
+      if (this.debug) { return }
       // roku devices operate on PORT 8060
       let ipAddress = /(\d+.*:8060)(?=\/)/.exec(headers.LOCATION)
 
