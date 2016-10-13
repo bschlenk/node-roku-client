@@ -32,7 +32,9 @@ Nodeku()
 
 ```
 ## getting started
-**installation: ** clone this project down, change into the directory, and run:
+**will release on npm when mvp is completed, see [issue](https://github.com/sgnl/nodeku/issues/1)**
+
+clone this project on your computer, change into the directory, and run:
 
 `$ npm link`
 
@@ -82,8 +84,8 @@ This project uses [immutablejs][2] which means all the data structures received 
 [Roku - External Control Service Commands][1]
 [Roku - Keypress Key Values][3]
 
-## dependencies
-
+### additional information
+Only tested on OSX and with Roku3 device.
 
 <!-- urls -->
 [1]: https://sdkdocs.roku.com/display/sdkdoc/External+Control+Guide#ExternalControlGuide-ExternalControlServiceCommands
