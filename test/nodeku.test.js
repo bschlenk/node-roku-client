@@ -2,16 +2,14 @@
 const Test = require('ava')
 const assert = require('assert')
 const Im = require('immutable')
+const Utils = require('./lib/utils')
 
 /* mocks and fixtures */
 const Mocks = require('./lib/mocks')
 const ReqMockConfig = require('./superagent-mock-config')
 const Req = require('superagent')
-var logger = function(log)  {
-  console.log('superagent call', log);
-};
 
-const MockReqTearDown = require('superagent-mock')(Req, ReqMockConfig/*, logger*/)
+const MockReqTearDown = require('superagent-mock')(Req, ReqMockConfig/*, Utils.logger*/)
 
 /* main star */
 let Nodeku = require('../')
@@ -20,6 +18,12 @@ Nodeku = Nodeku.bind({
   MockSSDPClient: Mocks.Client,
   MockReq: Req,
 });
+
+function isDeepEqual(apps, legend) {
+  return apps.every(app => {
+    return !assert.deepEqual(Object.keys(app.toJS()), legend)
+  })
+}
 
 function wrapper(description, fn) {
   Test(description, t => {
@@ -41,7 +45,6 @@ wrapper('-method: .ip()', (t, device) => {
 })
 
 wrapper('-method: .apps()', (t, device) => {
-  t.plan(5)
 
   t.true(device.hasOwnProperty('apps'), 'exists')
   t.is(typeof device.apps, 'function' , 'is a function')
@@ -58,6 +61,7 @@ wrapper('-method: .apps()', (t, device) => {
       t.true(objectsHaveCorrectProps, 'maps has correct props')
     })
 })
+
 
 wrapper('-method: .activeApp()', (t, device) => {
   return device
@@ -146,9 +150,3 @@ wrapper('-method: .icon()', (t, device) => {
       t.true(img instanceof Buffer)
     })
 })
-
-function isDeepEqual(apps, legend) {
-  return apps.every(app => {
-    return !assert.deepEqual(Object.keys(app.toJS()), legend)
-  })
-}

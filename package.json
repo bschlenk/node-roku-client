@@ -23,7 +23,7 @@
   },
   "ava": {
     "files": [
-      "test/*.spec.js"
+      "test/*.test.js"
     ],
     "concurrency": 10
   },
