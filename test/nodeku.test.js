@@ -2,11 +2,11 @@
 const Test = require('ava')
 const assert = require('assert')
 const Im = require('immutable')
-const Utils = require('./lib/utils')
+const Utils = require('./resources/utils')
 
 /* mocks and fixtures */
-const Mocks = require('./lib/mocks')
-const ReqMockConfig = require('./superagent-mock-config')
+const SsdpMock = require('./resources/ssdp-mock')
+const ReqMockConfig = require('./resources/superagent-mock-config')
 const Req = require('superagent')
 
 const MockReqTearDown = require('superagent-mock')(Req, ReqMockConfig/*, Utils.logger*/)
@@ -15,7 +15,7 @@ const MockReqTearDown = require('superagent-mock')(Req, ReqMockConfig/*, Utils.l
 let Nodeku = require('../')
 
 Nodeku = Nodeku.bind({
-  MockSSDPClient: Mocks.Client,
+  MockSSDPClient: SsdpMock.Client,
   MockReq: Req,
 });
 
