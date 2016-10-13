@@ -14,20 +14,18 @@ const MockReqTearDown = require('superagent-mock')(Req, ReqMockConfig/*, Utils.l
 /* main star */
 let Nodeku = require('../')
 
+let timeoutVal = 5000;
 Nodeku = Nodeku.bind({
   MockSSDPClient: SsdpMock.Client.bind(true),
   MockReq: Req,
   debug: true,
-  _timeout: 1000
+  _timeout: timeoutVal
 })
 
 Test('throws when device is not found (timeout: 2s)', t => {
   t.throws(
     Nodeku(),
-    /Could not find any Roku devices. Time spent: 1 seconds/,
+    `Could not find any Roku devices. Time spent: ${timeoutVal / 1000} seconds`,
     'throws a timeout error'
   )
 })
-
-
-
