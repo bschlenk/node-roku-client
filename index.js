@@ -8,20 +8,21 @@ module.exports = function nodeku(timeout) {
   return new Promise((resolve, reject) => {
 
     let RokuUrl
-
     let Client
 
+    // check for mock ssdpclient, use if available
     if (this.hasOwnProperty('MockSSDPClient')) {
-      // used for testing
       Client = new this.MockSSDPClient()
     } else {
       Client = new NodeSSDPClient()
     }
 
+    // open the flood gates
     const IntervalId = setInterval(_ => {
       Client.search('ssdp:all')
     }, 1000)
 
+    // discovery timeout for roku device; default 10000ms
     const TimeoutId = setTimeout(_ => {
 
       clearInterval(IntervalId)
@@ -31,6 +32,8 @@ module.exports = function nodeku(timeout) {
     }, timeout)
 
     Client.on('response', (headers/*, code, rinfo*/) => {
+
+      // roku devices operate on PORT 8060
       let ipAddress = /(\d+.*:8060)(?=\/)/.exec(headers.LOCATION)
 
       if (!!~headers.SERVER.search(/Roku/) && ipAddress) {
