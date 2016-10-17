@@ -56,8 +56,9 @@ This project uses [immutablejs][2] which means all the data structures received 
 | `.activeApp()` | None | `List[{}]` | list with one object with props `id, name, type, version` |
 | `.info()` | None | `Map{}` | map with *too many(29) props* |
 | `.keypress('...')` | String | `Boolean` | true if success, false if error |
-| `.keydown('...')`| String | `Boolean` | true if success, false if error |
-| `.keyup('...')` | String | `Boolean` | true if success, false if error |
+| `.keydown('...')`| String | `Boolean` | true if successful, false if error |
+| `.keyup('...')` | String | `Boolean` | true if successful, false if error |
+| `'.icon(1)` | Number | `Buffer` | jpeg image as buffer |
 
 ### keypress values
 - `Home`
@@ -85,7 +86,7 @@ This project uses [immutablejs][2] which means all the data structures received 
 [Roku - Keypress Key Values][3]
 
 ### additional information
-Only tested on OSX and with Roku3 device.
+Only tested on OSX and with Roku3 device. halp?
 
 <!-- urls -->
 [1]: https://sdkdocs.roku.com/display/sdkdoc/External+Control+Guide#ExternalControlGuide-ExternalControlServiceCommands
