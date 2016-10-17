@@ -29,7 +29,7 @@
   },
   "nyc": {
      "include": [
-      "index.js",
+      "lib/discovery.js",
       "lib/device.js"
     ]
   }
