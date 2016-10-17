@@ -53,7 +53,7 @@ This project uses [immutablejs][2] which means all the data structures received 
 |---|---|---|---|
 | `.ip()`  | None | `String` | network ip and port `xxx.xxx.xxx.xxx:8060` |
 | `.apps()` | None | `List[{}, ...]` | list of many objects with props: `id, name, type, version` |
-| `.activeApp()` | None | `List[{}]` | list with one object with props `id, name, type, version` |
+| `.active()` | None | `List[{}]` | list with one object with props `id, name, type, version` |
 | `.info()` | None | `Map{}` | map with *too many(29) props* |
 | `.keypress('...')` | String | `Boolean` | true if success, false if error |
 | `.keydown('...')`| String | `Boolean` | true if successful, false if error |

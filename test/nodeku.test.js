@@ -63,9 +63,9 @@ wrapper('-method: .apps()', (t, device) => {
 })
 
 
-wrapper('-method: .activeApp()', (t, device) => {
+wrapper('-method: .active()', (t, device) => {
   return device
-    .activeApp()
+    .active()
     .then(app => {
       t.true(Im.List.isList(app), 'returns list')
 
