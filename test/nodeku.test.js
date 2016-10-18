@@ -9,7 +9,7 @@ const SsdpMock = require('./resources/ssdp-mock')
 const ReqMockConfig = require('./resources/superagent-mock-config')
 const Req = require('superagent')
 
-const MockReqTearDown = require('superagent-mock')(Req, ReqMockConfig/*, Utils.logger*/)
+const MockReqTearDown = require('superagent-mock')(Req, ReqMockConfig, Utils.logger)
 
 /* main star */
 let Nodeku = require('../')
@@ -148,5 +148,18 @@ wrapper('-method: .icon()', (t, device) => {
     .icon('12')
     .then(img => {
       t.true(img instanceof Buffer)
+    })
+})
+
+wrapper('-method: .launch()', (t, device) => {
+  return device
+    .apps()
+    .then(apps => {
+      let randomIndex = Math.floor(Math.random() * apps.size)
+      let appToLaunch = apps.toJS().splice(randomIndex, 1)[0]
+      return device.launch(appToLaunch.id)
+    })
+    .then(res => {
+      console.log('res: ', res);
     })
 })

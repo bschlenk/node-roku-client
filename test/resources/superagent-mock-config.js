@@ -99,5 +99,14 @@ module.exports = [
     get: function(match, data) {
       return { body: Fixtures.NetflixIcon }
     }
+  },
+  {
+    pattern: '192.168.1.17:8060/launch/(.*)',
+    fixtures: function(match, params, headers) {
+
+    },
+    post: function(match, data) {
+      return { status: 200 }
+    }
   }
 ]
