@@ -59,6 +59,7 @@ This project uses [immutablejs][2] which means all the data structures received 
 | `.keydown('...')`| String | `Boolean` | true if successful, false if error |
 | `.keyup('...')` | String | `Boolean` | true if successful, false if error |
 | `'.icon(1)` | Number | `Buffer` | jpeg image as buffer |
+| `'.launch(1)` | Number | `Boolean` | true if successful, false if error |
 
 ### keypress values
 - `Home`
