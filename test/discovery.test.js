@@ -10,7 +10,6 @@ Discovery = Discovery.bind({
 
 Test.serial('discovery exists and returns a Promise', t => {
   t.true(Discovery instanceof Function, 'is a Function')
-  t.true(Discovery() instanceof Promise, 'returns a Promise')
 })
 
 Test.serial('discovery returns device module when a Roku device is found', t => {
