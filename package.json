@@ -8,7 +8,11 @@
     "report": "nyc report --reporter=html --report-dir $CIRCLE_ARTIFACTS",
     "publish-npm": "publish"
   },
-  "keywords": [],
+  "keywords": [
+    "roku",
+    "immutable",
+    "ssdp"
+  ],
   "bugs": {
     "url": "https://github.com/sgnl/nodeku/issues"
   },
