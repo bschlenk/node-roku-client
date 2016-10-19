@@ -160,6 +160,6 @@ wrapper('-method: .launch()', (t, device) => {
       return device.launch(appToLaunch.id)
     })
     .then(res => {
-      console.log('res: ', res);
+      t.true(res)
     })
 })
