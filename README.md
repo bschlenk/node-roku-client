@@ -32,18 +32,10 @@ Nodeku()
 
 ```
 ## getting started
-**will release on npm when mvp is completed, see [issue](https://github.com/sgnl/nodeku/issues/1)**
-
-clone this project on your computer, change into the directory, and run:
-
-`$ npm link`
-
-After you will be able to start a new project and install this package with the command:
-
-`$ npm link nodeku`
+`$ npm install nodeku`
 
 ## nodeku
-invoking `Nodeku` will return a promise and on success it will pass a device module. This module will contain the methods needed to control a roku device. Commands are sent to the Roku device via `HTTP` protocol as found on the [docs][1].
+Invoking `Nodeku` will return a promise and on success it will pass a device module. This module will contain the methods needed to control a roku device. Commands are sent to the Roku device via `HTTP` protocol as found on the [docs][1].
 
 ### caveats
 This project uses [immutablejs][2] which means all the data structures received through this module will be immutable.
