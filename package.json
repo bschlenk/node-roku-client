@@ -9,6 +9,10 @@
     "publish-npm": "publish"
   },
   "keywords": [],
+  "bugs": {
+    "url": "https://github.com/sgnl/nodeku/issues"
+  },
+  "homepage": "https://github.com/sgnl/nodeku",
   "author": "Ray Farias <rayrfarias@gmail.com> (http://github.com/sgnl)",
   "license": "Apache-2.0",
   "devDependencies": {
