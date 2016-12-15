@@ -80,42 +80,6 @@ wrapper('-method: .info()', (t, device) => {
     .then(info => {
       t.true(Im.Map.isMap(info), 'returns a map')
       t.is(Object.keys(info.toJS()).length, 29, 'has 29 props')
-
-      // TODO - doesn't deep equal?!
-      let props = [
-        'user-device-name',
-        'headphones-connected',
-        'serial-number',
-        'advertising-id',
-        'notifications-first-use',
-        'software-build',
-        'power-mode',
-        'secure-device',
-        'time-zone',
-        'keyed-developer-id',
-        'model-number',
-        'model-name',
-        'vendor-name',
-        'software-version',
-        'device-id',
-        'supports-suspend',
-        'time-zone-offset',
-        'country',
-        'voice-search-enabled',
-        'wifi-mac',
-        'model-region',
-        'language',
-        'ethernet-mac',
-        'network-type',
-        'locale',
-        'search-enabled',
-        'notifications-enabled',
-        'developer-enabled',
-        'udn'
-      ]
-
-      let mapHasCorrectProps = isDeepEqual([info], props)
-      t.true(mapHasCorrectProps, 'maps has correct props')
     })
 })
 
