@@ -2,6 +2,9 @@
   "name": "nodeku",
   "version": "1.0.6",
   "description": "",
+  "engines" : {
+    "node" : ">=7.0.0"
+  },
   "main": "index.js",
   "scripts": {
     "test": "nyc ava",
@@ -17,6 +20,10 @@
     "url": "https://github.com/sgnl/nodeku/issues"
   },
   "homepage": "https://github.com/sgnl/nodeku",
+  "repository" : {
+    "type" : "git",
+    "url" : "https://github.com/sgnl/nodeku"
+  },
   "author": "Ray Farias <rayrfarias@gmail.com> (http://github.com/sgnl)",
   "license": "Apache-2.0",
   "devDependencies": {
