@@ -1,2 +1,2 @@
 
-module.exports = require('./lib/discovery')
+module.exports = require('./lib/discovery');
