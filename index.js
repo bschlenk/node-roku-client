@@ -1,2 +1,4 @@
 
-module.exports = require('./lib/discovery')
+'use strict';
+
+module.exports = require('./lib/discovery');

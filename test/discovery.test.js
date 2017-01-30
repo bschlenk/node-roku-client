@@ -1,21 +1,23 @@
 
-const Test = require('ava')
+'use strict';
 
-const SsdpMock = require('./resources/ssdp-mock')
-let Discovery = require('../lib/discovery')
+/* eslint
+  import/order: "off",
+ */
 
-Discovery = Discovery.bind({
-  MockSSDPClient: SsdpMock.Client
-})
+const test = require('ava');
 
-Test.serial('discovery exists and returns a Promise', t => {
-  t.true(Discovery instanceof Function, 'is a Function')
-})
+const ssdpMock = require('./resources/ssdp-mock');
+const discovery = require('../lib/discovery').bind({
+  MockSSDPClient: ssdpMock.Client
+});
 
-Test.serial('discovery returns device module when a Roku device is found', t => {
-  return Discovery()
-    .then(device => {
-      t.is(typeof device, 'object', 'is a module')
-    })
-    .catch(err => t.fail(err))
-})
+test.serial('discovery exists and returns a Promise', t => {
+  t.true(discovery instanceof Function, 'is a Function');
+});
+
+test.serial('discovery returns device module when a Roku device is found', async t => {
+  const device = await discovery();
+
+  t.is(typeof device, 'object', 'is a module');
+});

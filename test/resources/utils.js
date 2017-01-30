@@ -1,7 +1,8 @@
 
+'use strict';
 
 module.exports = {
-  log: log =>  {
+  log: log => {
     process.stdout.write('superagent call', log);
   }
-}
+};
