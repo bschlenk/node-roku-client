@@ -105,7 +105,5 @@ wrapper('-method: .launch()', (t, device) => {
       let appToLaunch = apps.toJS().splice(randomIndex, 1)[0]
       return device.launch(appToLaunch.id)
     })
-    .then(res => {
-      t.true(res)
-    })
+    .then(t.done)
 })
