@@ -86,25 +86,7 @@ wrapper('-method: .info()', (t, device) => {
 wrapper('-method: .keypress(\'Home\')', (t, device) => {
   return device
     .keypress('Home')
-    .then(ok => {
-      t.true(ok, 'Home successful')
-    })
-})
-
-wrapper('-method: .keydown(\'Home\')', (t, device) => {
-  return device
-    .keydown('Home')
-    .then(ok => {
-      t.true(ok, 'Home successful')
-    })
-})
-
-wrapper('-method: .keyup(\'Home\')', (t, device) => {
-  return device
-    .keyup('Home')
-    .then(ok => {
-      t.true(ok, 'Home successful')
-    })
+    .then(res => t.truthy(res))
 })
 
 wrapper('-method: .icon()', (t, device) => {
