@@ -55,7 +55,14 @@
   },
    "xo": {
     "space": true,
-    "rules": {},
+    "rules": {
+      "new-cap": "off",
+      "no-prototype-builtins": "off",
+      "object-curly-spacing": [
+        "error",
+        "always"
+      ]
+    },
     "ignores": [],
     "overrides": []
   }

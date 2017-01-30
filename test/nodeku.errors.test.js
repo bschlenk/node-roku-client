@@ -1,18 +1,16 @@
 
-const Test = require('ava');
-const assert = require('assert');
-const Im = require('immutable');
-const Utils = require('./resources/utils');
+'use strict';
 
-/* mocks and fixtures */
-const SsdpMock = require('./resources/ssdp-mock');
-const ReqMockConfig = require('./resources/superagent-error-config');
+const test = require('ava');
 const Req = require('superagent');
 
-const MockReqTearDown = require('superagent-mock')(Req, ReqMockConfig/* , Utils.logger */);
-
+/* mocks and fixtures */
 /* main star */
 let Nodeku = require('../');
+const SsdpMock = require('./resources/ssdp-mock');
+const ReqMockConfig = require('./resources/superagent-error-config');
+
+require('superagent-mock')(Req, ReqMockConfig/* , Utils.logger */);
 
 let timeoutVal = 5000;
 Nodeku = Nodeku.bind({
@@ -22,7 +20,7 @@ Nodeku = Nodeku.bind({
   _timeout: timeoutVal
 });
 
-Test('throws when device is not found (timeout: 2s)', t => {
+test('throws when device is not found (timeout: 2s)', t => {
   t.throws(
     Nodeku(),
     `Could not find any Roku devices. Time spent: ${timeoutVal / 1000} seconds`,

@@ -1,4 +1,6 @@
 
+'use strict';
+
 /**
  * stubs node-ssdp client interface
  */
@@ -12,7 +14,7 @@ class Client {
    * @param  {String} serviceType 'ssdp:all'
    * @return empty
    */
-  search(serviceType) {
+  search(/* serviceType */) {
     return;
   }
 

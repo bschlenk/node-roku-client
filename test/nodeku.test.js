@@ -1,22 +1,24 @@
 
-const Test = require('ava');
+'use strict';
+
 const assert = require('assert');
-const Im = require('immutable');
-const Utils = require('./resources/utils');
+const test = require('ava');
+const im = require('immutable');
+const req = require('superagent');
+let Nodeku = require('../');
+const utils = require('./resources/utils');
 
 /* mocks and fixtures */
-const SsdpMock = require('./resources/ssdp-mock');
+const ssdpMock = require('./resources/ssdp-mock');
 const ReqMockConfig = require('./resources/superagent-mock-config');
-const Req = require('superagent');
 
-const MockReqTearDown = require('superagent-mock')(Req, ReqMockConfig, Utils.logger);
+require('superagent-mock')(req, ReqMockConfig, utils.logger);
 
 /* main star */
-let Nodeku = require('../');
 
 Nodeku = Nodeku.bind({
-  MockSSDPClient: SsdpMock.Client,
-  MockReq: Req
+  MockSSDPClient: ssdpMock.Client,
+  MockReq: req
 });
 
 function isDeepEqual(apps, legend) {
@@ -25,16 +27,14 @@ function isDeepEqual(apps, legend) {
   });
 }
 
-function wrapper(description, fn) {
-  Test(description, t => {
-    return Nodeku()
-      .then(device => {
-        return fn(t, device);
-      });
+function wrapper(description) {
+  test(description, async t => {
+    const device = await Nodeku();
+    t.truthy(device);
   });
 }
 
-Test('Nodeku', t => {
+test('Nodeku', t => {
   t.is(typeof Nodeku, 'function', 'is ready');
 });
 
@@ -51,9 +51,9 @@ wrapper('-method: .apps()', (t, device) => {
   return device
     .apps()
     .then(apps => {
-      t.true(Im.List.isList(apps), 'returns a list');
+      t.true(im.List.isList(apps), 'returns a list');
 
-      let containsOnlyObjects = apps.every(app => Im.Map.isMap(app));
+      let containsOnlyObjects = apps.every(app => im.Map.isMap(app));
       t.true(containsOnlyObjects, 'list contains maps');
 
       let objectsHaveCorrectProps = isDeepEqual(apps, ['id', 'name', 'type', 'version']);
@@ -65,7 +65,7 @@ wrapper('-method: .active()', (t, device) => {
   return device
     .active()
     .then(app => {
-      t.true(Im.List.isList(app), 'returns list');
+      t.true(im.List.isList(app), 'returns list');
 
       let objectsHaveCorrectProps = isDeepEqual(app, ['id', 'name', 'type', 'version']);
       t.true(objectsHaveCorrectProps, 'maps has correct props');
@@ -76,7 +76,7 @@ wrapper('-method: .info()', (t, device) => {
   return device
     .info()
     .then(info => {
-      t.true(Im.Map.isMap(info), 'returns a map');
+      t.true(im.Map.isMap(info), 'returns a map');
       t.is(Object.keys(info.toJS()).length, 29, 'has 29 props');
     });
 });
