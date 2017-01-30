@@ -4,7 +4,7 @@
  */
 class Client {
   constructor(override) {
-    this.override = !!override;
+    this.override = Boolean(override);
   }
 
   /**
@@ -23,7 +23,9 @@ class Client {
    * @return {[type]}   mock data response
    */
   on(eventName, callback) {
-    if (this.override) { return }
+    if (this.override) {
+      return;
+    }
 
     callback({
       'CACHE-CONTROL': 'max-age=3600',
@@ -32,10 +34,10 @@ class Client {
       EXT: '',
       SERVER: 'Roku UPnP/1.0 MiniUPnPd/1.4',
       LOCATION: 'http://192.168.1.17:8060/dial/dd.xml'
-    })
+    });
   }
 }
 
 module.exports = {
   Client
-}
+};

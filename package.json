@@ -52,5 +52,11 @@
       "lib/discovery.js",
       "lib/device.js"
     ]
+  },
+   "xo": {
+    "space": true,
+    "rules": {},
+    "ignores": [],
+    "overrides": []
   }
 }
