@@ -27,18 +27,18 @@
   "author": "Ray Farias <rayrfarias@gmail.com> (http://github.com/sgnl)",
   "license": "Apache-2.0",
   "devDependencies": {
-    "ava": "^0.16.0",
-    "nyc": "^8.3.1",
+    "ava": "^0.19.1",
+    "nyc": "^11.0.2",
     "publish": "^0.6.0",
-    "superagent-mock": "^1.12.0",
-    "xo": "^0.17.1"
+    "superagent-mock": "^3.4.0",
+    "xo": "^0.18.2"
   },
   "dependencies": {
     "bluebird": "^3.4.7",
-    "got": "^6.7.1",
+    "got": "^7.0.0",
     "immutable": "^3.8.1",
-    "node-ssdp": "^2.8.0",
-    "superagent": "^2.3.0",
+    "node-ssdp": "^3.2.1",
+    "superagent": "^3.5.2",
     "xml2js": "^0.4.17"
   },
   "ava": {
