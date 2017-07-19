@@ -6,15 +6,13 @@ const test = require('ava');
 const im = require('immutable');
 const req = require('superagent');
 let Nodeku = require('../');
-const utils = require('./resources/utils');
+const utils = require('./helpers/utils');
 
-/* mocks and fixtures */
-const ssdpMock = require('./resources/ssdp-mock');
-const ReqMockConfig = require('./resources/superagent-mock-config');
+/* Mocks and fixtures */
+const ssdpMock = require('./helpers/ssdp-mock');
+const ReqMockConfig = require('./helpers/superagent-mock-config');
 
 require('superagent-mock')(req, ReqMockConfig, utils.logger);
-
-/* main star */
 
 Nodeku = Nodeku.bind({
   MockSSDPClient: ssdpMock.Client,
@@ -53,10 +51,10 @@ wrapper('-method: .apps()', (t, device) => {
     .then(apps => {
       t.true(im.List.isList(apps), 'returns a list');
 
-      let containsOnlyObjects = apps.every(app => im.Map.isMap(app));
+      const containsOnlyObjects = apps.every(app => im.Map.isMap(app));
       t.true(containsOnlyObjects, 'list contains maps');
 
-      let objectsHaveCorrectProps = isDeepEqual(apps, ['id', 'name', 'type', 'version']);
+      const objectsHaveCorrectProps = isDeepEqual(apps, ['id', 'name', 'type', 'version']);
       t.true(objectsHaveCorrectProps, 'maps has correct props');
     });
 });
@@ -67,7 +65,7 @@ wrapper('-method: .active()', (t, device) => {
     .then(app => {
       t.true(im.List.isList(app), 'returns list');
 
-      let objectsHaveCorrectProps = isDeepEqual(app, ['id', 'name', 'type', 'version']);
+      const objectsHaveCorrectProps = isDeepEqual(app, ['id', 'name', 'type', 'version']);
       t.true(objectsHaveCorrectProps, 'maps has correct props');
     });
 });
@@ -99,8 +97,8 @@ wrapper('-method: .launch()', (t, device) => {
   return device
     .apps()
     .then(apps => {
-      let randomIndex = Math.floor(Math.random() * apps.size);
-      let appToLaunch = apps.toJS().splice(randomIndex, 1)[0];
+      const randomIndex = Math.floor(Math.random() * apps.size);
+      const appToLaunch = apps.toJS().splice(randomIndex, 1)[0];
       return device.launch(appToLaunch.id);
     })
     .then(t.done);

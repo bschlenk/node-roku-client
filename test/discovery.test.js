@@ -7,7 +7,7 @@
 
 const test = require('ava');
 
-const ssdpMock = require('./resources/ssdp-mock');
+const ssdpMock = require('./helpers/ssdp-mock');
 const discovery = require('../lib/discovery').bind({
   MockSSDPClient: ssdpMock.Client
 });
