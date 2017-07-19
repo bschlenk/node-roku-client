@@ -1,29 +1,24 @@
 
 'use strict';
 
-/**
- * stubs node-ssdp client interface
- */
+// Stubs node-ssdp client interface
 class Client {
   constructor(override) {
     this.override = Boolean(override);
   }
 
-  /**
-   * mock .search()
-   * @param  {String} serviceType 'ssdp:all'
-   * @return empty
-   */
-  search(/* serviceType */) {
-    return;
+  // Mock .search()
+  // @param  {String} serviceType 'ssdp:all'
+  // @return empty
+  search() {
+    console.info('mock search method called');
+    return 0;
   }
 
-  /**
-   * mock .on() event listener method
-   * @param  {String}   eventName 'response'
-   * @param  {Function} callback pass data back to callee
-   * @return {[type]}   mock data response
-   */
+  // Mock .on() event listener method
+  // @param  {String}   eventName 'response'
+  // @param  {Function} callback pass data back to callee
+  // @return {[type]}   mock data response
   on(eventName, callback) {
     if (this.override) {
       return;
