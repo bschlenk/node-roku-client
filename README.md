@@ -80,6 +80,6 @@ This project uses [immutablejs][2] which means all the data structures received 
 Only tested on OSX and with Roku3 device. halp?
 
 <!-- urls -->
-[1]: https://sdkdocs.roku.com/display/sdkdoc/External+Control+Guide#ExternalControlGuide-ExternalControlServiceCommands
+[1]: https://sdkdocs.roku.com/display/sdkdoc/External+Control+API
 [2]: http://facebook.github.io/immutable-js/
-[3]: https://sdkdocs.roku.com/display/sdkdoc/External+Control+Guide#ExternalControlGuide-KeypressKeyValues
+[3]: https://sdkdocs.roku.com/display/sdkdoc/External+Control+API#ExternalControlAPI-KeypressKeyValues
