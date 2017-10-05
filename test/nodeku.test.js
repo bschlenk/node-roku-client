@@ -3,7 +3,6 @@
 
 const assert = require('assert');
 const test = require('ava');
-const im = require('immutable');
 const req = require('superagent');
 let Nodeku = require('../');
 const utils = require('./helpers/utils');
@@ -21,7 +20,7 @@ Nodeku = Nodeku.bind({
 
 function isDeepEqual(apps, legend) {
   return apps.every(app => {
-    return !assert.deepEqual(Object.keys(app.toJS()), legend);
+    return !assert.deepEqual(Object.keys(app), legend);
   });
 }
 
@@ -49,9 +48,9 @@ wrapper('-method: .apps()', (t, device) => {
   return device
     .apps()
     .then(apps => {
-      t.true(im.List.isList(apps), 'returns a list');
+      t.true(Array.isArray(apps), 'returns a list');
 
-      const containsOnlyObjects = apps.every(app => im.Map.isMap(app));
+      const containsOnlyObjects = apps.every(app => app === Object(app));
       t.true(containsOnlyObjects, 'list contains maps');
 
       const objectsHaveCorrectProps = isDeepEqual(apps, ['id', 'name', 'type', 'version']);
@@ -63,7 +62,7 @@ wrapper('-method: .active()', (t, device) => {
   return device
     .active()
     .then(app => {
-      t.true(im.List.isList(app), 'returns list');
+      t.true(Array.isArray(app), 'returns list');
 
       const objectsHaveCorrectProps = isDeepEqual(app, ['id', 'name', 'type', 'version']);
       t.true(objectsHaveCorrectProps, 'maps has correct props');
@@ -74,7 +73,7 @@ wrapper('-method: .info()', (t, device) => {
   return device
     .info()
     .then(info => {
-      t.true(im.Map.isMap(info), 'returns a map');
+      t.true(info === Object(info), 'returns a map');
       t.is(Object.keys(info.toJS()).length, 29, 'has 29 props');
     });
 });
