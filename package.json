@@ -36,7 +36,6 @@
   "dependencies": {
     "bluebird": "^3.4.7",
     "got": "^7.0.0",
-    "immutable": "^3.8.1",
     "node-ssdp": "^3.2.1",
     "superagent": "^3.5.2",
     "xml2js": "^0.4.17"
