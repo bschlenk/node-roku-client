@@ -7,7 +7,8 @@
   },
   "main": "index.js",
   "scripts": {
-    "test": "xo && nyc ava",
+    "lint": "xo",
+    "test": "npm run lint && nyc ava",
     "report": "nyc report --reporter=html --report-dir $CIRCLE_ARTIFACTS",
     "publish-npm": "publish"
   },
@@ -29,6 +30,7 @@
   "devDependencies": {
     "ava": "^0.19.1",
     "nyc": "^11.0.2",
+    "proxyquire": "^1.8.0",
     "publish": "^0.6.0",
     "superagent-mock": "^3.4.0",
     "xo": "^0.18.2"

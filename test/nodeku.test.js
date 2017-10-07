@@ -4,7 +4,7 @@
 const assert = require('assert');
 const test = require('ava');
 const req = require('superagent');
-let Nodeku = require('../');
+const proxyquire = require('proxyquire');
 const utils = require('./helpers/utils');
 
 /* Mocks and fixtures */
@@ -13,9 +13,12 @@ const ReqMockConfig = require('./helpers/superagent-mock-config');
 
 require('superagent-mock')(req, ReqMockConfig, utils.logger);
 
-Nodeku = Nodeku.bind({
-  MockSSDPClient: ssdpMock.Client,
-  MockReq: req
+const device = proxyquire('../lib/device', {
+  got: req
+});
+const Nodeku = proxyquire('../lib/discovery', {
+  'node-ssdp': ssdpMock,
+  './device': device
 });
 
 function isDeepEqual(apps, legend) {

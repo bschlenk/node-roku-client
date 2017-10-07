@@ -6,10 +6,11 @@
  */
 
 const test = require('ava');
-
+const proxyquire = require('proxyquire');
 const ssdpMock = require('./helpers/ssdp-mock');
-const discovery = require('../lib/discovery').bind({
-  MockSSDPClient: ssdpMock.Client
+
+const discovery = proxyquire('../lib/discovery', {
+  'node-ssdp': ssdpMock
 });
 
 test.serial('discovery exists and returns a Promise', t => {
