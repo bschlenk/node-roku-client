@@ -35,10 +35,7 @@ Nodeku()
 ## nodeku
 Invoking `Nodeku` will return a promise and on success it will pass a device module. This module will contain the methods needed to control a roku device. Commands are sent to the Roku device via `HTTP` protocol as found on the [docs][1].
 
-### caveats
-This project uses [immutablejs][2] which means all the data structures received through this module will be immutable.
-
-
+## api methods
 | **method name** | **params** | **return type** | **details** |
 |---|---|---|---|
 | `.ip()`  | None | `String` | network ip and port `xxx.xxx.xxx.xxx:8060` |
