@@ -1,6 +1,6 @@
 {
   "name": "nodeku",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "description": "",
   "engines": {
     "node": ">=7.0.0"
