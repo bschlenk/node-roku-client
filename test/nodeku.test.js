@@ -72,6 +72,18 @@ wrapper('-method: .active()', (t, device) => {
     });
 });
 
+wrapper('-method: .activeApp()', (t, device) => {
+  return device
+    .activeApp()
+    .then(app => {
+      t.true(Array.isArray(app), 'returns list');
+
+      const objectHasCorrectProps = !assert.deepEqual(
+        Object.keys(app), ['id', 'name', 'type', 'version']);
+      t.true(objectHasCorrectProps, 'map has correct props');
+    });
+});
+
 wrapper('-method: .info()', (t, device) => {
   return device
     .info()
