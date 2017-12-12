@@ -1,69 +1,51 @@
 {
-  "name": "nodeku",
-  "version": "1.0.15",
-  "description": "",
+  "name": "roku-client",
+  "version": "1.0.0",
+  "description": "Send commands to your roku devices",
   "engines": {
-    "node": ">=7.0.0"
+    "node": ">=6.0.0"
   },
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "lint": "xo",
-    "test": "npm run lint && nyc ava",
-    "report": "nyc report --reporter=html --report-dir $CIRCLE_ARTIFACTS",
-    "publish-npm": "publish"
+    "lint": "eslint index.js lib/*",
+    "test": "npm run lint && jest",
+    "test:watch": "jest --watch",
+    "coverage": "jest --coverage",
+    "build": "NODE_ENV=production babel lib -d dist"
   },
   "keywords": [
     "roku",
     "ssdp"
   ],
   "bugs": {
-    "url": "https://github.com/sgnl/nodeku/issues"
+    "url": "https://github.com/bschlenk/node-roku-client/issues"
   },
-  "homepage": "https://github.com/sgnl/nodeku",
+  "homepage": "https://github.com/bschlenk/node-roku-client",
   "repository": {
     "type": "git",
-    "url": "https://github.com/sgnl/nodeku"
+    "url": "https://github.com/bschlenk/node-roku-client"
   },
-  "author": "Ray Farias <rayrfarias@gmail.com> (http://github.com/sgnl)",
+  "author": "Brian Schlenker <bschlenk@umich.edu> (http://github.com/bschlenk)",
   "license": "Apache-2.0",
   "devDependencies": {
-    "ava": "^0.19.1",
-    "nyc": "^11.0.2",
-    "proxyquire": "^1.8.0",
-    "publish": "^0.6.0",
-    "superagent-mock": "^3.4.0",
-    "xo": "^0.18.2"
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "eslint": "^4.13.0",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-import": "^2.8.0",
+    "jest": "^21.2.1",
+    "jest-fetch-mock": "^1.4.0"
   },
   "dependencies": {
-    "bluebird": "^3.4.7",
-    "got": "^7.0.0",
-    "node-ssdp": "^3.2.1",
-    "superagent": "^3.5.2",
-    "xml2js": "^0.4.17"
+    "node-fetch": "^1.7.3",
+    "node-ssdp": "^3.2.5",
+    "tmp": "0.0.33",
+    "xml2js": "^0.4.19"
   },
-  "ava": {
-    "files": [
-      "test/*.test.js"
-    ],
-    "concurrency": 10
-  },
-  "nyc": {
-    "include": [
-      "lib/discovery.js",
-      "lib/device.js"
+  "jest": {
+    "setupFiles": [
+      "./setup/jest-setup.js"
     ]
-  },
-  "xo": {
-    "space": true,
-    "rules": {
-      "new-cap": "off",
-      "no-prototype-builtins": "off",
-      "object-curly-spacing": [
-        "error",
-        "always"
-      ]
-    },
-    "ignores": [],
-    "overrides": []
   }
 }

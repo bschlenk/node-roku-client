@@ -1,82 +1,92 @@
-# nodeku
-[![CircleCI](https://circleci.com/gh/sgnl/nodeku.svg?style=shield)](https://circleci.com/gh/sgnl/nodeku)
+# node-roku-client
 
 Discover Roku devices via `ssdp` and control the device with methods that perform `http` requests to the device.
 
 **requirements:**
-  - node `7.0.0 or higher`
+  - node `6.0.0 or higher`
   - connected to the same network as the Roku device.
   - a router/network that supports UPnP (for ssdp)
 
-## usage
+## Installation
 
-```javascript
+`$ npm install roku-client`
 
-const Nodeku = require('nodeku')
+## Usage
 
-Nodeku()
-  .then(device => {
-    console.log(`device found at: ${ device.ip() }`)
-    // 'xxx.xxx.xxx.xxx:8060'
-    return device.apps()
+```js
+// es2015
+import Client, { keys } from 'roku-client';
+
+// commonjs
+const { Client, keys } = require('roku-client');
+
+Client.discover(/* timeout, defaults to 10 seconds */)
+  .then((client) => {
+    console.log(`roku device found at ${client.ip}`);
+    return client.apps();
   })
-  .then(apps => {
-    apps.forEach(app => console.log(app))
+  .then((apps) => {
+    apps.forEach(app => console.log(app));
     // [{ id, name, type, version }, ...]
   })
   .catch(err => {
     console.error(err.stack)
-  })
+  });
 
+// Or, if the roku address is already known
+const client = new Client('http://192.168.1.17:8060');
+client.keypress(keys.VOLUME_UP);
 ```
-## getting started
-`$ npm install nodeku`
+## Client.discover()
+Invoking `Client.discover()` will return a promise which resolves to a Client object on success. The Client will be initialized to the address of the first device to respond. This client object will contain the methods needed to control a roku device. Commands are sent to the Roku device via `HTTP` protocol as found on the [docs][1].
 
-## nodeku
-Invoking `Nodeku` will return a promise and on success it will pass a device module. This module will contain the methods needed to control a roku device. Commands are sent to the Roku device via `HTTP` protocol as found on the [docs][1].
+If there are mutiple Roku devices on the network, call `discover` with the wait parameter set to true. It will return a promise that resolves to a list of all addresses found.
 
-## api methods
-| **method name** | **params** | **return type** | **details** |
-|---|---|---|---|
-| `.ip()`  | None | `String` | network ip and port `xxx.xxx.xxx.xxx:8060` |
-| `.apps()` | None | `List[{}, ...]` | list of many objects with props: `id, name, type, version` |
-| `.active()` | None | `List[{}]` | list with one object with props `id, name, type, version` |
-| `.info()` | None | `Map{}` | map with *too many(29) props* |
-| `.keypress('...')` | String | `Boolean` | true if success, false if error |
-| `.keydown('...')`| String | `Boolean` | true if successful, false if error |
-| `.keyup('...')` | String | `Boolean` | true if successful, false if error |
-| `'.icon(1)` | Number | `Buffer` | jpeg image as buffer |
-| `'.launch(1)` | Number | `Boolean` | true if successful, false if error |
+```js
+import { discover } from 'roku-client';
 
-### keypress values
-- `Home`
-- `Rev`
-- `Fwd`
-- `Play`
-- `Select`
-- `Left`
-- `Right`
-- `Down`
-- `Up`
-- `Back`
-- `InstantReplay`
-- `Info`
-- `Backspace`
-- `Search`
-- `Enter`
+discover(10, true).then((addresses) => {
+  console.log(addresses);
+  // ['http://192.168.1.17:8060', 'http://192.168.1.18:8060', ...]
+});
+```
 
-## tests
+## API Methods
+| **Method Name** | **Return Type** | **Details** |
+|---|---|---|
+| `ip` | `string` | network ip and port `http://xxx.xxx.xxx.xxx:8060` |
+| `.apps()` | `{id: string, name: string, type: string, version: string}[]` |  List of all apps installed on this device |
+| `.active()` | `{id: string, name: string, type: string, version: string}|null` | A single object representing the active app, or null if the home screen is active. |
+| `.info()` | `Object` | A map of this Roku device's properties. Varies from device to device. |
+| `.keypress(key: string)` | `Boolean` | true if success, false if error |
+| `.keydown(key: string)`| `Boolean` | true if successful, false if error |
+| `.keyup(key: string)` | `Boolean` | true if successful, false if error |
+| `'.icon(appId: number, fileName: string)` | `Buffer` | Saves the image to `fileName`. |
+| `'.launch(appId: number)` | `Boolean` | true if successful, false if error |
+
+### Keypress Values
+
+`keys` contains a list of keypress values understood by Roku. It can be accessed programmatically:
+
+```js
+import { keys } from 'roku-client';
+
+keys.HOME // 'Home'
+keys.LEFT // 'Left'
+```
+
+See [keys.js](lib/keys.js) for a list of all available keys.
+
+## Testing
 `$ npm test`
 
-
-## references
+## References
 [Roku - External Control Service Commands][1]
-[Roku - Keypress Key Values][3]
+[Roku - Keypress Key Values][2]
 
-### additional information
+### Additional Information
 Only tested on OSX and with Roku3 device. halp?
 
 <!-- urls -->
 [1]: https://sdkdocs.roku.com/display/sdkdoc/External+Control+API
-[2]: http://facebook.github.io/immutable-js/
-[3]: https://sdkdocs.roku.com/display/sdkdoc/External+Control+API#ExternalControlAPI-KeypressKeyValues
+[2]: https://sdkdocs.roku.com/display/sdkdoc/External+Control+API#ExternalControlAPI-KeypressKeyValues
