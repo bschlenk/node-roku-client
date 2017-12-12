@@ -58,11 +58,11 @@ discover(10, true).then((addresses) => {
 | `.apps()` | `{id: string, name: string, type: string, version: string}[]` |  List of all apps installed on this device |
 | `.active()` | `{id: string, name: string, type: string, version: string}|null` | A single object representing the active app, or null if the home screen is active. |
 | `.info()` | `Object` | A map of this Roku device's properties. Varies from device to device. |
-| `.keypress(key: string)` | `Boolean` | true if success, false if error |
-| `.keydown(key: string)`| `Boolean` | true if successful, false if error |
-| `.keyup(key: string)` | `Boolean` | true if successful, false if error |
-| `'.icon(appId: number, fileName: string)` | `Buffer` | Saves the image to `fileName`. |
-| `'.launch(appId: number)` | `Boolean` | true if successful, false if error |
+| `.keypress(key: string)` | `void` | resolves on success, rejects on error |
+| `.keydown(key: string)`| `void` | resolves on success, rejects on error |
+| `.keyup(key: string)` | `void` | resolves on success, rejects on error |
+| `.icon(appId: number)` | `String` | Saves the image to a temp file and returns the filename. |
+| `.launch(appId: number)` | `void` | resolves on success, rejects on error |
 
 ### Keypress Values
 
