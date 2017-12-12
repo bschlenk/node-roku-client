@@ -6,12 +6,14 @@
     "node": ">=6.0.0"
   },
   "main": "dist/index.js",
+  "files": ["dist"],
   "scripts": {
     "lint": "eslint index.js lib/*",
     "test": "npm run lint && jest",
     "test:watch": "jest --watch",
     "coverage": "jest --coverage",
-    "build": "NODE_ENV=production babel lib -d dist"
+    "build": "NODE_ENV=production babel lib -d dist",
+    "prepublish": "npm run test && npm run build"
   },
   "keywords": [
     "roku",
