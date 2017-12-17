@@ -13,9 +13,10 @@
     "lint": "eslint index.js lib/*",
     "test": "npm run lint && jest",
     "test:watch": "jest --watch",
-    "coverage": "jest --coverage",
+    "coverage:open": "open ./coverage/lcov-report/index.html",
     "build": "NODE_ENV=production babel lib -d dist",
-    "prepare": "npm run test && npm run build"
+    "prepare": "npm run build",
+    "prepublishOnly": "npm run test"
   },
   "keywords": [
     "roku",
@@ -52,6 +53,18 @@
   "jest": {
     "setupFiles": [
       "./setup/jest-setup.js"
-    ]
+    ],
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "lib/**/*.js",
+      "!lib/index.js",
+      "!lib/keys.js"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "functions": 80,
+        "lines": 80
+      }
+    }
   }
 }
