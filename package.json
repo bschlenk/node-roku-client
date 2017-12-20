@@ -33,6 +33,7 @@
   "author": "Brian Schlenker <bschlenk@umich.edu> (http://github.com/bschlenk)",
   "license": "Apache-2.0",
   "devDependencies": {
+    "@types/jest": "^21.1.9",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
     "babel-preset-env": "^1.6.1",

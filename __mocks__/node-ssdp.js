@@ -21,12 +21,29 @@ class Client {
   search(query) {
     this.searched = query;
     if (headers) {
-      setImmediate(() => {
+      const callResponse = (index = null) => {
         const { response } = this.events;
         if (response) {
-          response(headers);
+          if (index === null) {
+            response(headers);
+          } else {
+            response(headers[index]);
+          }
         }
-      });
+      };
+      if (Array.isArray(headers)) {
+        let index = 0;
+        const { length } = headers;
+        setImmediate(function recurseResponses() {
+          callResponse(index);
+          index += 1;
+          if (index < length) {
+            setImmediate(recurseResponses);
+          }
+        });
+      } else {
+        setImmediate(callResponse);
+      }
     }
   }
 
