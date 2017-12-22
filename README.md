@@ -1,5 +1,7 @@
 # node-roku-client
 
+[![npm version](https://badge.fury.io/js/roku-client.svg)](https://badge.fury.io/js/roku-client)
+
 Discover Roku devices via `ssdp` and control the device with methods that perform `http` requests to the device.
 
 **requirements:**
