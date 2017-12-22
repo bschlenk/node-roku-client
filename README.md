@@ -56,7 +56,7 @@ discover(10, true).then((addresses) => {
 |---|---|---|
 | `ip` | `string` | network ip and port `http://xxx.xxx.xxx.xxx:8060` |
 | `.apps()` | `{id: string, name: string, type: string, version: string}[]` |  List of all apps installed on this device |
-| `.active()` | `{id: string, name: string, type: string, version: string}|null` | A single object representing the active app, or null if the home screen is active. |
+| `.active()` | `{id: string, name: string, type: string, version: string}\|null` | A single object representing the active app, or null if the home screen is active. |
 | `.info()` | `Object` | A map of this Roku device's properties. Varies from device to device. |
 | `.keypress(key: string)` | `void` | resolves on success, rejects on error |
 | `.keydown(key: string)`| `void` | resolves on success, rejects on error |
