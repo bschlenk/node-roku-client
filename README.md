@@ -57,14 +57,16 @@ discover(10, true).then((addresses) => {
 | **Method Name** | **Return Type** | **Details** |
 |---|---|---|
 | `ip` | `string` | network ip and port `http://xxx.xxx.xxx.xxx:8060` |
-| `.apps()` | `{id: string, name: string, type: string, version: string}[]` |  List of all apps installed on this device |
-| `.active()` | `{id: string, name: string, type: string, version: string}\|null` | A single object representing the active app, or null if the home screen is active. |
-| `.info()` | `Object` | A map of this Roku device's properties. Varies from device to device. |
-| `.keypress(key: string)` | `void` | resolves on success, rejects on error |
-| `.keydown(key: string)`| `void` | resolves on success, rejects on error |
-| `.keyup(key: string)` | `void` | resolves on success, rejects on error |
-| `.icon(appId: number)` | `String` | Saves the image to a temp file and returns the filename. |
-| `.launch(appId: number)` | `void` | resolves on success, rejects on error |
+| `.apps()` | `Promise<{id: string, name: string, type: string, version: string}[]>` |  List of all apps installed on this device |
+| `.active()` | `Promise<{id: string, name: string, type: string, version: string}\|null>}` | A single object representing the active app, or null if the home screen is active. |
+| `.info()` | `Promise<Object>` | A map of this Roku device's properties. Varies from device to device. |
+| `.keypress(key: string)` | `Promise<void>` | Send a keypress from [keys.js](lib/keys.js) or a single character to send that letter (e.g. to an input box). |
+| `.keydown(key: string)`| `Promise<void>` | The same as `keypress` but tells the Roku to hold the key down. |
+| `.keyup(key: string)` | `Promise<void>` | The same as `keyup` but tells the Roku to release a key held with `keyup` ( a no-op if the key was not held). |
+| `.icon(appId: number)` | `Promise<string>` | Saves the image to a temp file and returns the filename. |
+| `.launch(appId: number)` | `Promise<void>` | resolves on success, rejects on error |
+| `.text(text: string)` | `Promise<void>` | Send the text string as a series of `keypress` actions. |
+| `.command()` | `Commander` | Returns a `Commander` instance, which allows for easily chaining key commands to send to the Roku. |
 
 ### Keypress Values
 
@@ -79,15 +81,83 @@ keys.LEFT // 'Left'
 
 See [keys.js](lib/keys.js) for a list of all available keys.
 
+### Commander
+
+The `Client#command()` method provides a simpler interface over the keypress and text methods.
+It allows them to be chained and repeated and handles all promise chaining internally.
+
+Each key within the [keys.js](lib/keys.js) module is available on the commander
+instance in camelcase form. Additionally, a `.text()` method is available to send
+text strings. Each key command takes an optional number to specify the number
+of times to repeat the command, defaulting to `1`.
+
+After chaining the desired methods, call `.send()` to send them to the Roku. `.send()` returns
+a promise that completes when all buttons have been pressed, or when the Roku fails to respond to
+any of the commands. A `Commander` instance should not be reused after calling `.send()`.
+
+#### Examples
+
+##### Navigate to a search box and enter text
+```js
+client.command()
+  .up()
+  .left()
+  .select()
+  .text('Breaking Bad')
+  .enter()
+  .send()
+  .then(/* commands succeeded */)
+  .catch(err => { /* commands failed */ });
+```
+
+##### Turn the volume up by 10
+```js
+client.command()
+  .volumeUp(10)
+  .send();
+```
+
+##### Conditionally perform a command
+```js
+let command = client.comand();
+if (goUp) {
+  command = command.up(10);
+} else {
+  command = command.down(10);
+}
+command
+  .right()
+  .select()
+  .send();
+```
+
+##### Konami code
+```js
+client.command()
+  .up(2)
+  .down(2)
+  .left()
+  .right()
+  .left()
+  .right()
+  .text('ba')
+  .enter()
+  .send();
+```
+
 ## Testing
 `$ npm test`
 
+This will run the linter, unit tests, and coverage.
+
 ## References
-[Roku - External Control Service Commands][1]
+
+[Roku - External Control Service Commands][1]<br>
 [Roku - Keypress Key Values][2]
 
 ### Additional Information
-Only tested on OSX and with Roku3 device. halp?
+
+Tested on OSX & raspberry pi w/ raspbian jessie, and with Roku TV.
 
 <!-- urls -->
 [1]: https://sdkdocs.roku.com/display/sdkdoc/External+Control+API
