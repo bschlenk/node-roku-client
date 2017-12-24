@@ -40,6 +40,7 @@ const client = new Client('http://192.168.1.17:8060');
 client.keypress(keys.VOLUME_UP);
 ```
 ## Client.discover()
+
 Invoking `Client.discover()` will return a promise which resolves to a Client object on success. The Client will be initialized to the address of the first device to respond. This client object will contain the methods needed to control a roku device. Commands are sent to the Roku device via `HTTP` protocol as found on the [docs][1].
 
 If there are mutiple Roku devices on the network, call `discover` with the wait parameter set to true. It will return a promise that resolves to a list of all addresses found.
@@ -57,20 +58,20 @@ discover(10, true).then((addresses) => {
 | **Method Name** | **Return Type** | **Details** |
 |---|---|---|
 | `ip` | `string` | network ip and port `http://xxx.xxx.xxx.xxx:8060` |
-| `.apps()` | `Promise<{id: string, name: string, type: string, version: string}[]>` |  List of all apps installed on this device |
+| `.apps()` | `Promise<{id: string, name: string, type: string, version: string}[]>` |  List of all apps installed on this device. |
 | `.active()` | `Promise<{id: string, name: string, type: string, version: string}\|null>}` | A single object representing the active app, or null if the home screen is active. |
 | `.info()` | `Promise<Object>` | A map of this Roku device's properties. Varies from device to device. |
 | `.keypress(key: string)` | `Promise<void>` | Send a keypress from [keys.js](lib/keys.js) or a single character to send that letter (e.g. to an input box). |
 | `.keydown(key: string)`| `Promise<void>` | The same as `keypress` but tells the Roku to hold the key down. |
 | `.keyup(key: string)` | `Promise<void>` | The same as `keyup` but tells the Roku to release a key held with `keyup` ( a no-op if the key was not held). |
 | `.icon(appId: number)` | `Promise<string>` | Saves the image to a temp file and returns the filename. |
-| `.launch(appId: number)` | `Promise<void>` | resolves on success, rejects on error |
+| `.launch(appId: number)` | `Promise<void>` | Launch the given app by its id. |
 | `.text(text: string)` | `Promise<void>` | Send the text string as a series of `keypress` actions. |
 | `.command()` | `Commander` | Returns a `Commander` instance, which allows for easily chaining key commands to send to the Roku. |
 
 ### Keypress Values
 
-`keys` contains a list of keypress values understood by Roku. It can be accessed programmatically:
+[keys.js](lib/keys.js) contains a list of keypress values understood by Roku. It can be accessed programmatically:
 
 ```js
 import { keys } from 'roku-client';
@@ -78,8 +79,6 @@ import { keys } from 'roku-client';
 keys.HOME // 'Home'
 keys.LEFT // 'Left'
 ```
-
-See [keys.js](lib/keys.js) for a list of all available keys.
 
 ### Commander
 
