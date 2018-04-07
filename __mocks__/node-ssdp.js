@@ -1,5 +1,3 @@
-/* eslint-env jest */
-
 const ssdp = jest.genMockFromModule('node-ssdp');
 
 let headers = null;
@@ -57,13 +55,11 @@ class Client {
     this.events[event] = fn;
   }
 
-  // eslint-disable-next-line
   stop() {}
 }
 
 ssdp.Client = Client;
 
-// eslint-disable-next-line no-underscore-dangle
 ssdp.__setHeaders = function __setHeaders(h) {
   headers = h;
 };

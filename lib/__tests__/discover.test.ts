@@ -1,5 +1,3 @@
-/* eslint-env jest */
-
 import discover from '../discover';
 
 const HEADERS = {
@@ -13,7 +11,6 @@ const HEADERS = {
 
 describe('discover', () => {
   it('should resolve to the first roku ip address found', () => {
-    // eslint-disable-next-line
     require('node-ssdp').__setHeaders(HEADERS);
 
     discover().then((ipAddress) => {
@@ -22,7 +19,6 @@ describe('discover', () => {
   });
 
   it('should fail after the configured timeout', (done) => {
-    // eslint-disable-next-line
     require('node-ssdp').__setHeaders({});
 
     discover(1000).then(() => {
@@ -35,7 +31,6 @@ describe('discover', () => {
   });
 
   it('should not find devices that are not roku', () => {
-    // eslint-disable-next-line
     require('node-ssdp').__setHeaders([
       {
         SERVER: 'Some other thing',
@@ -56,7 +51,6 @@ describe('discover', () => {
   });
 
   it('should find all devices when wait == true', () => {
-    // eslint-disable-next-line
     require('node-ssdp').__setHeaders([
       {
         SERVER: 'Roku',
@@ -82,7 +76,6 @@ describe('discover', () => {
   });
 
   it('should not include duplicate addresses when wait == true', () => {
-    // eslint-disable-next-line
     require('node-ssdp').__setHeaders([
       {
         SERVER: 'Roku',
@@ -104,7 +97,6 @@ describe('discover', () => {
   });
 
   it('should reject if no devices are found and wait == true', (done) => {
-    // eslint-disable-next-line
     require('node-ssdp').__setHeaders(null);
     return discover(1000, true).then(() => {
       done('should have failed');

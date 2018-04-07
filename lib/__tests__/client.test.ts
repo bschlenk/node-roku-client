@@ -1,8 +1,8 @@
 /* eslint-env jest */
 
-import fs from 'fs';
-import path from 'path';
-import stream from 'stream';
+import * as fs from 'fs';
+import * as path from 'path';
+import * as stream from 'stream';
 import Client from '../client';
 
 const clientAddr = 'http://192.168.1.61:8060';

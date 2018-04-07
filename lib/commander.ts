@@ -1,20 +1,30 @@
-import camelcase from 'lodash.camelcase';
-import reduce from 'lodash.reduce';
-import forOwn from 'lodash.forown';
+import camelcase = require('lodash.camelcase');
+import reduce = require('lodash.reduce');
+import forOwn = require('lodash.forown');
 import * as keys from './keys';
 
+export interface Client {
+  text(text: string): Promise<void>;
+  keypress(key: string): Promise<void>;
+}
+
+/**
+ * A command is a tuple of the string command and whether the command
+ * is simply text.
+ */
+type Command = [string, boolean];
+
 export default class Commander {
-  constructor(client) {
-    this.client = client;
-    this.commands = [];
-  }
+  private commands: Command[] = [];
+
+  constructor(private readonly client: Client) {}
 
   /**
    * Send the given string to the Roku device.
-   * @param {string} text The string to send.
-   * @return {Commander} This `Commander` instance for chaining.
+   * @param text The string to send.
+   * @return This `Commander` instance for chaining.
    */
-  text(text) {
+  text(text: string): Commander {
     this.commands.push([text, true]);
     return this;
   }
@@ -23,10 +33,10 @@ export default class Commander {
    * Press the given key `count` times. Useful if the keys to press
    * are unknown at coding time. Each key is also available as a
    * camelcased method for convenience.
-   * @param {string} key The key to press, from the `keys` module.
-   * @param {number} count The number of times to press the key.
+   * @param key The key to press, from the `keys` module.
+   * @param count The number of times to press the key.
    */
-  keypress(key, count = 1) {
+  keypress(key: string, count: number = 1): Commander {
     for (let i = 0; i < count; i += 1) {
       this.commands.push([key, false]);
     }
@@ -35,9 +45,8 @@ export default class Commander {
 
   /**
    * Send all of the configured commands to the Roku.
-   * @return {Promise<null>}
    */
-  send() {
+  send(): Promise<void> {
     return reduce(
       // clean up the commands list while also returning it
       this.commands.splice(0, this.commands.length),
@@ -51,8 +60,7 @@ export default class Commander {
 
 // add all keys as methods to Commander
 forOwn(keys, (key, name) => {
-  // eslint-disable-next-line func-names
-  Commander.prototype[camelcase(name)] = function (count = 1) {
+  (Commander.prototype as any)[camelcase(name)] = function (count = 1) {
     return this.keypress(key, count);
   };
 });

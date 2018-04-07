@@ -1,4 +1,3 @@
-/* eslint-env jest */
 import Client from '../client';
 import Commander from '../commander';
 import * as keys from '../keys';
@@ -11,7 +10,6 @@ describe('Commander', () => {
   beforeEach(() => {
     methods = [];
     client = new Client('address');
-    // eslint-disable-next-line func-names
     client.keypress = function (command) {
       methods.push(command);
       return Promise.resolve();

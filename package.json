@@ -5,19 +5,20 @@
   "engines": {
     "node": ">=6.0.0"
   },
-  "main": "dist/index.js",
   "files": [
     "dist"
   ],
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "lint": "eslint index.js lib/*",
     "test": "NODE_ENV=development jest",
     "test:watch": "npm run test -- --watch",
     "test:coverage": "npm run test -- --coverage",
+    "lint": "tslint -p .",
     "coverage:open": "open ./coverage/lcov-report/index.html",
-    "build": "NODE_ENV=production babel lib -d dist",
-    "prepare": "npm run build",
-    "prepublishOnly": "npm run lint && npm run test:coverage"
+    "test:all": "npm run lint && npm run test:coverage",
+    "build": "tsc",
+    "prepublishOnly": "npm run test:all && npm run build"
   },
   "keywords": [
     "roku",
@@ -34,15 +35,22 @@
   "author": "Brian Schlenker <bschlenk@umich.edu> (http://github.com/bschlenk)",
   "license": "Apache-2.0",
   "devDependencies": {
-    "@types/jest": "^23.1.1",
-    "babel-cli": "^6.26.0",
-    "babel-core": "^6.26.0",
-    "babel-preset-env": "^1.6.1",
-    "eslint": "^4.13.0",
-    "eslint-config-airbnb-base": "^12.1.0",
-    "eslint-plugin-import": "^2.8.0",
-    "jest": "^23.1.0",
-    "jest-fetch-mock": "^1.4.0"
+    "@types/debug": "^0.0.30",
+    "@types/es6-promisify": "^6.0.0",
+    "@types/jest": "^23.3.1",
+    "@types/lodash.camelcase": "^4.3.4",
+    "@types/lodash.forown": "^4.4.4",
+    "@types/lodash.reduce": "^4.6.4",
+    "@types/node": "^10.5.3",
+    "@types/node-fetch": "^2.1.2",
+    "@types/tmp": "^0.0.33",
+    "@types/xml2js": "^0.4.3",
+    "jest": "^23.4.1",
+    "jest-fetch-mock": "^1.6.5",
+    "ts-jest": "^23.0.1",
+    "tslint": "^5.11.0",
+    "tslint-config-airbnb": "^5.9.2",
+    "typescript": "^2.9.2"
   },
   "dependencies": {
     "debug": "^3.1.0",
@@ -50,8 +58,8 @@
     "lodash.camelcase": "^4.3.0",
     "lodash.forown": "^4.4.0",
     "lodash.reduce": "^4.6.0",
-    "node-fetch": "^2.1.2",
-    "node-ssdp": "^3.2.5",
+    "node-fetch": "^2.2.0",
+    "node-ssdp": "^3.3.0",
     "tmp": "0.0.33",
     "xml2js": "^0.4.19"
   }

@@ -1,33 +1,44 @@
-import fs from 'fs';
+import * as fs from 'fs';
 import { promisify } from 'es6-promisify';
 import { parseString } from 'xml2js';
-import fetch from 'node-fetch';
-import tmp from 'tmp';
-import reduce from 'lodash.reduce';
-import camelcase from 'lodash.camelcase';
-import _debug from 'debug';
+import fetch, { Response } from 'node-fetch';
+import * as tmp from 'tmp';
+import reduce = require('lodash.reduce');
+import camelcase = require('lodash.camelcase');
+import _debug  = require('debug');
 import discover from './discover';
 import Commander from './commander';
 
 const debug = _debug('roku-client:client');
 
-const parseStringAsync = promisify(parseString);
+const parseStringAsync = promisify(parseString) as (val: string) => Promise<any>;
+
+// TODO: make this an interface with the possible values
+/** The keys that can exist in a roku device info object. */
+export type DeviceInfo = Record<string, string>;
+
+/** The ids used by roku to identify an app. */
+export type AppId = number | string;
 
 /**
  * The properties associated with a Roku app.
- * @typedef {Object} App
- * @property {string} id The id, used within the api.
- * @property {string} name The display name of the app.
- * @property {string} type The app type (channel, application, etc).
- * @property {string} version The app version.
  */
+export interface App {
+  /** The id, used within the api. */
+  id: string;
+  /** The display name of the app. */
+  name: string;
+  /** The app type (channel, application, etc). */
+  type: string;
+  /** The app version. */
+  version: string;
+}
 
 /**
  * Return a promise of the parsed fetch response xml.
- * @param {Promise} res A fetch response object.
- * @return {Promise}
+ * @param res A fetch response object.
  */
-function parseXML(res) {
+function parseXML(res: Response): Promise<any> {
   if (!res.ok) {
     throw new Error(`Request failed: ${res.statusText}`);
   }
@@ -38,10 +49,8 @@ function parseXML(res) {
 /**
  * Convert the xml version of a roku app
  * to a cleaned up js version.
- * @param {Object} app
- * @return {App}
  */
-function appXMLToJS(app) {
+function appXMLToJS(app: any): App {
   const { _: name } = app;
   const { id, type, version } = app.$;
   return {
@@ -56,33 +65,31 @@ function appXMLToJS(app) {
  * The Roku client class. Contains methods to talk to a roku device.
  */
 export default class Client {
+
   /**
    * Return a new `Client` object for the first Roku device discovered
    * on the network. This method resolves to a single `Client` object.
    * If multiple Roku devices exist on the network, import `discover`
    * directly and call it with `wait` set to true, and then initialize a
    * `Client` object for each address in the returned array.
-   * @param {number=} timeout The time in ms to wait before giving up.
-   * @return {Promise<Client>} A `Client` object.
+   * @param timeout The time in ms to wait before giving up.
+   * @return A promise resolving to a `Client` object.
    */
-  static discover(timeout) {
+  static discover(timeout?: number): Promise<Client> {
     return discover(timeout).then(ip => new Client(ip));
   }
 
   /**
    * Construct a new `Client` object with the given address.
-   * @param {string} ip The address of the Roku device on the network.
+   * @param ip The address of the Roku device on the network.
    */
-  constructor(ip) {
-    this.ip = ip;
-  }
+  constructor(readonly ip: string) {}
 
   /**
    * Get a list of apps installed on this device.
    * @see {@link https://sdkdocs.roku.com/display/sdkdoc/External+Control+API#ExternalControlAPI-query/apps}
-   * @return {Promise<App[]>}
    */
-  apps() {
+  apps(): Promise<App[]> {
     const endpoint = `${this.ip}/query/apps`;
     debug(`GET ${endpoint}`);
     return fetch(endpoint)
@@ -93,9 +100,8 @@ export default class Client {
   /**
    * Get the active app, or null if the home screen is displayed.
    * @see {@link https://sdkdocs.roku.com/display/sdkdoc/External+Control+API#ExternalControlAPI-query/active-app}
-   * @return {Promise<App|null>}
    */
-  active() {
+  active(): Promise<App | null> {
     const endpoint = `${this.ip}/query/active-app`;
     debug(`GET ${endpoint}`);
     return fetch(endpoint)
@@ -120,16 +126,18 @@ export default class Client {
    * All keys are coerced to camelcase for easier access, so user-device-name
    * becomes userDeviceName, etc.
    * @see {@link https://sdkdocs.roku.com/display/sdkdoc/External+Control+API#ExternalControlAPI-query/device-info}
-   * @return {Promise<Object>}
    */
-  info() {
+  info(): Promise<DeviceInfo> {
     const endpoint = `${this.ip}/query/device-info`;
     debug(`GET ${endpoint}`);
     return fetch(endpoint)
       .then(parseXML)
       .then(data => reduce(
         data['device-info'],
-        (result, [value], key) => Object.assign({}, result, { [camelcase(key)]: value }),
+        (result, [value], key) => ({
+          ...result,
+          [camelcase(key)]: value,
+        }),
         {},
       ));
   }
@@ -137,11 +145,11 @@ export default class Client {
   /**
    * Download the given app's icon to the tmp directory and return that location.
    * @see {@link https://sdkdocs.roku.com/display/sdkdoc/External+Control+API#ExternalControlAPI-query/icon/appID}
-   * @param {number|string} appId The app id to get the icon of.
+   * @param appId The app id to get the icon of.
    *     Should be the id from the id field of the app.
-   * @return {Promise<string>} The temporary path to the image.
+   * @return The temporary path to the image.
    */
-  icon(appId) {
+  icon(appId: AppId): Promise<string> {
     const endpoint = `${this.ip}/query/icon/${appId}`;
     debug(`GET ${endpoint}`);
     return fetch(endpoint)
@@ -152,27 +160,33 @@ export default class Client {
 
         return new Promise((resolve, reject) => {
           const type = res.headers.get('content-type');
-          const [, ext] = /image\/(.*)/.exec(type);
+          let ext = 'img';
+          if (type) {
+            const match = /image\/(.*)/.exec(type);
+            if (match) {
+              ext = match[1];
+            }
+          }
           tmp.file({ keep: true, postfix: `.${ext}` }, (err, path, fd) => {
             if (err) {
               reject(err);
               return;
             }
-            const dest = fs.createWriteStream(null, { fd });
+            const dest = fs.createWriteStream('', { fd });
             res.body.pipe(dest);
             resolve(path);
           });
         });
-      });
+      }) as Promise<string>;
   }
 
   /**
    * Launch the given `appId`.
    * @see {@link https://sdkdocs.roku.com/display/sdkdoc/External+Control+API#ExternalControlAPI-launch/appID}
-   * @param {number|string} appId The id of the app to launch.
-   * @return {Promise<void>}
+   * @param appId The id of the app to launch.
+   * @return A void promise which resolves when the app is launched.
    */
-  launch(appId) {
+  launch(appId: AppId): Promise<void> {
     const endpoint = `${this.ip}/launch/${appId}`;
     debug(`POST ${endpoint}`);
     return fetch(endpoint, { method: 'POST' })
@@ -187,17 +201,13 @@ export default class Client {
    * Helper used by all keypress methods. Converts single characters
    * to `Lit_` commands to send the letter to the Roku.
    * @see {@link https://sdkdocs.roku.com/display/sdkdoc/External+Control+API#ExternalControlAPI-KeypressKeyValues}
-   * @api private
-   * @param {string} func The name of the Roku endpoint function.
-   * @param {string} key The key to press.
-   * @return {Promise<void>}
+   * @param func The name of the Roku endpoint function.
+   * @param key The key to press.
    */
-  keyhelper(func, key) {
+  private keyhelper(func: string, key: string): Promise<void> {
     // if a single key is sent, treat it as a letter
-    if (key.length === 1) {
-      key = `Lit_${encodeURIComponent(key)}`; // eslint-disable-line no-param-reassign
-    }
-    const endpoint = `${this.ip}/${func}/${key}`;
+    const keyCmd = (key.length === 1) ? `Lit_${encodeURIComponent(key)}` : key;
+    const endpoint = `${this.ip}/${func}/${keyCmd}`;
     debug(`POST ${endpoint}`);
     return fetch(endpoint, { method: 'POST' })
       .then((res) => {
@@ -210,20 +220,20 @@ export default class Client {
   /**
    * Equivalent to pressing and releasing the remote control key given.
    * @see {@link https://sdkdocs.roku.com/display/sdkdoc/External+Control+API#ExternalControlAPI-keypress/key}
-   * @param {string} key A key from the keys module.
-   * @return {Promise<void>}
+   * @param key A key from the keys module.
+   * @return A promise which resolves when the keypress has completed.
    */
-  keypress(key) {
+  keypress(key: string): Promise<void> {
     return this.keyhelper('keypress', key);
   }
 
   /**
    * Equivalent to pressing and holding the remote control key given.
    * @see {@link https://sdkdocs.roku.com/display/sdkdoc/External+Control+API#ExternalControlAPI-keydown/key}
-   * @param {string} key A key from the keys module.
-   * @return {Promise<void>}
+   * @param key A key from the keys module.
+   * @return A promise which resolves when the keydown has completed.
    */
-  keydown(key) {
+  keydown(key: string): Promise<void> {
     return this.keyhelper('keydown', key);
   }
 
@@ -231,10 +241,10 @@ export default class Client {
    * Equivalent to releasing the remote control key given. Only makes sense
    * if `keydown` was already called for the same key.
    * @see {@link https://sdkdocs.roku.com/display/sdkdoc/External+Control+API#ExternalControlAPI-keyup/key}
-   * @param {string} key A key from the keys module.
-   * @return {Promise<void>}
+   * @param key A key from the keys module.
+   * @return A promise which resolves when the keyup has completed.
    */
-  keyup(key) {
+  keyup(key: string): Promise<void> {
     return this.keyhelper('keyup', key);
   }
 
@@ -242,10 +252,10 @@ export default class Client {
    * Send the given string to the Roku device.
    * A shorthand for calling `keypress` for each letter in the given string.
    * @see {@link https://sdkdocs.roku.com/display/sdkdoc/External+Control+API#ExternalControlAPI-KeypressKeyValues}
-   * @param {string} text The message to send.
-   * @return {Promise<void>}
+   * @param text The message to send.
+   * @return A promise which resolves when the text has successfully been sent.
    */
-  text(text) {
+  text(text: string): Promise<void> {
     return reduce(
       text,
       (promise, letter) => promise.then(() => this.keypress(letter)),
@@ -273,9 +283,9 @@ export default class Client {
    *     .enter()
    *     .send();
    *
-   * @return {Commander} A commander instance.
+   * @return A commander instance.
    */
-  command() {
+  command(): Commander {
     return new Commander(this);
   }
 }
