@@ -1,11 +1,9 @@
 module.exports = {
-  setupFiles: [
-    "./setup/jest-setup.js",
-  ],
+  setupTestFrameworkScriptFile: '<rootDir>/lib/setupTests.js',
   collectCoverageFrom: [
-    "lib/**/*.js",
-    "!lib/index.js",
-    "!lib/keys.js",
+    'lib/**/*.js',
+    '!lib/index.js',
+    '!lib/keys.js',
   ],
   coverageThreshold: {
     global: {
