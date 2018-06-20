@@ -11,12 +11,13 @@
   ],
   "scripts": {
     "lint": "eslint index.js lib/*",
-    "test": "npm run lint && jest",
-    "test:watch": "jest --watch",
+    "test": "NODE_ENV=development jest",
+    "test:watch": "npm run test -- --watch",
+    "test:coverage": "npm run test -- --coverage",
     "coverage:open": "open ./coverage/lcov-report/index.html",
     "build": "NODE_ENV=production babel lib -d dist",
     "prepare": "npm run build",
-    "prepublishOnly": "npm run test"
+    "prepublishOnly": "npm run lint && npm run test:coverage"
   },
   "keywords": [
     "roku",
@@ -33,14 +34,14 @@
   "author": "Brian Schlenker <bschlenk@umich.edu> (http://github.com/bschlenk)",
   "license": "Apache-2.0",
   "devDependencies": {
-    "@types/jest": "^22.2.2",
+    "@types/jest": "^23.1.1",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
     "babel-preset-env": "^1.6.1",
     "eslint": "^4.13.0",
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-plugin-import": "^2.8.0",
-    "jest": "^22.4.3",
+    "jest": "^23.1.0",
     "jest-fetch-mock": "^1.4.0"
   },
   "dependencies": {
@@ -53,22 +54,5 @@
     "node-ssdp": "^3.2.5",
     "tmp": "0.0.33",
     "xml2js": "^0.4.19"
-  },
-  "jest": {
-    "setupFiles": [
-      "./setup/jest-setup.js"
-    ],
-    "collectCoverage": true,
-    "collectCoverageFrom": [
-      "lib/**/*.js",
-      "!lib/index.js",
-      "!lib/keys.js"
-    ],
-    "coverageThreshold": {
-      "global": {
-        "functions": 80,
-        "lines": 80
-      }
-    }
   }
 }
