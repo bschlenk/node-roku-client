@@ -4,44 +4,48 @@
  * @see https://sdkdocs.roku.com/display/sdkdoc/External+Control+Guide#ExternalControlGuide-KeypressKeyValues
  */
 
+function key<T extends string, U extends string>(command: T, name: U) {
+  return { command, name };
+}
+
 // Standard Keys
-export const HOME = 'Home';
-export const REV = 'Rev';
-export const REVERSE = 'Rev';
-export const FWD = 'Fwd';
-export const FORWARD = 'Fwd';
-export const PLAY = 'Play';
-export const SELECT = 'Select';
-export const LEFT = 'Left';
-export const RIGHT = 'Right';
-export const DOWN = 'Down';
-export const UP = 'Up';
-export const BACK = 'Back';
-export const INSTANT_REPLAY = 'InstantReplay';
-export const INFO = 'Info';
-export const BACKSPACE = 'Backspace';
-export const SEARCH = 'Search';
-export const ENTER = 'Enter';
+export const HOME = key('Home', 'home');
+export const REV = key('Rev', 'reverse');
+export const REVERSE = REV;
+export const FWD = key('Fwd', 'forward');
+export const FORWARD = FWD;
+export const PLAY = key('Play', 'play');
+export const SELECT = key('Select', 'select');
+export const LEFT = key('Left', 'left');
+export const RIGHT = key('Right', 'right');
+export const DOWN = key('Down', 'down');
+export const UP = key('Up', 'up');
+export const BACK = key('Back', 'back');
+export const INSTANT_REPLAY = key('InstantReplay', 'instantReplay');
+export const INFO = key('Info', 'info');
+export const BACKSPACE = key('Backspace', 'backspace');
+export const SEARCH = key('Search', 'search');
+export const ENTER = key('Enter', 'enter');
 
 // For devices that support "Find Remote"
-export const FIND_REMOTE = 'FindRemote';
+export const FIND_REMOTE = key('FindRemote', 'findRemote');
 
 // For Roku TV
-export const VOLUME_DOWN = 'VolumeDown';
-export const VOLUME_UP = 'VolumeUp';
-export const VOLUME_MUTE = 'VolumeMute';
+export const VOLUME_DOWN = key('VolumeDown', 'volumeDown');
+export const VOLUME_UP = key('VolumeUp', 'volumeUp');
+export const VOLUME_MUTE = key('VolumeMute', 'volumeMute');
 
 // For Roku TV while on TV tuner channel
-export const CHANNEL_UP = 'ChannelUp';
-export const CHANNEL_DOWN = 'ChannelDown';
+export const CHANNEL_UP = key('ChannelUp', 'channelUp');
+export const CHANNEL_DOWN = key('ChannelDown', 'channelDown');
 
 // For Roku TV current input
-export const INPUT_TUNER = 'InputTuner';
-export const INPUT_HDMI1 = 'InputHDMI1';
-export const INPUT_HDMI2 = 'InputHDMI2';
-export const INPUT_HDMI3 = 'InputHDMI3';
-export const INPUT_HDMI4 = 'InputHDMI4';
-export const INPUT_AV1 = 'InputAV1';
+export const INPUT_TUNER = key('InputTuner', 'inputTuner');
+export const INPUT_HDMI1 = key('InputHDMI1', 'inputHDMI1');
+export const INPUT_HDMI2 = key('InputHDMI2', 'inputHDMI2');
+export const INPUT_HDMI3 = key('InputHDMI3', 'inputHDMI3');
+export const INPUT_HDMI4 = key('InputHDMI4', 'inputHDMI4');
+export const INPUT_AV1 = key('InputAV1', 'inputAV1');
 
 // For devices that support being turned on/off
-export const POWER = 'Power';
+export const POWER = key('Power', 'power');

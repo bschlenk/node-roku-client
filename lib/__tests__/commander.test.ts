@@ -3,9 +3,9 @@ import Commander from '../commander';
 import * as keys from '../keys';
 
 describe('Commander', () => {
-  let methods;
-  let client;
-  let commander;
+  let methods: any[];
+  let client: Client;
+  let commander: Commander;
 
   beforeEach(() => {
     methods = [];
@@ -50,12 +50,14 @@ describe('Commander', () => {
       .keypress(keys.VOLUME_DOWN)
       .keypress(keys.VOLUME_UP)
       .keypress(keys.VOLUME_MUTE)
+      .keypress('Power')
       .send()
       .then(() => {
         expect(methods).toEqual([
           'VolumeDown',
           'VolumeUp',
           'VolumeMute',
+          'Power',
         ]);
       }));
 });
