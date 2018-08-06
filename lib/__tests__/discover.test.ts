@@ -1,4 +1,4 @@
-import discover from '../discover';
+import { discover, discoverAll } from '../discover';
 
 const HEADERS = {
   'CACHE-CONTROL': 'max-age=3600',
@@ -49,8 +49,10 @@ describe('discover', () => {
       expect(address).toEqual('http://192.168.1.19:8060');
     });
   });
+});
 
-  it('should find all devices when wait == true', () => {
+describe('discoverAll', () => {
+  it('should find all devices', () => {
     require('node-ssdp').__setHeaders([
       {
         SERVER: 'Roku',
@@ -65,7 +67,7 @@ describe('discover', () => {
         LOCATION: 'http://192.168.1.19:8060',
       },
     ]);
-    return discover(1000, true).then((addresses) => {
+    return discoverAll(1000).then((addresses) => {
       expect(addresses.length).toEqual(3);
       expect(addresses).toEqual(expect.arrayContaining([
         'http://192.168.1.17:8060',
@@ -75,7 +77,7 @@ describe('discover', () => {
     });
   });
 
-  it('should not include duplicate addresses when wait == true', () => {
+  it('should not include duplicate addresses', () => {
     require('node-ssdp').__setHeaders([
       {
         SERVER: 'Roku',
@@ -90,15 +92,15 @@ describe('discover', () => {
         LOCATION: 'http://192.168.1.17:8060',
       },
     ]);
-    return discover(1000, true).then((addresses) => {
+    return discoverAll(1000).then((addresses) => {
       expect(addresses.length).toEqual(1);
       expect(addresses).toEqual(['http://192.168.1.17:8060']);
     });
   });
 
-  it('should reject if no devices are found and wait == true', (done) => {
+  it('should reject if no devices are found', (done) => {
     require('node-ssdp').__setHeaders(null);
-    return discover(1000, true).then(() => {
+    return discoverAll(1000).then(() => {
       done('should have failed');
     }).catch((err) => {
       expect(err).toBeDefined();

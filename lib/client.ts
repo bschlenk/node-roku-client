@@ -6,7 +6,7 @@ import * as tmp from 'tmp';
 import reduce = require('lodash.reduce');
 import camelcase = require('lodash.camelcase');
 import _debug  = require('debug');
-import discover from './discover';
+import { discover, discoverAll } from './discover';
 import Commander from './commander';
 
 const debug = _debug('roku-client:client');
@@ -67,16 +67,25 @@ function appXMLToJS(app: any): App {
 export default class Client {
 
   /**
-   * Return a new `Client` object for the first Roku device discovered
-   * on the network. This method resolves to a single `Client` object.
-   * If multiple Roku devices exist on the network, import `discover`
-   * directly and call it with `wait` set to true, and then initialize a
-   * `Client` object for each address in the returned array.
+   * Return a promise resolving to a new `Client` object for the first Roku
+   * device discovered on the network. This method resolves to a single
+   * `Client` object.
    * @param timeout The time in ms to wait before giving up.
    * @return A promise resolving to a `Client` object.
    */
   static discover(timeout?: number): Promise<Client> {
     return discover(timeout).then(ip => new Client(ip));
+  }
+
+  /**
+   * Return a promise resolving to a list of `Client` objects corresponding to
+   * each roku device found on the network. Check the client's ip member to see
+   * which device the client corresponds to.
+   * @param timeout The time in ms to wait before giving up.
+   * @return A promise resolving to a list of `Client` objects.
+   */
+  static discoverAll(timeout?: number): Promise<Client[]> {
+    return discoverAll(timeout).then(ips => ips.map(ip => new Client(ip)));
   }
 
   /**

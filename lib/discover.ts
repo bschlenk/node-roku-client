@@ -1,4 +1,5 @@
 import * as url from 'url';
+import { EventEmitter } from 'events';
 import { Client as SSDPClient, Headers } from 'node-ssdp';
 import _debug = require('debug');
 
@@ -13,78 +14,128 @@ function parseAddress(location: string): string {
   return url.format(parts);
 }
 
-// TODO: deprecate the wait param and add a new discoverAll method
 /**
- * Discover the Roku devices on the network. Setting `wait` to false (default)
- * makes this return the first Roku device that it finds. Setting `wait` to true
- * makes `discover` wait for the entire `timeout`, returning a list of all devices'
- * addresses that responded within `timeout` ms.
- * @param timeout The time to wait in ms before giving up.
- * @param wait Whether to wait for all devices to respond.
- * @return A promise resolving to a Roku device's address,
- *     or a list of addresses if wait was set to true.
+ * Helper class abstracting the lifecycle of locating Roku devices on the
+ * network.
  */
-export default function discover(timeout?: number): Promise<string>;
-export default function discover(timeout: number, wait: false): Promise<string>;
-export default function discover(timeout: number, wait: true): Promise<string[]>;
-export default function discover(
-  timeout: number = DEFAULT_TIMEOUT,
-  wait: boolean = false,
-): Promise<string|string[]> {
-  return new Promise((resolve, reject) => {
-    const client = new SSDPClient();
-    const addresses: string[] = [];
-    const startTime = Date.now();
-    let resolved = false;
-    let intervalId: NodeJS.Timer;
-    let timeoutId: NodeJS.Timer;
+class RokuFinder extends EventEmitter {
+  private readonly client: SSDPClient;
+  private intervalId: NodeJS.Timer | null = null;
+  private timeoutId: NodeJS.Timer | null = null;
+  private running: boolean = false;
 
-    function done() {
-      resolved = true;
-      clearInterval(intervalId);
-      clearTimeout(timeoutId);
-      client.stop();
-    }
+  constructor() {
+    super();
+
+    this.client = new SSDPClient();
+
+    this.client.on('response', (headers: Headers) => {
+      if (!this.running) {
+        return;
+      }
+      const { SERVER, LOCATION } = headers;
+      if (SERVER && LOCATION && SERVER.indexOf('Roku') !== -1) {
+        const address = parseAddress(LOCATION);
+        this.emit('found', address);
+      }
+    });
+  }
+
+  start(timeout: number) {
+    debug('beginning search for roku devices');
+
+    this.running = true;
+
+    const search = () => {
+      this.client.search('roku:ecp');
+    };
+
+    const done = () => {
+      this.stop();
+      this.emit('timeout');
+    };
+
+    search();
+    this.intervalId = setInterval(search, 1000);
+    this.timeoutId = setTimeout(done, timeout);
+  }
+
+  stop() {
+    clearInterval(this.intervalId!);
+    clearTimeout(this.timeoutId!);
+    this.running = false;
+    this.client.stop();
+  }
+}
+
+/**
+ * Discover one Roku devices on the network. Resolves to the first Roku device
+ * that responds to the ssdp request.
+ * @param timeout The time to wait in ms before giving up.
+ * @return A promise resolving to a Roku device's address.
+ */
+export function discover(
+  timeout: number = DEFAULT_TIMEOUT,
+): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const finder = new RokuFinder();
+    const startTime = Date.now();
 
     function elapsedTime() {
       return Date.now() - startTime;
     }
 
-    client.on('response', (headers: Headers) => {
-      const { SERVER, LOCATION } = headers;
-      if (!resolved && SERVER && LOCATION && SERVER.includes('Roku')) {
-        const address = parseAddress(LOCATION);
-        if (!wait) {
-          done();
-          resolve(address);
-          debug(`found Roku device at ${address} after ${elapsedTime()}ms`);
-        } else if (addresses.indexOf(address) !== -1) {
-          debug(`found Roku device at ${address} after ${elapsedTime()}ms`);
-          addresses.push(address);
-        }
+    finder.on('found', (address) => {
+      finder.stop();
+      resolve(address);
+      debug(`found Roku device at ${address} after ${elapsedTime()}ms`);
+    });
+
+    finder.on('timeout', () => {
+      reject(new Error(`Could not find any Roku devices after ${
+        timeout / 1000} seconds`));
+    });
+
+    finder.start(timeout);
+  });
+}
+
+/**
+ * Discover all Roku devices on the network. This method always waits the full
+ * timeout, resolving to a list of all Roku device addresses that responded
+ * within `timeout` ms.
+ * @param timeout The time to wait in ms before giving up.
+ * @return A promise resolving to a list of Roku device addresses.
+ */
+export function discoverAll(
+  timeout: number = DEFAULT_TIMEOUT,
+): Promise<string[]> {
+  return new Promise((resolve, reject) => {
+    const finder = new RokuFinder();
+    const addresses: string[] = [];
+    const startTime = Date.now();
+
+    function elapsedTime() {
+      return Date.now() - startTime;
+    }
+
+    finder.on('found', (address) => {
+      if (addresses.indexOf(address) === -1) {
+        debug(`found Roku device at ${address} after ${elapsedTime()}ms`);
+        addresses.push(address);
       }
     });
 
-    timeoutId = setTimeout(
-      () => {
-        done();
-        if (wait && addresses.length > 0) {
-          debug('found Roku devices at %o after %dms', addresses, elapsedTime());
-          resolve(addresses);
-        } else {
-          reject(new Error(`Could not find any Roku devices after ${
-            timeout / 1000} seconds`));
-        }
-      },
-      timeout,
-    );
+    finder.on('timeout', () => {
+      if (addresses.length > 0) {
+        debug('found Roku devices at %o after %dms', addresses, elapsedTime());
+        resolve(addresses);
+      } else {
+        reject(new Error(`Could not find any Roku devices after ${
+          timeout / 1000} seconds`));
+      }
+    });
 
-    function start() {
-      client.search('roku:ecp');
-      debug('beginning search for roku devices');
-    }
-
-    intervalId = setInterval(start, 1000);
-    start();
+    finder.start(timeout);
   });
 }

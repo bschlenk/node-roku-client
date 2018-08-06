@@ -5,7 +5,6 @@ let headers = null;
 class Client {
   /**
    * Construct a mock ssdp client.
-   * @param {boolean} override Whether to triger events.
    */
   constructor() {
     this.searched = null;
@@ -14,34 +13,35 @@ class Client {
 
   /**
    * Mock .search()
-   * @param {string} serviceType 'ssdp:all'
+   * @param {string} query 'ssdp:all'
    */
   search(query) {
     this.searched = query;
-    if (headers) {
-      const callResponse = (index = null) => {
-        const { response } = this.events;
-        if (response) {
-          if (index === null) {
-            response(headers);
-          } else {
-            response(headers[index]);
-          }
+    if (!headers) {
+      return;
+    }
+    const callResponse = (index = null) => {
+      const { response } = this.events;
+      if (response) {
+        if (index === null) {
+          response(headers);
+        } else {
+          response(headers[index]);
         }
-      };
-      if (Array.isArray(headers)) {
-        let index = 0;
-        const { length } = headers;
-        setImmediate(function recurseResponses() {
-          callResponse(index);
-          index += 1;
-          if (index < length) {
-            setImmediate(recurseResponses);
-          }
-        });
-      } else {
-        setImmediate(callResponse);
       }
+    };
+    if (Array.isArray(headers)) {
+      let index = 0;
+      const { length } = headers;
+      process.nextTick(function recurseResponses() {
+        callResponse(index);
+        index += 1;
+        if (index < length) {
+          process.nextTick(recurseResponses);
+        }
+      });
+    } else {
+      process.nextTick(callResponse);
     }
   }
 
