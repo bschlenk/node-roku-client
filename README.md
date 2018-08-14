@@ -2,7 +2,8 @@
 
 [![npm version](https://badge.fury.io/js/roku-client.svg)](https://badge.fury.io/js/roku-client)
 
-Discover Roku devices via `ssdp` and control the device with methods that perform `http` requests to the device.
+Discover Roku devices via `ssdp` and control the device with methods
+that perform `http` requests to the device.
 
 **requirements:**
   - node `6.0.0 or higher`
@@ -41,15 +42,21 @@ client.keypress(keys.VOLUME_UP);
 ```
 ## Client.discover()
 
-Invoking `Client.discover()` will return a promise which resolves to a Client object on success. The Client will be initialized to the address of the first device to respond. This client object will contain the methods needed to control a roku device. Commands are sent to the Roku device via `HTTP` protocol as found on the [docs][1].
+Invoking `Client.discover()` will return a promise which resolves to a
+Client object on success. The Client will be initialized to the address
+of the first device to respond. This client object will contain the
+methods needed to control a roku device. Commands are sent to the Roku
+device via `HTTP` protocol as found on the [docs][1].
 
-If there are mutiple Roku devices on the network, call `discover` with the wait parameter set to true. It will return a promise that resolves to a list of all addresses found.
+If there are multiple Roku devices on the network, `Clint.discoverAll()`
+can be called which will wait the full timeout and return a promise that
+resolves to an array of clients for all the addresses found.
 
 ```js
-import { discover } from 'roku-client';
+import Client from 'roku-client';
 
-discover(10, true).then((addresses) => {
-  console.log(addresses);
+Client.discoverAll(10).then((clients) => {
+  console.log(clients.map(c => c.ip));
   // ['http://192.168.1.17:8060', 'http://192.168.1.18:8060', ...]
 });
 ```
@@ -57,8 +64,10 @@ discover(10, true).then((addresses) => {
 ## API Methods
 | **Method Name** | **Return Type** | **Details** |
 |---|---|---|
-| `ip` | `string` | network ip and port `http://xxx.xxx.xxx.xxx:8060` |
-| `.apps()` | `Promise<{id: string, name: string, type: string, version: string}[]>` |  List of all apps installed on this device. |
+| `ip` | `string` | The network ip and port `http://xxx.xxx.xxx.xxx:8060` |
+| `static .discover(timeout?: number)` | `Promise<Client>` | Return a promise resolving to a new `Client` object for the first Roku device discovered on the network. |
+| `static .discoverAll(timeout?: number)` | `Promise<Client[]>` | Return a promise resolving to a list of `Client` objects corresponding to each roku device found on the network. |
+| `.apps()`                | `Promise<{id: string, name: string, type: string, version: string}[]>` |  List of all apps installed on this device. |
 | `.active()` | `Promise<{id: string, name: string, type: string, version: string}\|null>}` | A single object representing the active app, or null if the home screen is active. |
 | `.info()` | `Promise<Object>` | A map of this Roku device's properties. Varies from device to device. |
 | `.keypress(key: string)` | `Promise<void>` | Send a keypress from [keys.js](lib/keys.js) or a single character to send that letter (e.g. to an input box). |
@@ -71,7 +80,8 @@ discover(10, true).then((addresses) => {
 
 ### Keypress Values
 
-[keys.js](lib/keys.js) contains a list of keypress values understood by Roku. It can be accessed programmatically:
+[keys.js](lib/keys.js) contains a list of keypress values understood by
+Roku. It can be accessed programmatically:
 
 ```js
 import { keys } from 'roku-client';
@@ -82,17 +92,20 @@ keys.LEFT // 'Left'
 
 ### Commander
 
-The `Client#command()` method provides a simpler interface over the keypress and text methods.
-It allows them to be chained and repeated and handles all promise chaining internally.
+The `Client#command()` method provides a simpler interface over the
+keypress and text methods. It allows them to be chained and repeated and
+handles all promise chaining internally.
 
-Each key within the [keys.js](lib/keys.js) module is available on the commander
-instance in camelcase form. Additionally, a `.text()` method is available to send
-text strings. Each key command takes an optional number to specify the number
-of times to repeat the command, defaulting to `1`.
+Each key within the [keys.js](lib/keys.js) module is available on the
+commander instance in camelcase form. Additionally, a `.text()` method
+is available to send text strings. Each key command takes an optional
+number to specify the number of times to repeat the command, defaulting
+to `1`.
 
-After chaining the desired methods, call `.send()` to send them to the Roku. `.send()` returns
-a promise that completes when all buttons have been pressed, or when the Roku fails to respond to
-any of the commands. A `Commander` instance should not be reused after calling `.send()`.
+After chaining the desired methods, call `.send()` to send them to the
+Roku. `.send()` returns a promise that completes when all buttons have
+been pressed, or when the Roku fails to respond to any of the commands.
+A `Commander` instance should not be reused after calling `.send()`.
 
 #### Examples
 
@@ -145,14 +158,14 @@ client.command()
 ```
 
 ## Testing
-`$ npm test`
+`$ npm run test:all`
 
 This will run the linter, unit tests, and coverage.
 
 ## References
 
-[Roku - External Control Service Commands][1]<br>
-[Roku - Keypress Key Values][2]
+* [Roku - External Control Service Commands][1]
+* [Roku - Keypress Key Values][2]
 
 ### Additional Information
 
