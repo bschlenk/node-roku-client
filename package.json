@@ -61,7 +61,7 @@
     "lodash.reduce": "^4.6.0",
     "lodash.values": "^4.3.0",
     "node-fetch": "^2.2.0",
-    "node-ssdp": "^3.3.0",
+    "node-ssdp": "^4.0.0",
     "tmp": "0.0.33",
     "xml2js": "^0.4.19"
   }
