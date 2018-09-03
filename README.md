@@ -1,6 +1,6 @@
 # node-roku-client
 
-[![npm version](https://badge.fury.io/js/roku-client.svg)](https://badge.fury.io/js/roku-client)
+[![npm version](https://badge.fury.io/js/roku-client.svg)](https://badge.fury.io/js/roku-client) [![Greenkeeper badge](https://badges.greenkeeper.io/bschlenk/node-roku-client.svg)](https://greenkeeper.io/)
 
 Discover Roku devices via `ssdp` and control the device with methods
 that perform `http` requests to the device.
