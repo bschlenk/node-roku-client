@@ -21,6 +21,11 @@
     "release": "standard-version",
     "prepublishOnly": "npm run test:all && npm run build"
   },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
   "keywords": [
     "roku",
     "ssdp"
@@ -36,6 +41,8 @@
   "author": "Brian Schlenker <bschlenk@umich.edu> (http://github.com/bschlenk)",
   "license": "Apache-2.0",
   "devDependencies": {
+    "@commitlint/cli": "^7.2.1",
+    "@commitlint/config-conventional": "^7.1.2",
     "@types/debug": "^0.0.30",
     "@types/es6-promisify": "^6.0.0",
     "@types/jest": "^23.3.1",
@@ -46,6 +53,7 @@
     "@types/node-fetch": "^2.1.2",
     "@types/tmp": "^0.0.33",
     "@types/xml2js": "^0.4.3",
+    "husky": "^1.1.2",
     "jest": "^23.4.2",
     "jest-fetch-mock": "^1.6.5",
     "standard-version": "^4.4.0",
