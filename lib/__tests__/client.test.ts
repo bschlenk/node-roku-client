@@ -200,6 +200,35 @@ describe('Client', () => {
         }));
   });
 
+  describe('#launchDtv()', () => {
+    it('should call launch/tvinput.dtv', () => {
+      client.launchDtv()
+        .then(() => {
+          // eslint-disable-next-line global-require
+          expect(require('node-fetch'))
+            .toHaveBeenCalledWith(`${client.ip}/launch/tvinput.dtv`, { method: 'POST' });
+        });
+    });
+
+    it('should pass a channel string to launch', () => {
+      client.launchDtv('1.1')
+        .then(() => {
+          // eslint-disable-next-line global-require
+          expect(require('node-fetch'))
+            .toHaveBeenCalledWith(`${client.ip}/launch/tvinput.dtv?ch=1.1`, { method: 'POST' });
+        });
+    });
+
+    it('should pass a channel number to launch', () => {
+      client.launchDtv(8.5)
+        .then(() => {
+          // eslint-disable-next-line global-require
+          expect(require('node-fetch'))
+            .toHaveBeenCalledWith(`${client.ip}/launch/tvinput.dtv?ch=8.5`, { method: 'POST' });
+        });
+    });
+  });
+
   describe('#text()', () => {
     it('should send a Lit_ command for each letter', () =>
       client.text('hello')

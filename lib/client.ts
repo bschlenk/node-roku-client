@@ -207,6 +207,19 @@ export default class Client {
   }
 
   /**
+   * Launch the DTV tuner, optionally with a channel number.
+   * @see {@link https://sdkdocs.roku.com/display/sdkdoc/Externa+Control+API#ExternalControlAPI-launch/tvinput.dtv}
+   * @param channel The channel to launch, or leave blank to launch the DTV
+   *     ui to the last open channel.
+   * @return A promise which resolves when DTV is launched.
+   */
+  launchDtv(channel?: number | string): Promise<void> {
+    const channelQuery = channel ? `?ch=${channel}` : '';
+    const appId = `tvinput.dtv${channelQuery}`;
+    return this.launch(appId);
+  }
+
+  /**
    * Helper used by all keypress methods. Converts single characters
    * to `Lit_` commands to send the letter to the Roku.
    * @see {@link https://sdkdocs.roku.com/display/sdkdoc/External+Control+API#ExternalControlAPI-KeypressKeyValues}
