@@ -1,8 +1,6 @@
-import * as fs from 'fs';
 import { promisify } from 'es6-promisify';
 import { parseString } from 'xml2js';
 import fetch, { Response } from 'node-fetch';
-import * as tmp from 'tmp';
 import reduce = require('lodash.reduce');
 import camelcase = require('lodash.camelcase');
 import _debug  = require('debug');
@@ -32,6 +30,18 @@ export interface App {
   type: string;
   /** The app version. */
   version: string;
+}
+
+/**
+ * The response from calling the icon method.
+ */
+export interface Icon {
+  /** The mime type of the icon file. */
+  type?: string;
+  /** The file extension of the icon file. */
+  extension?: string;
+  /** The fetch response. */
+  response: Response;
 }
 
 /**
@@ -158,7 +168,7 @@ export default class Client {
    *     Should be the id from the id field of the app.
    * @return The temporary path to the image.
    */
-  icon(appId: AppId): Promise<string> {
+  icon(appId: AppId): Promise<Icon> {
     const endpoint = `${this.ip}/query/icon/${appId}`;
     debug(`GET ${endpoint}`);
     return fetch(endpoint)
@@ -167,26 +177,17 @@ export default class Client {
           throw new Error(`Failed to fetch icon for app ${appId}: ${res.statusText}`);
         }
 
-        return new Promise((resolve, reject) => {
-          const type = res.headers.get('content-type');
-          let ext = 'img';
-          if (type) {
-            const match = /image\/(.*)/.exec(type);
-            if (match) {
-              ext = match[1];
-            }
+        const type = res.headers.get('content-type') || undefined;
+        let extension = undefined;
+        if (type) {
+          const match = /image\/(.*)/.exec(type);
+          if (match) {
+            extension = `.${match[1]}`;
           }
-          tmp.file({ keep: true, postfix: `.${ext}` }, (err, path, fd) => {
-            if (err) {
-              reject(err);
-              return;
-            }
-            const dest = fs.createWriteStream('', { fd });
-            res.body.pipe(dest);
-            resolve(path);
-          });
-        });
-      }) as Promise<string>;
+        }
+
+        return { type, extension, response: res };
+      });
   }
 
   /**

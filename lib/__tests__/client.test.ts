@@ -175,17 +175,15 @@ describe('Client', () => {
     it('should download the icon to the given folder', () => {
       // eslint-disable-next-line global-require
       const fetch = require('node-fetch');
-      fetch.mockImplementation(() => {
-        const response = new fetch.Response(loadResponse('netflix.jpeg', true));
-        response.headers = new fetch.Headers({ 'content-type': 'image/jpeg' });
-        return Promise.resolve(response);
-      });
+      const response = new fetch.Response(loadResponse('netflix.jpeg', true));
+      response.headers = new fetch.Headers({ 'content-type': 'image/jpeg' });
+      fetch.mockImplementation(() => Promise.resolve(response));
       return client
         .icon('12')
-        .then((res) => {
-          expect(fs.existsSync(res)).toBeTruthy();
-          expect(res.endsWith('.jpeg'));
-          fs.unlinkSync(res);
+        .then((icon) => {
+          expect(icon.type).toEqual('image/jpeg');
+          expect(icon.extension).toEqual('.jpeg');
+          expect(icon.response).toBe(response);
         });
     });
   });
