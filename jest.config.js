@@ -13,8 +13,8 @@ module.exports = {
   testRegex: '/__tests__/.*\\.test\\.(ts)$',
   collectCoverageFrom: [
     'lib/**/*.ts',
-    '!lib/index.js',
-    '!lib/keys.js',
+    '!lib/index.ts',
+    '!lib/keys.ts',
     '!**/*.d.ts',
   ],
   coverageThreshold: {
