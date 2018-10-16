@@ -73,7 +73,7 @@ Client.discoverAll(10).then((clients) => {
 | `.keypress(key: string)` | `Promise<void>` | Send a keypress from [keys.js](lib/keys.js) or a single character to send that letter (e.g. to an input box). |
 | `.keydown(key: string)`| `Promise<void>` | The same as `keypress` but tells the Roku to hold the key down. |
 | `.keyup(key: string)` | `Promise<void>` | The same as `keyup` but tells the Roku to release a key held with `keyup` ( a no-op if the key was not held). |
-| `.icon(appId: number)` | `Promise<string>` | Saves the image to a temp file and returns the filename. |
+| `.icon(appId: number)` | `Promise<Icon>` | Fetches the image and returns an object with the fetch response, extension, and mime type. |
 | `.launch(appId: number)` | `Promise<void>` | Launch the given app by its id. |
 | `.launchDtv(channel?: number | string)` | `Promise<void>` | Launch the DTV tuner, optionally to a specific channel. |
 | `.text(text: string)` | `Promise<void>` | Send the text string as a series of `keypress` actions. |
@@ -157,6 +157,16 @@ client.command()
   .enter()
   .send();
 ```
+
+## Usage in the Browser
+
+I have replaced direct usage of
+[node-fetch](https://www.npmjs.com/package/node-fetch) with
+[fetch-ponyfill](https://www.npmjs.com/package/fetch-ponyfill), which
+should allow `node-roku-client` to be used in the browser. However, I
+have not yet tested this, and suspect that `node-ssdp` may cause issues
+in the browser. If anything, creating a client directly with the ip
+address should work as expected.
 
 ## Testing
 `$ npm run test`
