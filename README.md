@@ -159,7 +159,7 @@ client.command()
 ```
 
 ## Testing
-`$ npm run test:all`
+`$ npm run test`
 
 This will run the linter, unit tests, and coverage.
 
