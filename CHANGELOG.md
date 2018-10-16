@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="3.0.0"></a>
+# [3.0.0](https://github.com/bschlenk/node-roku-client/compare/v2.1.0...v3.0.0) (2018-10-16)
+
+
+### Bug Fixes
+
+* **tests:** add types in test ([1c591ae](https://github.com/bschlenk/node-roku-client/commit/1c591ae))
+
+
+### Features
+
+* remove tmp dependency & modify icon ([cbb5de1](https://github.com/bschlenk/node-roku-client/commit/cbb5de1))
+* switch to fetch-ponyfill ([dd9d03a](https://github.com/bschlenk/node-roku-client/commit/dd9d03a))
+
+
+### BREAKING CHANGES
+
+* Icon method no longer downloads the icon to the tmp
+directory, and instead returns an object with the image type, extension,
+and fetch response. This will allow this package to be used in node and
+the browser.
+
+
+
 <a name="2.1.0"></a>
 # [2.1.0](https://github.com/bschlenk/node-roku-client/compare/v2.0.1...v2.1.0) (2018-10-16)
 

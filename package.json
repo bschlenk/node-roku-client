@@ -1,6 +1,6 @@
 {
   "name": "roku-client",
-  "version": "2.1.0",
+  "version": "3.0.0",
   "description": "Send commands to your Roku devices",
   "engines": {
     "node": ">=6.0.0"
