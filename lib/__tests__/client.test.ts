@@ -7,7 +7,7 @@ import Client from '../client';
 
 const clientAddr = 'http://192.168.1.61:8060';
 
-function loadResponse(name, asBuffer = false) {
+function loadResponse(name: string, asBuffer = false) {
   const file = name.includes('.') ? name : `${name}.xml`;
   const data = fs.readFileSync(path.join(__dirname, 'assets', file));
   if (!asBuffer) {
@@ -19,7 +19,7 @@ function loadResponse(name, asBuffer = false) {
 }
 
 describe('Client', () => {
-  let client;
+  let client: Client;
 
   beforeEach(() => {
     client = new Client(clientAddr);
