@@ -4,9 +4,16 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as stream from 'stream';
 import Client from '../client';
+import fetchPonyfill = require('fetch-ponyfill');
+
+const fetchObjects = fetchPonyfill();
+const fetch = fetchObjects.fetch as typeof import('jest-fetch-mock');
 
 const clientAddr = 'http://192.168.1.61:8060';
 
+function loadResponse(name: string): string;
+function loadResponse(name: string, asBuffer: false): string;
+function loadResponse(name: string, asBuffer: true): ReadableStream;
 function loadResponse(name: string, asBuffer = false) {
   const file = name.includes('.') ? name : `${name}.xml`;
   const data = fs.readFileSync(path.join(__dirname, 'assets', file));
@@ -15,7 +22,7 @@ function loadResponse(name: string, asBuffer = false) {
   }
   const bufferStream = new stream.PassThrough();
   bufferStream.end(data);
-  return bufferStream;
+  return bufferStream as unknown as ReadableStream;
 }
 
 describe('Client', () => {
@@ -24,7 +31,7 @@ describe('Client', () => {
   beforeEach(() => {
     client = new Client(clientAddr);
     // eslint-disable-next-line global-require
-    require('node-fetch').mockClear();
+    fetch.mockClear();
   });
 
   describe('#discover()', () => {
@@ -51,7 +58,7 @@ describe('Client', () => {
   describe('#apps()', () => {
     it('should return a list of apps', () => {
       // eslint-disable-next-line global-require
-      require('node-fetch').mockResponse(loadResponse('apps'));
+      fetch.mockResponse(loadResponse('apps'));
       return client.apps()
         .then((apps) => {
           expect(apps).toBeInstanceOf(Array);
@@ -70,7 +77,7 @@ describe('Client', () => {
   describe('#active()', () => {
     it('should return the active app', () => {
       // eslint-disable-next-line global-require
-      require('node-fetch').mockResponse(loadResponse('active-app'));
+      fetch.mockResponse(loadResponse('active-app'));
       return client.active()
         .then((app) => {
           expect(app).toEqual(expect.objectContaining({
@@ -84,7 +91,7 @@ describe('Client', () => {
 
     it('should return null if there is not an active app', () => {
       // eslint-disable-next-line global-require
-      require('node-fetch').mockResponse(loadResponse('active-app-none'));
+      fetch.mockResponse(loadResponse('active-app-none'));
       return client.active()
         .then((app) => {
           expect(app).toBeNull();
@@ -93,7 +100,7 @@ describe('Client', () => {
 
     it('should reject if multiple apps are returned', () => {
       // eslint-disable-next-line global-require
-      require('node-fetch').mockResponse(loadResponse('active-multiple'));
+      fetch.mockResponse(loadResponse('active-multiple'));
       return client.active()
         .then(() => {
           throw new Error('Should have thrown');
@@ -107,7 +114,7 @@ describe('Client', () => {
   describe('#info()', () => {
     it('should return info for the roku device', () => {
       // eslint-disable-next-line global-require
-      require('node-fetch').mockResponse(loadResponse('info'));
+      fetch.mockResponse(loadResponse('info'));
       return client.info()
         .then((info) => {
           expect(info).toBeInstanceOf(Object);
@@ -124,7 +131,7 @@ describe('Client', () => {
         .keypress('Home')
         .then(() => {
           // eslint-disable-next-line global-require
-          expect(require('node-fetch'))
+          expect(fetch)
             .toHaveBeenCalledWith(`${clientAddr}/keypress/Home`, { method: 'POST' });
         }));
 
@@ -133,7 +140,7 @@ describe('Client', () => {
         .keypress('a')
         .then(() => {
           // eslint-disable-next-line global-require
-          expect(require('node-fetch'))
+          expect(fetch)
             .toHaveBeenCalledWith(`${clientAddr}/keypress/Lit_a`, { method: 'POST' });
         });
     });
@@ -143,7 +150,7 @@ describe('Client', () => {
         .keypress('€')
         .then(() => {
           // eslint-disable-next-line global-require
-          expect(require('node-fetch'))
+          expect(fetch)
             .toHaveBeenCalledWith(`${clientAddr}/keypress/Lit_%E2%82%AC`, { method: 'POST' });
         });
     });
@@ -155,7 +162,7 @@ describe('Client', () => {
         .keydown('Pause')
         .then(() => {
           // eslint-disable-next-line global-require
-          expect(require('node-fetch'))
+          expect(fetch)
             .toHaveBeenCalledWith(`${clientAddr}/keydown/Pause`, { method: 'POST' });
         }));
   });
@@ -166,7 +173,7 @@ describe('Client', () => {
         .keyup('Info')
         .then(() => {
           // eslint-disable-next-line global-require
-          expect(require('node-fetch'))
+          expect(fetch)
             .toHaveBeenCalledWith(`${clientAddr}/keyup/Info`, { method: 'POST' });
         }));
   });
@@ -174,9 +181,10 @@ describe('Client', () => {
   describe('#icon()', () => {
     it('should download the icon to the given folder', () => {
       // eslint-disable-next-line global-require
-      const fetch = require('node-fetch');
-      const response = new fetch.Response(loadResponse('netflix.jpeg', true));
-      response.headers = new fetch.Headers({ 'content-type': 'image/jpeg' });
+      const response = new fetchObjects.Response(
+        loadResponse('netflix.jpeg', true),
+        { headers: new fetchObjects.Headers({ 'content-type': 'image/jpeg' }) },
+      );
       fetch.mockImplementation(() => Promise.resolve(response));
       return client
         .icon('12')
@@ -193,7 +201,7 @@ describe('Client', () => {
       client.launch('12345')
         .then(() => {
           // eslint-disable-next-line global-require
-          expect(require('node-fetch'))
+          expect(fetch)
             .toHaveBeenCalledWith(`${client.ip}/launch/12345`, { method: 'POST' });
         }));
   });
@@ -203,7 +211,7 @@ describe('Client', () => {
       client.launchDtv()
         .then(() => {
           // eslint-disable-next-line global-require
-          expect(require('node-fetch'))
+          expect(fetch)
             .toHaveBeenCalledWith(`${client.ip}/launch/tvinput.dtv`, { method: 'POST' });
         });
     });
@@ -212,7 +220,7 @@ describe('Client', () => {
       client.launchDtv('1.1')
         .then(() => {
           // eslint-disable-next-line global-require
-          expect(require('node-fetch'))
+          expect(fetch)
             .toHaveBeenCalledWith(`${client.ip}/launch/tvinput.dtv?ch=1.1`, { method: 'POST' });
         });
     });
@@ -221,7 +229,7 @@ describe('Client', () => {
       client.launchDtv(8.5)
         .then(() => {
           // eslint-disable-next-line global-require
-          expect(require('node-fetch'))
+          expect(fetch)
             .toHaveBeenCalledWith(`${client.ip}/launch/tvinput.dtv?ch=8.5`, { method: 'POST' });
         });
     });
@@ -232,7 +240,7 @@ describe('Client', () => {
       client.text('hello')
         .then(() => {
           // eslint-disable-next-line global-require
-          expect(require('node-fetch').mock.calls)
+          expect(fetch.mock.calls)
             .toEqual([
               [`${client.ip}/keypress/Lit_h`, { method: 'POST' }],
               [`${client.ip}/keypress/Lit_e`, { method: 'POST' }],
@@ -252,7 +260,7 @@ describe('Client', () => {
         .send()
         .then(() => {
           // eslint-disable-next-line global-require
-          expect(require('node-fetch').mock.calls)
+          expect(fetch.mock.calls)
             .toEqual([
               [`${client.ip}/keypress/VolumeUp`, { method: 'POST' }],
               [`${client.ip}/keypress/Select`, { method: 'POST' }],

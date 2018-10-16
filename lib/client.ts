@@ -1,11 +1,13 @@
 import { promisify } from 'es6-promisify';
 import { parseString } from 'xml2js';
-import fetch, { Response } from 'node-fetch';
+import fetchPonyfill = require('fetch-ponyfill');
 import reduce = require('lodash.reduce');
 import camelcase = require('lodash.camelcase');
 import _debug  = require('debug');
 import { discover, discoverAll } from './discover';
 import Commander from './commander';
+
+const { fetch } = fetchPonyfill();
 
 const debug = _debug('roku-client:client');
 
