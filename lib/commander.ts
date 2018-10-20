@@ -8,17 +8,22 @@ interface KeyCommand {
 }
 
 type Client = import('./client').default;
-type ClientInterface<T extends Record<string, KeyCommand>> =
-    { [N in T[keyof T]['name']]: (count?: number) => Commander };
-type KeyNameInterface<T extends Record<string, KeyCommand>> =
-    { [N in T[keyof T]['command']]: any };
+type ClientInterface<T extends Record<string, KeyCommand>> = {
+  [N in T[keyof T]['name']]: (count?: number) => Commander
+};
+type KeyNameInterface<T extends Record<string, KeyCommand>> = {
+  [N in T[keyof T]['command']]: any
+};
 type KeyName = keyof KeyNameInterface<typeof keys>;
 
 /**
  * A command is a tuple of the string command and whether the command
- * is simply text.
+ * is simply text, and in the case of a wait command, the number of millis to
+ * wait for.
  */
-type Command = [string, boolean];
+type Command = [string, boolean, number?];
+
+const WAIT_COMMAND = '__WAIT';
 
 export default interface Commander extends ClientInterface<typeof keys> {}
 
@@ -45,8 +50,7 @@ export default class Commander {
    * @param count The number of times to press the key.
    */
   keypress(key: KeyName | KeyCommand, count: number = 1): Commander {
-    const command = typeof key === 'string'
-      ? key : key.command;
+    const command = typeof key === 'string' ? key : key.command;
     for (let i = 0; i < count; i += 1) {
       this.commands.push([command, false]);
     }
@@ -69,8 +73,18 @@ export default class Commander {
    *   .select()
    *   .send();
    */
-  exec(fn: (commander: Commander) => any): Commander {
+  exec(fn: (commander: Commander) => Commander | null | undefined): Commander {
     fn(this);
+    return this;
+  }
+
+  /**
+   * Wait the given `timeout` time before sending the next command.
+   * @param timeout The number of millis to wait.
+   * @return This `Commander` instance for chaining.
+   */
+  wait(timeout: number): Commander {
+    this.commands.push([WAIT_COMMAND, false, timeout]);
     return this;
   }
 
@@ -81,11 +95,19 @@ export default class Commander {
     return reduce(
       // clean up the commands list while also returning it
       this.commands.splice(0, this.commands.length),
-      (promise, [command, isText]) => (isText
-        ? promise.then(() => this.client.text(command))
-        : promise.then(() => this.client.keypress(command))),
+      (promise, command) => promise.then(() => this.runCommand(command)),
       Promise.resolve(),
     );
+  }
+
+  private runCommand([command, isText, timeout = 0]: Command): Promise<void> {
+    if (isText) {
+      return this.client.text(command);
+    }
+    if (command === WAIT_COMMAND) {
+      return wait(timeout);
+    }
+    return this.client.keypress(command);
   }
 }
 
@@ -95,3 +117,7 @@ values(keys).forEach((key) => {
     return this.keypress(key.command, count);
   };
 });
+
+function wait(timeout: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, timeout));
+}

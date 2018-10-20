@@ -69,4 +69,23 @@ describe('Commander', () => {
       .then(() => {
         expect(methods).toEqual(['Down', 'Up']);
       }));
+
+  it('should allow waiting between commands', () => {
+    jest.useFakeTimers();
+
+    const cmd = commander
+      .wait(2000)
+      .up()
+      .send();
+
+    return new Promise((resolve) => {
+      setImmediate(() => {
+        expect(methods.length).toBe(0);
+        jest.runAllTimers();
+        resolve(cmd.then(() => {
+          expect(methods).toEqual(['Up']);
+        }));
+      });
+    });
+  });
 });

@@ -1,4 +1,3 @@
-
 /**
  * Create a mapping of keys to make them easier to remember.
  * @see https://sdkdocs.roku.com/display/sdkdoc/External+Control+Guide#ExternalControlGuide-KeypressKeyValues

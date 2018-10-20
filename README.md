@@ -153,6 +153,15 @@ client.command()
   .send();
 ```
 
+##### Wait before performing the next command
+```js
+client.command()
+  .enter()
+  .wait(1000)
+  .text('some text')
+  .send();
+```
+
 ## Usage in the Browser
 
 I have replaced direct usage of
