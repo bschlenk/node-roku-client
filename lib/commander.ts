@@ -54,6 +54,27 @@ export default class Commander {
   }
 
   /**
+   * A convenience method for running commands conditionally. The callback
+   * function will be called with the instance of the commander, and will return
+   * the current commander instance. This makes it easy to run conditional logic
+   * within the chain of commands.
+   * @param fn A callback function that accepts the `Commander` instance. It may
+   *     call any `Commander` method, or do nothing at all.
+   * @return This `Commander` instance for chaining.
+   *
+   * @example
+   * command
+   *   .exec(cmd => goUp ? cmd.up(10) : cmd.down(10))
+   *   .right()
+   *   .select()
+   *   .send();
+   */
+  exec(fn: (commander: Commander) => any): Commander {
+    fn(this);
+    return this;
+  }
+
+  /**
    * Send all of the configured commands to the Roku.
    */
   send(): Promise<void> {
