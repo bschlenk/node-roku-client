@@ -132,13 +132,8 @@ client.command()
 
 ##### Conditionally perform a command
 ```js
-let command = client.comand();
-if (goUp) {
-  command = command.up(10);
-} else {
-  command = command.down(10);
-}
-command
+client.command()
+  .exec(cmd => goUp ? cmd.up(10) : cmd.down(10))
   .right()
   .select()
   .send();

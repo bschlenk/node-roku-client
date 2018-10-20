@@ -60,4 +60,13 @@ describe('Commander', () => {
           'Power',
         ]);
       }));
+
+  it('should allow commands to be added in the exec method', () =>
+    commander
+      .exec(cmd => cmd.down())
+      .up()
+      .send()
+      .then(() => {
+        expect(methods).toEqual(['Down', 'Up']);
+      }));
 });
