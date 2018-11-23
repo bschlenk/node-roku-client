@@ -6,6 +6,7 @@ import camelcase = require('lodash.camelcase');
 import _debug  = require('debug');
 import { discover, discoverAll } from './discover';
 import Commander from './commander';
+import { getCommand, KeyType } from './keyCommand';
 
 const { fetch } = fetchPonyfill();
 
@@ -229,9 +230,12 @@ export default class Client {
    * @param func The name of the Roku endpoint function.
    * @param key The key to press.
    */
-  private keyhelper(func: string, key: string): Promise<void> {
+  private keyhelper(func: string, key: KeyType): Promise<void> {
+    const command = getCommand(key);
     // if a single key is sent, treat it as a letter
-    const keyCmd = (key.length === 1) ? `Lit_${encodeURIComponent(key)}` : key;
+    const keyCmd = (command.length === 1)
+      ? `Lit_${encodeURIComponent(command)}`
+      : command;
     const endpoint = `${this.ip}/${func}/${keyCmd}`;
     debug(`POST ${endpoint}`);
     return fetch(endpoint, { method: 'POST' })
@@ -248,7 +252,7 @@ export default class Client {
    * @param key A key from the keys module.
    * @return A promise which resolves when the keypress has completed.
    */
-  keypress(key: string): Promise<void> {
+  keypress(key: KeyType): Promise<void> {
     return this.keyhelper('keypress', key);
   }
 
@@ -258,7 +262,7 @@ export default class Client {
    * @param key A key from the keys module.
    * @return A promise which resolves when the keydown has completed.
    */
-  keydown(key: string): Promise<void> {
+  keydown(key: KeyType): Promise<void> {
     return this.keyhelper('keydown', key);
   }
 
@@ -269,7 +273,7 @@ export default class Client {
    * @param key A key from the keys module.
    * @return A promise which resolves when the keyup has completed.
    */
-  keyup(key: string): Promise<void> {
+  keyup(key: KeyType): Promise<void> {
     return this.keyhelper('keyup', key);
   }
 

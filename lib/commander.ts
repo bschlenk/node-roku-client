@@ -1,20 +1,12 @@
 import reduce = require('lodash.reduce');
 import values = require('lodash.values');
 import * as keys from './keys';
-
-interface KeyCommand {
-  command: string;
-  name: string;
-}
+import { getCommand, KeyCommand, KeyName } from './keyCommand';
 
 type Client = import('./client').default;
 type ClientInterface<T extends Record<string, KeyCommand>> = {
   [N in T[keyof T]['name']]: (count?: number) => Commander
 };
-type KeyNameInterface<T extends Record<string, KeyCommand>> = {
-  [N in T[keyof T]['command']]: any
-};
-type KeyName = keyof KeyNameInterface<typeof keys>;
 
 /**
  * A command is a tuple of the string command and whether the command
@@ -50,7 +42,7 @@ export default class Commander {
    * @param count The number of times to press the key.
    */
   keypress(key: KeyName | KeyCommand, count: number = 1): Commander {
-    const command = typeof key === 'string' ? key : key.command;
+    const command = getCommand(key);
     for (let i = 0; i < count; i += 1) {
       this.commands.push([command, false]);
     }
