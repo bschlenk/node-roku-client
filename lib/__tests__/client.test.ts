@@ -5,9 +5,10 @@ import * as path from 'path';
 import * as stream from 'stream';
 import Client from '../client';
 import fetchPonyfill = require('fetch-ponyfill');
+import { FetchMock } from 'jest-fetch-mock';
 
 const fetchObjects = fetchPonyfill();
-const fetch = fetchObjects.fetch as typeof import('jest-fetch-mock');
+const fetch = fetchObjects.fetch as FetchMock;
 
 const clientAddr = 'http://192.168.1.61:8060';
 
