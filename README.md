@@ -2,6 +2,7 @@
 
 [![npm][npm]][npm-url]
 [![travis][travis]][travis-url]
+[![codecov][codecov]][codecov-url]
 
 Discover & control Roku devices from NodeJS.
 
@@ -194,3 +195,5 @@ Tested on OSX & raspberry pi w/ raspbian jessie, and with Roku TV.
 [npm-url]: https://npmjs.com/package/roku-client
 [travis]: https://img.shields.io/travis/bschlenk/node-roku-client/master.svg?logo=travis
 [travis-url]: https://travis-ci.org/bschlenk/node-roku-client
+[codecov]: https://img.shields.io/codecov/c/github/bschlenk/node-roku-client.svg?logo=codecov
+[codecov-url]: https://codecov.io/gh/bschlenk/node-roku-client
