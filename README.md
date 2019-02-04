@@ -3,12 +3,11 @@
 [![npm][npm]][npm-url]
 [![travis][travis]][travis-url]
 
-Discover Roku devices via `ssdp` and control the device with methods
-that perform `http` requests to the device.
+Discover & control Roku devices from NodeJS.
 
 **requirements:**
   - node `6.0.0 or higher`
-  - connected to the same network as the Roku device.
+  - a Roku device connected to your network
   - a router/network that supports UPnP (for ssdp)
 
 ## Installation
