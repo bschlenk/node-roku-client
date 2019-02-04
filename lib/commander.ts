@@ -104,8 +104,8 @@ export default class Commander {
 }
 
 // add all keys as methods to Commander
-values(keys).forEach((key) => {
-  (Commander.prototype as any)[key.name] = function (count = 1) {
+values(keys).forEach(key => {
+  (Commander.prototype as any)[key.name] = function(count = 1) {
     return this.keypress(key.command, count);
   };
 });

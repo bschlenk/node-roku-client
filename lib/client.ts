@@ -1,8 +1,8 @@
-import { parseString } from 'xml2js';
 import fetchPonyfill = require('fetch-ponyfill');
 import reduce = require('lodash.reduce');
 import camelcase = require('lodash.camelcase');
-import _debug  = require('debug');
+import { parseString } from 'xml2js';
+import _debug = require('debug');
 import { discover, discoverAll } from './discover';
 import Commander from './commander';
 import { getCommand, KeyType } from './keyCommand';
@@ -85,7 +85,6 @@ function appXMLToJS(app: any): App {
  * The Roku client class. Contains methods to talk to a roku device.
  */
 export default class Client {
-
   /**
    * Return a promise resolving to a new `Client` object for the first Roku
    * device discovered on the network. This method resolves to a single
@@ -135,10 +134,12 @@ export default class Client {
     debug(`GET ${endpoint}`);
     return fetch(endpoint)
       .then(parseXML)
-      .then((data) => {
+      .then(data => {
         const { app } = data['active-app'];
         if (app.length !== 1) {
-          throw new Error(`expected 1 active app but received ${app.length}: ${app}`);
+          throw new Error(
+            `expected 1 active app but received ${app.length}: ${app}`,
+          );
         }
         const activeApp = app[0];
         // If no app is currently active, a single field is returned without
@@ -161,14 +162,16 @@ export default class Client {
     debug(`GET ${endpoint}`);
     return fetch(endpoint)
       .then(parseXML)
-      .then(data => reduce(
-        data['device-info'],
-        (result, [value], key) => ({
-          ...result,
-          [camelcase(key)]: value,
-        }),
-        {},
-      ));
+      .then(data =>
+        reduce(
+          data['device-info'],
+          (result, [value], key) => ({
+            ...result,
+            [camelcase(key)]: value,
+          }),
+          {},
+        ),
+      );
   }
 
   /**
@@ -181,23 +184,24 @@ export default class Client {
   icon(appId: AppId): Promise<Icon> {
     const endpoint = `${this.ip}/query/icon/${appId}`;
     debug(`GET ${endpoint}`);
-    return fetch(endpoint)
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error(`Failed to fetch icon for app ${appId}: ${res.statusText}`);
-        }
+    return fetch(endpoint).then(res => {
+      if (!res.ok) {
+        throw new Error(
+          `Failed to fetch icon for app ${appId}: ${res.statusText}`,
+        );
+      }
 
-        const type = res.headers.get('content-type') || undefined;
-        let extension = undefined;
-        if (type) {
-          const match = /image\/(.*)/.exec(type);
-          if (match) {
-            extension = `.${match[1]}`;
-          }
+      const type = res.headers.get('content-type') || undefined;
+      let extension = undefined;
+      if (type) {
+        const match = /image\/(.*)/.exec(type);
+        if (match) {
+          extension = `.${match[1]}`;
         }
+      }
 
-        return { type, extension, response: res };
-      });
+      return { type, extension, response: res };
+    });
   }
 
   /**
@@ -209,12 +213,11 @@ export default class Client {
   launch(appId: AppId): Promise<void> {
     const endpoint = `${this.ip}/launch/${appId}`;
     debug(`POST ${endpoint}`);
-    return fetch(endpoint, { method: 'POST' })
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error(`Failed to call ${endpoint}: ${res.statusText}`);
-        }
-      });
+    return fetch(endpoint, { method: 'POST' }).then(res => {
+      if (!res.ok) {
+        throw new Error(`Failed to call ${endpoint}: ${res.statusText}`);
+      }
+    });
   }
 
   /**
@@ -240,17 +243,15 @@ export default class Client {
   private keyhelper(func: string, key: KeyType): Promise<void> {
     const command = getCommand(key);
     // if a single key is sent, treat it as a letter
-    const keyCmd = (command.length === 1)
-      ? `Lit_${encodeURIComponent(command)}`
-      : command;
+    const keyCmd =
+      command.length === 1 ? `Lit_${encodeURIComponent(command)}` : command;
     const endpoint = `${this.ip}/${func}/${keyCmd}`;
     debug(`POST ${endpoint}`);
-    return fetch(endpoint, { method: 'POST' })
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error(`Failed to call ${endpoint}: ${res.statusText}`);
-        }
-      });
+    return fetch(endpoint, { method: 'POST' }).then(res => {
+      if (!res.ok) {
+        throw new Error(`Failed to call ${endpoint}: ${res.statusText}`);
+      }
+    });
   }
 
   /**

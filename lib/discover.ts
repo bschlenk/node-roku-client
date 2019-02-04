@@ -74,9 +74,7 @@ class RokuFinder extends EventEmitter {
  * @param timeout The time to wait in ms before giving up.
  * @return A promise resolving to a Roku device's address.
  */
-export function discover(
-  timeout: number = DEFAULT_TIMEOUT,
-): Promise<string> {
+export function discover(timeout: number = DEFAULT_TIMEOUT): Promise<string> {
   return new Promise((resolve, reject) => {
     const finder = new RokuFinder();
     const startTime = Date.now();
@@ -85,15 +83,18 @@ export function discover(
       return Date.now() - startTime;
     }
 
-    finder.on('found', (address) => {
+    finder.on('found', address => {
       finder.stop();
       resolve(address);
       debug(`found Roku device at ${address} after ${elapsedTime()}ms`);
     });
 
     finder.on('timeout', () => {
-      reject(new Error(`Could not find any Roku devices after ${
-        timeout / 1000} seconds`));
+      reject(
+        new Error(
+          `Could not find any Roku devices after ${timeout / 1000} seconds`,
+        ),
+      );
     });
 
     finder.start(timeout);
@@ -119,7 +120,7 @@ export function discoverAll(
       return Date.now() - startTime;
     }
 
-    finder.on('found', (address) => {
+    finder.on('found', address => {
       if (addresses.indexOf(address) === -1) {
         debug(`found Roku device at ${address} after ${elapsedTime()}ms`);
         addresses.push(address);
@@ -131,8 +132,11 @@ export function discoverAll(
         debug('found Roku devices at %o after %dms', addresses, elapsedTime());
         resolve(addresses);
       } else {
-        reject(new Error(`Could not find any Roku devices after ${
-          timeout / 1000} seconds`));
+        reject(
+          new Error(
+            `Could not find any Roku devices after ${timeout / 1000} seconds`,
+          ),
+        );
       }
     });
 

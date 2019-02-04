@@ -4,9 +4,4 @@ import { discover, discoverAll } from './discover';
 
 export default Client;
 
-export {
-  Client,
-  keys,
-  discover,
-  discoverAll,
-};
+export { Client, keys, discover, discoverAll };
