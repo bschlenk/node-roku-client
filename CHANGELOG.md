@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="3.1.4"></a>
+## [3.1.4](https://github.com/bschlenk/node-roku-client/compare/v3.1.3...v3.1.4) (2019-02-04)
+
+
+
 <a name="3.1.3"></a>
 ## [3.1.3](https://github.com/bschlenk/node-roku-client/compare/v3.1.2...v3.1.3) (2018-11-23)
 
