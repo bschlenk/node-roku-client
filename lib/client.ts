@@ -175,11 +175,13 @@ export default class Client {
   }
 
   /**
-   * Download the given app's icon to the tmp directory and return that location.
+   * Fetch the given icon from the Roku device and return an object containing
+   * the image type, extension, and the fetch response. The response can be
+   * streamed to a file, turned into a data url, etc.
    * @see {@link https://sdkdocs.roku.com/display/sdkdoc/External+Control+API#ExternalControlAPI-query/icon/appID}
    * @param appId The app id to get the icon of.
    *     Should be the id from the id field of the app.
-   * @return The temporary path to the image.
+   * @return An object containing the fetch response.
    */
   icon(appId: AppId): Promise<Icon> {
     const endpoint = `${this.ip}/query/icon/${appId}`;
