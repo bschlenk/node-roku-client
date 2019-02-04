@@ -1,6 +1,7 @@
 # node-roku-client
 
-[![npm version](https://badge.fury.io/js/roku-client.svg)](https://badge.fury.io/js/roku-client)
+[![npm][npm]][npm-url]
+[![travis][travis]][travis-url]
 
 Discover Roku devices via `ssdp` and control the device with methods
 that perform `http` requests to the device.
@@ -189,3 +190,8 @@ Tested on OSX & raspberry pi w/ raspbian jessie, and with Roku TV.
 <!-- urls -->
 [1]: https://sdkdocs.roku.com/display/sdkdoc/External+Control+API
 [2]: https://sdkdocs.roku.com/display/sdkdoc/External+Control+API#ExternalControlAPI-KeypressKeyValues
+
+[npm]: https://img.shields.io/npm/v/roku-client.svg?logo=npm
+[npm-url]: https://npmjs.com/package/roku-client
+[travis]: https://img.shields.io/travis/bschlenk/node-roku-client/master.svg?logo=travis
+[travis-url]: https://travis-ci.org/bschlenk/node-roku-client
