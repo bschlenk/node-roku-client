@@ -1,16 +1,6 @@
 module.exports = {
-  testEnvironment: 'node',
-  setupTestFrameworkScriptFile: '<rootDir>/lib/setupTests.js',
-  moduleFileExtensions: [
-    'js',
-    'ts',
-    'json',
-    'node'
-  ],
-  transform: {
-    '^.+\\.ts$': 'ts-jest',
-  },
-  testRegex: '/__tests__/.*\\.test\\.(ts)$',
+  preset: 'ts-jest',
+  collectCoverage: true,
   collectCoverageFrom: [
     'lib/**/*.ts',
     '!lib/index.ts',
@@ -23,4 +13,7 @@ module.exports = {
       lines: 80,
     },
   },
+  setupTestFrameworkScriptFile: '<rootDir>/lib/setupTests.js',
+  testEnvironment: 'node',
+  testPathIgnorePatterns: ['<rootDir>/node_modules/', '<rootDir>/dist/'],
 };
