@@ -1,4 +1,3 @@
-import { promisify } from 'es6-promisify';
 import { parseString } from 'xml2js';
 import fetchPonyfill = require('fetch-ponyfill');
 import reduce = require('lodash.reduce');
@@ -11,8 +10,6 @@ import { getCommand, KeyType } from './keyCommand';
 const { fetch } = fetchPonyfill();
 
 const debug = _debug('roku-client:client');
-
-const parseStringAsync = promisify(parseString) as (val: string) => Promise<any>;
 
 // TODO: make this an interface with the possible values
 /** The keys that can exist in a roku device info object. */
@@ -55,8 +52,18 @@ function parseXML(res: Response): Promise<any> {
   if (!res.ok) {
     throw new Error(`Request failed: ${res.statusText}`);
   }
-  return res.text()
-    .then(parseStringAsync);
+  return res.text().then(
+    data =>
+      new Promise((resolve, reject) => {
+        parseString(data, (err, result) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(result);
+          }
+        });
+      }),
+  );
 }
 
 /**
