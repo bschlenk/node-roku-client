@@ -315,12 +315,12 @@ export default class Client {
    *
    * @example
    * client.command()
-   *     .volumeUp(10)
-   *     .up(2)
-   *     .select()
-   *     .text('Breaking Bad')
-   *     .enter()
-   *     .send();
+   *   .volumeUp(10)
+   *   .up(2)
+   *   .select()
+   *   .text('Breaking Bad')
+   *   .enter()
+   *   .send();
    *
    * @return A commander instance.
    */

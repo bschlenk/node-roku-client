@@ -69,7 +69,7 @@ class RokuFinder extends EventEmitter {
 }
 
 /**
- * Discover one Roku devices on the network. Resolves to the first Roku device
+ * Discover one Roku device on the network. Resolves to the first Roku device
  * that responds to the ssdp request.
  * @param timeout The time to wait in ms before giving up.
  * @return A promise resolving to a Roku device's address.
