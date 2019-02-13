@@ -46,7 +46,7 @@
     "@types/lodash.camelcase": "^4.3.4",
     "@types/lodash.reduce": "^4.6.4",
     "@types/lodash.values": "^4.3.4",
-    "@types/node": "^10.12.21",
+    "@types/node": "^11.9.3",
     "@types/node-fetch": "^2.1.2",
     "@types/tmp": "^0.0.33",
     "@types/xml2js": "^0.4.3",
