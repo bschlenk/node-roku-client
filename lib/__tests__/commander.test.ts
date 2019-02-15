@@ -10,7 +10,7 @@ describe('Commander', () => {
   beforeEach(() => {
     methods = [];
     client = new Client('address');
-    client.keypress = function (command) {
+    client.keypress = function(command) {
       methods.push(command);
       return Promise.resolve();
     };
@@ -78,13 +78,15 @@ describe('Commander', () => {
       .up()
       .send();
 
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       setImmediate(() => {
         expect(methods.length).toBe(0);
         jest.runAllTimers();
-        resolve(cmd.then(() => {
-          expect(methods).toEqual(['Up']);
-        }));
+        resolve(
+          cmd.then(() => {
+            expect(methods).toEqual(['Up']);
+          }),
+        );
       });
     });
   });
