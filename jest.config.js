@@ -13,7 +13,7 @@ module.exports = {
       lines: 80,
     },
   },
-  setupTestFrameworkScriptFile: '<rootDir>/lib/setupTests.js',
+  setupFilesAfterEnv: ['<rootDir>/lib/setupTests.js'],
   testEnvironment: 'node',
   testPathIgnorePatterns: ['<rootDir>/node_modules/', '<rootDir>/dist/'],
 };
