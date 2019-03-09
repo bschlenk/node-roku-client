@@ -73,10 +73,10 @@ Client.discoverAll(10).then((clients) => {
 | `.info()` | `Promise<Object>` | A map of this Roku device's properties. Varies from device to device. |
 | `.keypress(key: string)` | `Promise<void>` | Send a keypress from [keys.js](lib/keys.js) or a single character to send that letter (e.g. to an input box). |
 | `.keydown(key: string)`| `Promise<void>` | The same as `keypress` but tells the Roku to hold the key down. |
-| `.keyup(key: string)` | `Promise<void>` | The same as `keyup` but tells the Roku to release a key held with `keyup` ( a no-op if the key was not held). |
+| `.keyup(key: string)` | `Promise<void>` | The same as `keypress` but tells the Roku to release a key held with `keyup` ( a no-op if the key was not held). |
 | `.icon(appId: number)` | `Promise<Icon>` | Fetches the image and returns an object with the fetch response, extension, and mime type. |
 | `.launch(appId: number)` | `Promise<void>` | Launch the given app by its id. |
-| `.launchDtv(channel?: number | string)` | `Promise<void>` | Launch the DTV tuner, optionally to a specific channel. |
+| `.launchDtv(channel?: number \| string)` | `Promise<void>` | Launch the DTV tuner, optionally to a specific channel. |
 | `.text(text: string)` | `Promise<void>` | Send the text string as a series of `keypress` actions. |
 | `.command()` | `Commander` | Returns a `Commander` instance, which allows for easily chaining key commands to send to the Roku. |
 
