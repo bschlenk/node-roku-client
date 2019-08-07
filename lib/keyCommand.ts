@@ -6,7 +6,7 @@ export interface KeyCommand {
 }
 
 type KeyNameInterface<T extends Record<string, KeyCommand>> = {
-  [N in T[keyof T]['command']]: any
+  [N in T[keyof T]['command']]: any;
 };
 
 export type KeyName = keyof KeyNameInterface<Keys>;

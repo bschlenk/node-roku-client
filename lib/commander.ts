@@ -5,7 +5,7 @@ import { getCommand, KeyCommand, KeyName } from './keyCommand';
 
 type Client = import('./client').default;
 type ClientInterface<T extends Record<string, KeyCommand>> = {
-  [N in T[keyof T]['name']]: (count?: number) => Commander
+  [N in T[keyof T]['name']]: (count?: number) => Commander;
 };
 
 /**
@@ -105,7 +105,7 @@ export default class Commander {
 
 // add all keys as methods to Commander
 values(keys).forEach(key => {
-  (Commander.prototype as any)[key.name] = function(count = 1) {
+  (Commander.prototype as any)[key.name] = function(count: number = 1) {
     return this.keypress(key.command, count);
   };
 });
