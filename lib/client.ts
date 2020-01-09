@@ -186,14 +186,14 @@ export default class Client {
   icon(appId: AppId): Promise<Icon> {
     const endpoint = `${this.ip}/query/icon/${appId}`;
     debug(`GET ${endpoint}`);
-    return fetch(endpoint).then(res => {
-      if (!res.ok) {
+    return fetch(endpoint).then(response => {
+      if (!response.ok) {
         throw new Error(
-          `Failed to fetch icon for app ${appId}: ${res.statusText}`,
+          `Failed to fetch icon for app ${appId}: ${response.statusText}`,
         );
       }
 
-      const type = res.headers.get('content-type') || undefined;
+      const type = response.headers.get('content-type') || undefined;
       let extension = undefined;
       if (type) {
         const match = /image\/(.*)/.exec(type);
@@ -202,7 +202,7 @@ export default class Client {
         }
       }
 
-      return { type, extension, response: res };
+      return { type, extension, response };
     });
   }
 
