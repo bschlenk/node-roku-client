@@ -9,8 +9,8 @@ const DEFAULT_TIMEOUT = 10000;
 
 function parseAddress(location: string): string {
   const parts = url.parse(location);
-  parts.path = undefined;
-  parts.pathname = undefined;
+  parts.path = null;
+  parts.pathname = null;
   return url.format(parts);
 }
 
