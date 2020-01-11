@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.2.0](https://github.com/bschlenk/node-roku-client/compare/v3.1.7...v3.2.0) (2020-01-11)
+
+
+### Features
+
+* add default port to ip if not given ([e27cd8c](https://github.com/bschlenk/node-roku-client/commit/e27cd8c6b8510db88e63307e1e1d38f1d6a814cf))
+
 ### [3.1.6](https://github.com/bschlenk/node-roku-client/compare/v3.1.5...v3.1.6) (2019-08-07)
 
 <a name="3.1.5"></a>
