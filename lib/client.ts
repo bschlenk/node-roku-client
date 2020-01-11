@@ -26,7 +26,7 @@ export interface App {
   id: string;
   /** The display name of the app. */
   name: string;
-  /** The app type (channel, application, etc). */
+  /** The app type (menu, tvin, appl, etc). */
   type: string;
   /** The app version. */
   version: string;
