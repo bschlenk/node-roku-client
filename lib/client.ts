@@ -32,6 +32,9 @@ export interface App {
   version: string;
 }
 
+/** The default port a roku device will use for remote commands. */
+export const DEFAULT_PORT = 8060;
+
 /**
  * The response from calling the icon method.
  */
@@ -109,9 +112,19 @@ export default class Client {
 
   /**
    * Construct a new `Client` object with the given address.
-   * @param ip The address of the Roku device on the network.
+   * @param ip The address of the Roku device on the network. If no port is
+   *     given, then the default roku remote port will be used.
    */
-  constructor(readonly ip: string) {}
+  constructor(readonly ip: string) {
+    if (!ip.startsWith('http://')) {
+      ip = `http://${ip}`;
+    }
+    // no port at end
+    if (!/:\d+$/.test(ip)) {
+      ip = `${ip}:${DEFAULT_PORT}`;
+    }
+    this.ip = ip;
+  }
 
   /**
    * Get a list of apps installed on this device.

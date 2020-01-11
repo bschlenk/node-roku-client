@@ -3,7 +3,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as stream from 'stream';
-import Client from '../client';
+import Client, { DEFAULT_PORT } from '../client';
 import fetchPonyfill = require('fetch-ponyfill');
 import { FetchMock } from 'jest-fetch-mock';
 
@@ -53,6 +53,16 @@ describe('Client', () => {
     it('should construct a new Client object', () => {
       expect(client).toBeDefined();
       expect(client.ip).toEqual(clientAddr);
+    });
+
+    it('should add missing http://', () => {
+      const c = new Client('192.168.1.2:1111');
+      expect(c.ip).toEqual('http://192.168.1.2:1111');
+    });
+
+    it('should add the default port if omitted', () => {
+      const c = new Client('192.168.1.2');
+      expect(c.ip).toEqual(`http://192.168.1.2:${DEFAULT_PORT}`);
     });
   });
 
@@ -149,10 +159,11 @@ describe('Client', () => {
     it('should url encode Lit_ commands for utf-8 characters', () => {
       client.keypress('€').then(() => {
         // eslint-disable-next-line global-require
-        expect(fetch).toHaveBeenCalledWith(
-          `${clientAddr}/keypress/Lit_%E2%82%AC`,
-          { method: 'POST' },
-        );
+        expect(
+          fetch,
+        ).toHaveBeenCalledWith(`${clientAddr}/keypress/Lit_%E2%82%AC`, {
+          method: 'POST',
+        });
       });
     });
   });
@@ -216,20 +227,22 @@ describe('Client', () => {
     it('should pass a channel string to launch', () => {
       client.launchDtv('1.1').then(() => {
         // eslint-disable-next-line global-require
-        expect(fetch).toHaveBeenCalledWith(
-          `${client.ip}/launch/tvinput.dtv?ch=1.1`,
-          { method: 'POST' },
-        );
+        expect(
+          fetch,
+        ).toHaveBeenCalledWith(`${client.ip}/launch/tvinput.dtv?ch=1.1`, {
+          method: 'POST',
+        });
       });
     });
 
     it('should pass a channel number to launch', () => {
       client.launchDtv(8.5).then(() => {
         // eslint-disable-next-line global-require
-        expect(fetch).toHaveBeenCalledWith(
-          `${client.ip}/launch/tvinput.dtv?ch=8.5`,
-          { method: 'POST' },
-        );
+        expect(
+          fetch,
+        ).toHaveBeenCalledWith(`${client.ip}/launch/tvinput.dtv?ch=8.5`, {
+          method: 'POST',
+        });
       });
     });
   });
