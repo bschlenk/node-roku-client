@@ -56,7 +56,7 @@ function parseXML(res: Response): Promise<any> {
     throw new Error(`Request failed: ${res.statusText}`);
   }
   return res.text().then(
-    data =>
+    (data) =>
       new Promise((resolve, reject) => {
         parseString(data, (err, result) => {
           if (err) {
@@ -96,7 +96,7 @@ export default class Client {
    * @return A promise resolving to a `Client` object.
    */
   static discover(timeout?: number): Promise<Client> {
-    return discover(timeout).then(ip => new Client(ip));
+    return discover(timeout).then((ip) => new Client(ip));
   }
 
   /**
@@ -107,7 +107,7 @@ export default class Client {
    * @return A promise resolving to a list of `Client` objects.
    */
   static discoverAll(timeout?: number): Promise<Client[]> {
-    return discoverAll(timeout).then(ips => ips.map(ip => new Client(ip)));
+    return discoverAll(timeout).then((ips) => ips.map((ip) => new Client(ip)));
   }
 
   /**
@@ -147,7 +147,7 @@ export default class Client {
     debug(`GET ${endpoint}`);
     return fetch(endpoint)
       .then(parseXML)
-      .then(data => {
+      .then((data) => {
         const { app } = data['active-app'];
         if (app.length !== 1) {
           throw new Error(
@@ -175,7 +175,7 @@ export default class Client {
     debug(`GET ${endpoint}`);
     return fetch(endpoint)
       .then(parseXML)
-      .then(data =>
+      .then((data) =>
         reduce(
           data['device-info'],
           (result, [value], key) => ({
@@ -199,7 +199,7 @@ export default class Client {
   icon(appId: AppId): Promise<Icon> {
     const endpoint = `${this.ip}/query/icon/${appId}`;
     debug(`GET ${endpoint}`);
-    return fetch(endpoint).then(response => {
+    return fetch(endpoint).then((response) => {
       if (!response.ok) {
         throw new Error(
           `Failed to fetch icon for app ${appId}: ${response.statusText}`,
@@ -228,7 +228,7 @@ export default class Client {
   launch(appId: AppId): Promise<void> {
     const endpoint = `${this.ip}/launch/${appId}`;
     debug(`POST ${endpoint}`);
-    return fetch(endpoint, { method: 'POST' }).then(res => {
+    return fetch(endpoint, { method: 'POST' }).then((res) => {
       if (!res.ok) {
         throw new Error(`Failed to call ${endpoint}: ${res.statusText}`);
       }
@@ -262,7 +262,7 @@ export default class Client {
       command.length === 1 ? `Lit_${encodeURIComponent(command)}` : command;
     const endpoint = `${this.ip}/${func}/${keyCmd}`;
     debug(`POST ${endpoint}`);
-    return fetch(endpoint, { method: 'POST' }).then(res => {
+    return fetch(endpoint, { method: 'POST' }).then((res) => {
       if (!res.ok) {
         throw new Error(`Failed to call ${endpoint}: ${res.statusText}`);
       }
