@@ -83,7 +83,7 @@ export function discover(timeout: number = DEFAULT_TIMEOUT): Promise<string> {
       return Date.now() - startTime;
     }
 
-    finder.on('found', address => {
+    finder.on('found', (address) => {
       finder.stop();
       resolve(address);
       debug(`found Roku device at ${address} after ${elapsedTime()}ms`);
@@ -120,7 +120,7 @@ export function discoverAll(
       return Date.now() - startTime;
     }
 
-    finder.on('found', address => {
+    finder.on('found', (address) => {
       if (addresses.indexOf(address) === -1) {
         debug(`found Roku device at ${address} after ${elapsedTime()}ms`);
         addresses.push(address);

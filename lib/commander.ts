@@ -104,12 +104,12 @@ export default class Commander {
 }
 
 // add all keys as methods to Commander
-values(keys).forEach(key => {
-  (Commander.prototype as any)[key.name] = function(count: number = 1) {
+values(keys).forEach((key) => {
+  (Commander.prototype as any)[key.name] = function (count: number = 1) {
     return this.keypress(key.command, count);
   };
 });
 
 function wait(timeout: number): Promise<void> {
-  return new Promise(resolve => setTimeout(resolve, timeout));
+  return new Promise((resolve) => setTimeout(resolve, timeout));
 }

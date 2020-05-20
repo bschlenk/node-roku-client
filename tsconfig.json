@@ -6,7 +6,8 @@
     "strict": true,
     "sourceMap": true,
     "declaration": true,
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "typeRoots": ["node_modules/@types", "lib/@types"]
   },
-  "exclude": ["node_modules", "dist", "**/__tests__/*"]
+  "include": ["lib"]
 }
