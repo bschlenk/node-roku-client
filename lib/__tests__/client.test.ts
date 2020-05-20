@@ -42,7 +42,7 @@ describe('Client', () => {
         SERVER: 'Roku UPnP/1.0 MiniUPnPd/1.4',
         LOCATION: 'http://192.168.1.17:8060/dial/dd.xml',
       });
-      return Client.discover().then(c => {
+      return Client.discover().then((c) => {
         expect(c).toBeInstanceOf(Client);
         expect(c.ip).toEqual('http://192.168.1.17:8060');
       });
@@ -70,9 +70,9 @@ describe('Client', () => {
     it('should return a list of apps', () => {
       // eslint-disable-next-line global-require
       fetch.mockResponse(loadResponse('apps'));
-      return client.apps().then(apps => {
+      return client.apps().then((apps) => {
         expect(apps).toBeInstanceOf(Array);
-        apps.forEach(app => {
+        apps.forEach((app) => {
           expect(app).toEqual(
             expect.objectContaining({
               id: expect.any(String),
@@ -90,7 +90,7 @@ describe('Client', () => {
     it('should return the active app', () => {
       // eslint-disable-next-line global-require
       fetch.mockResponse(loadResponse('active-app'));
-      return client.active().then(app => {
+      return client.active().then((app) => {
         expect(app).toEqual(
           expect.objectContaining({
             id: expect.any(String),
@@ -105,7 +105,7 @@ describe('Client', () => {
     it('should return null if there is not an active app', () => {
       // eslint-disable-next-line global-require
       fetch.mockResponse(loadResponse('active-app-none'));
-      return client.active().then(app => {
+      return client.active().then((app) => {
         expect(app).toBeNull();
       });
     });
@@ -118,7 +118,7 @@ describe('Client', () => {
         .then(() => {
           throw new Error('Should have thrown');
         })
-        .catch(err => {
+        .catch((err) => {
           expect(err).toBeDefined();
           expect(err).toBeInstanceOf(Error);
         });
@@ -129,7 +129,7 @@ describe('Client', () => {
     it('should return info for the roku device', () => {
       // eslint-disable-next-line global-require
       fetch.mockResponse(loadResponse('info'));
-      return client.info().then(info => {
+      return client.info().then((info) => {
         expect(info).toBeInstanceOf(Object);
         expect(Object.keys(info).length).toEqual(29);
         expect(info['model-name']).toBeUndefined();
@@ -159,11 +159,12 @@ describe('Client', () => {
     it('should url encode Lit_ commands for utf-8 characters', () => {
       client.keypress('€').then(() => {
         // eslint-disable-next-line global-require
-        expect(
-          fetch,
-        ).toHaveBeenCalledWith(`${clientAddr}/keypress/Lit_%E2%82%AC`, {
-          method: 'POST',
-        });
+        expect(fetch).toHaveBeenCalledWith(
+          `${clientAddr}/keypress/Lit_%E2%82%AC`,
+          {
+            method: 'POST',
+          },
+        );
       });
     });
   });
@@ -196,7 +197,7 @@ describe('Client', () => {
         { headers: new fetchObjects.Headers({ 'content-type': 'image/jpeg' }) },
       );
       fetch.mockImplementation(() => Promise.resolve(response));
-      return client.icon('12').then(icon => {
+      return client.icon('12').then((icon) => {
         expect(icon.type).toEqual('image/jpeg');
         expect(icon.extension).toEqual('.jpeg');
         expect(icon.response).toBe(response);
@@ -227,22 +228,24 @@ describe('Client', () => {
     it('should pass a channel string to launch', () => {
       client.launchDtv('1.1').then(() => {
         // eslint-disable-next-line global-require
-        expect(
-          fetch,
-        ).toHaveBeenCalledWith(`${client.ip}/launch/tvinput.dtv?ch=1.1`, {
-          method: 'POST',
-        });
+        expect(fetch).toHaveBeenCalledWith(
+          `${client.ip}/launch/tvinput.dtv?ch=1.1`,
+          {
+            method: 'POST',
+          },
+        );
       });
     });
 
     it('should pass a channel number to launch', () => {
       client.launchDtv(8.5).then(() => {
         // eslint-disable-next-line global-require
-        expect(
-          fetch,
-        ).toHaveBeenCalledWith(`${client.ip}/launch/tvinput.dtv?ch=8.5`, {
-          method: 'POST',
-        });
+        expect(fetch).toHaveBeenCalledWith(
+          `${client.ip}/launch/tvinput.dtv?ch=8.5`,
+          {
+            method: 'POST',
+          },
+        );
       });
     });
   });
