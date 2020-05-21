@@ -188,8 +188,8 @@ This will run the linter, unit tests, and coverage.
 Tested on OSX & raspberry pi w/ raspbian jessie, and with Roku TV.
 
 <!-- urls -->
-[1]: https://sdkdocs.roku.com/display/sdkdoc/External+Control+API
-[2]: https://sdkdocs.roku.com/display/sdkdoc/External+Control+API#ExternalControlAPI-KeypressKeyValues
+[1]: https://developer.roku.com/docs/developer-program/debugging/external-control-api.md
+[2]: https://developer.roku.com/docs/developer-program/debugging/external-control-api.md#keypress-key-values
 
 [npm]: https://img.shields.io/npm/v/roku-client.svg?logo=npm
 [npm-url]: https://npmjs.com/package/roku-client

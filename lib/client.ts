@@ -128,7 +128,7 @@ export default class Client {
 
   /**
    * Get a list of apps installed on this device.
-   * @see {@link https://sdkdocs.roku.com/display/sdkdoc/External+Control+API#ExternalControlAPI-query/apps}
+   * @see {@link https://developer.roku.com/docs/developer-program/debugging/external-control-api.md#queryapps-example}
    */
   apps(): Promise<App[]> {
     const endpoint = `${this.ip}/query/apps`;
@@ -140,7 +140,7 @@ export default class Client {
 
   /**
    * Get the active app, or null if the home screen is displayed.
-   * @see {@link https://sdkdocs.roku.com/display/sdkdoc/External+Control+API#ExternalControlAPI-query/active-app}
+   * @see {@link https://developer.roku.com/docs/developer-program/debugging/external-control-api.md#queryactive-app-examples}
    */
   active(): Promise<App | null> {
     const endpoint = `${this.ip}/query/active-app`;
@@ -168,7 +168,7 @@ export default class Client {
    * Get the info of this Roku device. Responses vary between devices.
    * All keys are coerced to camelcase for easier access, so user-device-name
    * becomes userDeviceName, etc.
-   * @see {@link https://sdkdocs.roku.com/display/sdkdoc/External+Control+API#ExternalControlAPI-query/device-info}
+   * @see {@link https://developer.roku.com/docs/developer-program/debugging/external-control-api.md#querydevice-info-example}
    */
   info(): Promise<DeviceInfo> {
     const endpoint = `${this.ip}/query/device-info`;
@@ -191,7 +191,7 @@ export default class Client {
    * Fetch the given icon from the Roku device and return an object containing
    * the image type, extension, and the fetch response. The response can be
    * streamed to a file, turned into a data url, etc.
-   * @see {@link https://sdkdocs.roku.com/display/sdkdoc/External+Control+API#ExternalControlAPI-query/icon/appID}
+   * @see {@link https://developer.roku.com/docs/developer-program/debugging/external-control-api.md#queryicon-example}
    * @param appId The app id to get the icon of.
    *     Should be the id from the id field of the app.
    * @return An object containing the fetch response.
@@ -221,7 +221,7 @@ export default class Client {
 
   /**
    * Launch the given `appId`.
-   * @see {@link https://sdkdocs.roku.com/display/sdkdoc/External+Control+API#ExternalControlAPI-launch/appID}
+   * @see {@link https://developer.roku.com/docs/developer-program/debugging/external-control-api.md#launch-examples}
    * @param appId The id of the app to launch.
    * @return A void promise which resolves when the app is launched.
    */
@@ -237,7 +237,7 @@ export default class Client {
 
   /**
    * Launch the DTV tuner, optionally with a channel number.
-   * @see {@link https://sdkdocs.roku.com/display/sdkdoc/Externa+Control+API#ExternalControlAPI-launch/tvinput.dtv}
+   * @see {@link https://developer.roku.com/docs/developer-program/debugging/external-control-api.md#launch-parameters-for-the-roku-tv-tuner-app-channel-id-tvinputdtv}
    * @param channel The channel to launch, or leave blank to launch the DTV
    *     ui to the last open channel.
    * @return A promise which resolves when DTV is launched.
@@ -251,7 +251,7 @@ export default class Client {
   /**
    * Helper used by all keypress methods. Converts single characters
    * to `Lit_` commands to send the letter to the Roku.
-   * @see {@link https://sdkdocs.roku.com/display/sdkdoc/External+Control+API#ExternalControlAPI-KeypressKeyValues}
+   * @see {@link https://developer.roku.com/docs/developer-program/debugging/external-control-api.md#keypress-key-values}
    * @param func The name of the Roku endpoint function.
    * @param key The key to press.
    */
@@ -271,7 +271,7 @@ export default class Client {
 
   /**
    * Equivalent to pressing and releasing the remote control key given.
-   * @see {@link https://sdkdocs.roku.com/display/sdkdoc/External+Control+API#ExternalControlAPI-keypress/key}
+   * @see {@link https://developer.roku.com/docs/developer-program/debugging/external-control-api.md#keypress-example}
    * @param key A key from the keys module.
    * @return A promise which resolves when the keypress has completed.
    */
@@ -281,7 +281,7 @@ export default class Client {
 
   /**
    * Equivalent to pressing and holding the remote control key given.
-   * @see {@link https://sdkdocs.roku.com/display/sdkdoc/External+Control+API#ExternalControlAPI-keydown/key}
+   * @see {@link https://developer.roku.com/docs/developer-program/debugging/external-control-api.md#keyupkeydown-example}
    * @param key A key from the keys module.
    * @return A promise which resolves when the keydown has completed.
    */
@@ -292,7 +292,7 @@ export default class Client {
   /**
    * Equivalent to releasing the remote control key given. Only makes sense
    * if `keydown` was already called for the same key.
-   * @see {@link https://sdkdocs.roku.com/display/sdkdoc/External+Control+API#ExternalControlAPI-keyup/key}
+   * @see {@link https://developer.roku.com/docs/developer-program/debugging/external-control-api.md#keyupkeydown-example}
    * @param key A key from the keys module.
    * @return A promise which resolves when the keyup has completed.
    */
@@ -303,7 +303,7 @@ export default class Client {
   /**
    * Send the given string to the Roku device.
    * A shorthand for calling `keypress` for each letter in the given string.
-   * @see {@link https://sdkdocs.roku.com/display/sdkdoc/External+Control+API#ExternalControlAPI-KeypressKeyValues}
+   * @see {@link https://developer.roku.com/docs/developer-program/debugging/external-control-api.md#keypress-key-values}
    * @param text The message to send.
    * @return A promise which resolves when the text has successfully been sent.
    */
