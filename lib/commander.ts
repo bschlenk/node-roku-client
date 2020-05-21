@@ -86,8 +86,7 @@ export default class Commander {
    */
   send(): Promise<void> {
     return reduce(
-      // clean up the commands list while also returning it
-      this.commands.splice(0, this.commands.length),
+      this.commands,
       (promise, command) => promise.then(() => this.runCommand(command)),
       Promise.resolve(),
     );

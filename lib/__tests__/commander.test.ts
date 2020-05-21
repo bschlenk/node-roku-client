@@ -87,4 +87,16 @@ describe('Commander', () => {
       });
     });
   });
+
+  it('should allow sending more than once', async () => {
+    commander.up(2).down(2).left().right();
+
+    await commander.send();
+    expect(methods).toEqual(['Up', 'Up', 'Down', 'Down', 'Left', 'Right']);
+
+    methods = [];
+
+    await commander.send();
+    expect(methods).toEqual(['Up', 'Up', 'Down', 'Down', 'Left', 'Right']);
+  });
 });

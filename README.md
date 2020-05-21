@@ -107,7 +107,8 @@ to `1`.
 After chaining the desired methods, call `.send()` to send them to the
 Roku. `.send()` returns a promise that completes when all buttons have
 been pressed, or when the Roku fails to respond to any of the commands.
-A `Commander` instance should not be reused after calling `.send()`.
+
+Commander instances can be saved and reused later as macros.
 
 #### Examples
 
@@ -161,6 +162,15 @@ client.command()
   .wait(1000)
   .text('some text')
   .send();
+```
+
+##### Usage as a macro
+```js
+const volumeUp5 = client.command().volumeUp(5);
+const volumeDown5 = client.command().volumeDown(5);
+
+volumeUp5.send();
+volumeUp5.send();
 ```
 
 ## Usage in the Browser
