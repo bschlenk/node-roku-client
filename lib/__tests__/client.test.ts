@@ -1,5 +1,3 @@
-/* eslint-env jest */
-
 import * as fs from 'fs';
 import * as path from 'path';
 import * as stream from 'stream';
@@ -31,13 +29,11 @@ describe('Client', () => {
 
   beforeEach(() => {
     client = new Client(clientAddr);
-    // eslint-disable-next-line global-require
     fetch.mockClear();
   });
 
   describe('#discover()', () => {
     it('should resolve to a client instance for the first address found', () => {
-      // eslint-disable-next-line
       require('node-ssdp').__setHeaders({
         SERVER: 'Roku UPnP/1.0 MiniUPnPd/1.4',
         LOCATION: 'http://192.168.1.17:8060/dial/dd.xml',
@@ -68,7 +64,6 @@ describe('Client', () => {
 
   describe('#apps()', () => {
     it('should return a list of apps', () => {
-      // eslint-disable-next-line global-require
       fetch.mockResponse(loadResponse('apps'));
       return client.apps().then((apps) => {
         expect(apps).toBeInstanceOf(Array);
@@ -88,7 +83,6 @@ describe('Client', () => {
 
   describe('#active()', () => {
     it('should return the active app', () => {
-      // eslint-disable-next-line global-require
       fetch.mockResponse(loadResponse('active-app'));
       return client.active().then((app) => {
         expect(app).toEqual(
@@ -103,7 +97,6 @@ describe('Client', () => {
     });
 
     it('should return null if there is not an active app', () => {
-      // eslint-disable-next-line global-require
       fetch.mockResponse(loadResponse('active-app-none'));
       return client.active().then((app) => {
         expect(app).toBeNull();
@@ -111,7 +104,6 @@ describe('Client', () => {
     });
 
     it('should reject if multiple apps are returned', () => {
-      // eslint-disable-next-line global-require
       fetch.mockResponse(loadResponse('active-multiple'));
       return client
         .active()
@@ -127,7 +119,6 @@ describe('Client', () => {
 
   describe('#info()', () => {
     it('should return info for the roku device', () => {
-      // eslint-disable-next-line global-require
       fetch.mockResponse(loadResponse('info'));
       return client.info().then((info) => {
         expect(info).toBeInstanceOf(Object);
@@ -141,7 +132,6 @@ describe('Client', () => {
   describe('#keypress()', () => {
     it('should press the home button', () =>
       client.keypress('Home').then(() => {
-        // eslint-disable-next-line global-require
         expect(fetch).toHaveBeenCalledWith(`${clientAddr}/keypress/Home`, {
           method: 'POST',
         });
@@ -149,7 +139,6 @@ describe('Client', () => {
 
     it('should send a Lit_ command if a single character is passed in', () => {
       client.keypress('a').then(() => {
-        // eslint-disable-next-line global-require
         expect(fetch).toHaveBeenCalledWith(`${clientAddr}/keypress/Lit_a`, {
           method: 'POST',
         });
@@ -158,7 +147,6 @@ describe('Client', () => {
 
     it('should url encode Lit_ commands for utf-8 characters', () => {
       client.keypress('€').then(() => {
-        // eslint-disable-next-line global-require
         expect(fetch).toHaveBeenCalledWith(
           `${clientAddr}/keypress/Lit_%E2%82%AC`,
           {
@@ -172,7 +160,6 @@ describe('Client', () => {
   describe('#keydown()', () => {
     it('should press and hold the pause', () =>
       client.keydown('Pause').then(() => {
-        // eslint-disable-next-line global-require
         expect(fetch).toHaveBeenCalledWith(`${clientAddr}/keydown/Pause`, {
           method: 'POST',
         });
@@ -182,7 +169,6 @@ describe('Client', () => {
   describe('#keyup()', () => {
     it('should release the info button', () =>
       client.keyup('Info').then(() => {
-        // eslint-disable-next-line global-require
         expect(fetch).toHaveBeenCalledWith(`${clientAddr}/keyup/Info`, {
           method: 'POST',
         });
@@ -191,7 +177,6 @@ describe('Client', () => {
 
   describe('#icon()', () => {
     it('should download the icon to the given folder', () => {
-      // eslint-disable-next-line global-require
       const response = new fetchObjects.Response(
         loadResponse('netflix.jpeg', true),
         { headers: new fetchObjects.Headers({ 'content-type': 'image/jpeg' }) },
@@ -208,7 +193,6 @@ describe('Client', () => {
   describe('#launch()', () => {
     it('should call launch for the given app id', () =>
       client.launch('12345').then(() => {
-        // eslint-disable-next-line global-require
         expect(fetch).toHaveBeenCalledWith(`${client.ip}/launch/12345`, {
           method: 'POST',
         });
@@ -218,7 +202,6 @@ describe('Client', () => {
   describe('#launchDtv()', () => {
     it('should call launch/tvinput.dtv', () => {
       client.launchDtv().then(() => {
-        // eslint-disable-next-line global-require
         expect(fetch).toHaveBeenCalledWith(`${client.ip}/launch/tvinput.dtv`, {
           method: 'POST',
         });
@@ -227,7 +210,6 @@ describe('Client', () => {
 
     it('should pass a channel string to launch', () => {
       client.launchDtv('1.1').then(() => {
-        // eslint-disable-next-line global-require
         expect(fetch).toHaveBeenCalledWith(
           `${client.ip}/launch/tvinput.dtv?ch=1.1`,
           {
@@ -239,7 +221,6 @@ describe('Client', () => {
 
     it('should pass a channel number to launch', () => {
       client.launchDtv(8.5).then(() => {
-        // eslint-disable-next-line global-require
         expect(fetch).toHaveBeenCalledWith(
           `${client.ip}/launch/tvinput.dtv?ch=8.5`,
           {
@@ -253,7 +234,6 @@ describe('Client', () => {
   describe('#text()', () => {
     it('should send a Lit_ command for each letter', () =>
       client.text('hello').then(() => {
-        // eslint-disable-next-line global-require
         expect(fetch.mock.calls).toEqual([
           [`${client.ip}/keypress/Lit_h`, { method: 'POST' }],
           [`${client.ip}/keypress/Lit_e`, { method: 'POST' }],
@@ -273,7 +253,6 @@ describe('Client', () => {
         .text('abc')
         .send()
         .then(() => {
-          // eslint-disable-next-line global-require
           expect(fetch.mock.calls).toEqual([
             [`${client.ip}/keypress/VolumeUp`, { method: 'POST' }],
             [`${client.ip}/keypress/Select`, { method: 'POST' }],
