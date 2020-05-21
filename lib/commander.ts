@@ -1,4 +1,3 @@
-import reduce = require('lodash.reduce');
 import values = require('lodash.values');
 import * as keys from './keys';
 import { getCommand, KeyCommand, KeyName } from './keyCommand';
@@ -85,8 +84,7 @@ export default class Commander {
    * Send all of the configured commands to the Roku.
    */
   send(): Promise<void> {
-    return reduce(
-      this.commands,
+    return this.commands.reduce(
       (promise, command) => promise.then(() => this.runCommand(command)),
       Promise.resolve(),
     );

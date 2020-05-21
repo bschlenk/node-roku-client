@@ -1,5 +1,4 @@
 import fetchPonyfill = require('fetch-ponyfill');
-import reduce = require('lodash.reduce');
 import camelcase = require('lodash.camelcase');
 import { parseString } from 'xml2js';
 import _debug = require('debug');
@@ -176,13 +175,13 @@ export default class Client {
     return fetch(endpoint)
       .then(parseXML)
       .then((data) =>
-        reduce(
-          data['device-info'],
-          (result, [value], key) => ({
-            ...result,
-            [camelcase(key)]: value,
-          }),
-          {},
+        Object.entries(data['device-info'] as Record<string, string[]>).reduce(
+          // the xml parser wraps values in an array
+          (result, [key, [value]]) => {
+            result[camelcase(key)] = value;
+            return result;
+          },
+          {} as DeviceInfo,
         ),
       );
   }
@@ -308,11 +307,12 @@ export default class Client {
    * @return A promise which resolves when the text has successfully been sent.
    */
   text(text: string): Promise<void> {
-    return reduce(
-      text,
-      (promise, letter) => promise.then(() => this.keypress(letter)),
-      Promise.resolve(),
-    );
+    return text
+      .split('')
+      .reduce(
+        (promise, letter) => promise.then(() => this.keypress(letter)),
+        Promise.resolve(),
+      );
   }
 
   /**
