@@ -17,6 +17,7 @@ type Command = [string, boolean, number?];
 
 const WAIT_COMMAND = '__WAIT';
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export default interface Commander extends ClientInterface<typeof keys> {}
 
 export default class Commander {
@@ -41,7 +42,7 @@ export default class Commander {
    * @param key The key to press, from the `keys` module.
    * @param count The number of times to press the key.
    */
-  keypress(key: KeyName | KeyCommand, count: number = 1): Commander {
+  keypress(key: KeyName | KeyCommand, count = 1): Commander {
     const command = getCommand(key);
     for (let i = 0; i < count; i += 1) {
       this.commands.push([command, false]);
@@ -105,7 +106,7 @@ export default class Commander {
 
 // add all keys as methods to Commander
 values(keys).forEach((key) => {
-  (Commander.prototype as any)[key.name] = function (count: number = 1) {
+  (Commander.prototype as any)[key.name] = function (count = 1) {
     return this.keypress(key.command, count);
   };
 });

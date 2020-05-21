@@ -22,7 +22,7 @@ class RokuFinder extends EventEmitter {
   private readonly client: SSDPClient;
   private intervalId: NodeJS.Timer | null = null;
   private timeoutId: NodeJS.Timer | null = null;
-  private running: boolean = false;
+  private running = false;
 
   constructor() {
     super();
@@ -34,7 +34,7 @@ class RokuFinder extends EventEmitter {
         return;
       }
       const { SERVER, LOCATION } = headers;
-      if (SERVER && LOCATION && SERVER.indexOf('Roku') !== -1) {
+      if (SERVER && LOCATION && SERVER.includes('Roku')) {
         const address = parseAddress(LOCATION);
         this.emit('found', address);
       }
@@ -121,7 +121,7 @@ export function discoverAll(
     }
 
     finder.on('found', (address) => {
-      if (addresses.indexOf(address) === -1) {
+      if (!addresses.includes(address)) {
         debug(`found Roku device at ${address} after ${elapsedTime()}ms`);
         addresses.push(address);
       }
