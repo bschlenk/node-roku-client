@@ -13,7 +13,7 @@
   "scripts": {
     "test:unit": "jest",
     "test:watch": "npm run test:unit -- --watch",
-    "lint": "tslint -t stylish -p .",
+    "lint": "eslint --ext .ts lib",
     "test": "npm run lint && npm run test:unit",
     "build": "tsc",
     "release": "standard-version",
@@ -57,16 +57,17 @@
     "@types/lodash.values": "^4.3.6",
     "@types/node": "^14.0.4",
     "@types/xml2js": "^0.4.5",
+    "@typescript-eslint/eslint-plugin": "^2.34.0",
+    "@typescript-eslint/parser": "^2.34.0",
+    "eslint": "^7.0.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-import": "^2.20.2",
     "husky": "^4.2.5",
     "jest": "^26.0.1",
     "jest-fetch-mock": "^3.0.3",
     "prettier": "^2.0.5",
     "standard-version": "^8.0.0",
     "ts-jest": "^26.0.0",
-    "tslint": "^6.1.2",
-    "tslint-config-airbnb": "^5.11.2",
-    "tslint-config-prettier": "^1.18.0",
-    "tslint-plugin-prettier": "^2.3.0",
     "typescript": "^3.9.3"
   }
 }
