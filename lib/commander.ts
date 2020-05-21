@@ -1,4 +1,3 @@
-import values = require('lodash.values');
 import * as keys from './keys';
 import { getCommand, KeyCommand, KeyName } from './keyCommand';
 
@@ -102,7 +101,7 @@ export default class Commander {
 }
 
 // add all keys as methods to Commander
-values(keys).forEach((key) => {
+Object.values(keys).forEach((key) => {
   (Commander.prototype as any)[key.name] = function (count = 1) {
     return this.keypress(key.command, count);
   };
