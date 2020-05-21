@@ -3,7 +3,7 @@
   "version": "3.2.0",
   "description": "Send commands to your Roku devices",
   "engines": {
-    "node": ">=6.0.0"
+    "node": ">=10"
   },
   "files": [
     "dist"
