@@ -1,6 +1,6 @@
 import fetchPonyfill = require('fetch-ponyfill');
 import camelcase = require('lodash.camelcase');
-import { parseString } from 'xml2js';
+import { parseStringPromise as parseString } from 'xml2js';
 import _debug = require('debug');
 import { discover, discoverAll } from './discover';
 import Commander from './commander';
@@ -54,18 +54,7 @@ function parseXML(res: Response): Promise<any> {
   if (!res.ok) {
     throw new Error(`Request failed: ${res.statusText}`);
   }
-  return res.text().then(
-    (data) =>
-      new Promise((resolve, reject) => {
-        parseString(data, (err, result) => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(result);
-          }
-        });
-      }),
-  );
+  return res.text().then((data) => parseString(data));
 }
 
 /**
