@@ -8,7 +8,7 @@ Discover & control Roku devices from NodeJS.
 
 **requirements:**
 
-- node `6.0.0 or higher`
+- node `10 or higher`
 - a Roku device connected to your network
 - a router/network that supports UPnP (for ssdp)
 
