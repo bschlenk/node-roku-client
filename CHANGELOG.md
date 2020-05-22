@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.0.0](https://github.com/bschlenk/node-roku-client/compare/v3.2.0...v4.0.0) (2020-05-22)
+
+
+### ⚠ BREAKING CHANGES
+
+* Minimum NodeJS version has been bumped to 10.
+
+### Features
+
+* allow reusing commander commands ([abd9543](https://github.com/bschlenk/node-roku-client/commit/abd95431f6c5f497231100b25e7c2a909e1e6bc7))
+
+
+### build
+
+* bump engines.node to >=10 ([1cf5e9c](https://github.com/bschlenk/node-roku-client/commit/1cf5e9c48d26abb78bd13a1ac5df9f96454febc8))
+* bump travis node versions to 10 and 12 ([e691a8b](https://github.com/bschlenk/node-roku-client/commit/e691a8be9af01899d7adc0a426b369e754875594))
+
 ## [3.2.0](https://github.com/bschlenk/node-roku-client/compare/v3.1.7...v3.2.0) (2020-01-11)
 
 
