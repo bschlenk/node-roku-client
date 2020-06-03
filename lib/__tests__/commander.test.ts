@@ -1,15 +1,15 @@
-import Client from '../client';
-import Commander from '../commander';
-import * as keys from '../keys';
+import { RokuClient } from '../client';
+import { Commander } from '../commander';
+import * as Keys from '../keys';
 
 describe('Commander', () => {
   let methods: any[];
-  let client: Client;
+  let client: RokuClient;
   let commander: Commander;
 
   beforeEach(() => {
     methods = [];
-    client = new Client('address');
+    client = new RokuClient('address');
     client.keypress = function (command) {
       methods.push(command);
       return Promise.resolve();
@@ -47,9 +47,9 @@ describe('Commander', () => {
 
   it('should allow for key strings to be used', () =>
     commander
-      .keypress(keys.VOLUME_DOWN)
-      .keypress(keys.VOLUME_UP)
-      .keypress(keys.VOLUME_MUTE)
+      .keypress(Keys.VOLUME_DOWN)
+      .keypress(Keys.VOLUME_UP)
+      .keypress(Keys.VOLUME_MUTE)
       .keypress('Power')
       .send()
       .then(() => {

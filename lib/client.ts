@@ -3,7 +3,7 @@ import camelcase = require('lodash.camelcase');
 import { parseStringPromise as parseString } from 'xml2js';
 import _debug = require('debug');
 import { discover, discoverAll } from './discover';
-import Commander from './commander';
+import { Commander } from './commander';
 import { getCommand, KeyType } from './keyCommand';
 
 const { fetch } = fetchPonyfill();
@@ -12,15 +12,15 @@ const debug = _debug('roku-client:client');
 
 // TODO: make this an interface with the possible values
 /** The keys that can exist in a roku device info object. */
-export type DeviceInfo = Record<string, string>;
+export type RokuDeviceInfo = Record<string, string>;
 
 /** The ids used by roku to identify an app. */
-export type AppId = number | string;
+export type RokuAppId = number | string;
 
 /**
  * The properties associated with a Roku app.
  */
-export interface App {
+export interface RokuApp {
   /** The id, used within the api. */
   id: string;
   /** The display name of the app. */
@@ -32,12 +32,12 @@ export interface App {
 }
 
 /** The default port a roku device will use for remote commands. */
-export const DEFAULT_PORT = 8060;
+export const ROKU_DEFAULT_PORT = 8060;
 
 /**
  * The response from calling the icon method.
  */
-export interface Icon {
+export interface RokuIcon {
   /** The mime type of the icon file. */
   type?: string;
   /** The file extension of the icon file. */
@@ -61,7 +61,7 @@ function parseXML(res: Response): Promise<any> {
  * Convert the xml version of a roku app
  * to a cleaned up js version.
  */
-function appXMLToJS(app: any): App {
+function appXMLToJS(app: any): RokuApp {
   const { _: name } = app;
   const { id, type, version } = app.$;
   return {
@@ -75,7 +75,7 @@ function appXMLToJS(app: any): App {
 /**
  * The Roku client class. Contains methods to talk to a roku device.
  */
-export default class Client {
+export class RokuClient {
   /**
    * Return a promise resolving to a new `Client` object for the first Roku
    * device discovered on the network. This method resolves to a single
@@ -83,8 +83,8 @@ export default class Client {
    * @param timeout The time in ms to wait before giving up.
    * @return A promise resolving to a `Client` object.
    */
-  static discover(timeout?: number): Promise<Client> {
-    return discover(timeout).then((ip) => new Client(ip));
+  static discover(timeout?: number): Promise<RokuClient> {
+    return discover(timeout).then((ip) => new RokuClient(ip));
   }
 
   /**
@@ -94,8 +94,10 @@ export default class Client {
    * @param timeout The time in ms to wait before giving up.
    * @return A promise resolving to a list of `Client` objects.
    */
-  static discoverAll(timeout?: number): Promise<Client[]> {
-    return discoverAll(timeout).then((ips) => ips.map((ip) => new Client(ip)));
+  static discoverAll(timeout?: number): Promise<RokuClient[]> {
+    return discoverAll(timeout).then((ips) =>
+      ips.map((ip) => new RokuClient(ip)),
+    );
   }
 
   /**
@@ -109,7 +111,7 @@ export default class Client {
     }
     // no port at end
     if (!/:\d+$/.test(ip)) {
-      ip = `${ip}:${DEFAULT_PORT}`;
+      ip = `${ip}:${ROKU_DEFAULT_PORT}`;
     }
     this.ip = ip;
   }
@@ -118,7 +120,7 @@ export default class Client {
    * Get a list of apps installed on this device.
    * @see {@link https://developer.roku.com/docs/developer-program/debugging/external-control-api.md#queryapps-example}
    */
-  apps(): Promise<App[]> {
+  apps(): Promise<RokuApp[]> {
     const endpoint = `${this.ip}/query/apps`;
     debug(`GET ${endpoint}`);
     return fetch(endpoint)
@@ -130,7 +132,7 @@ export default class Client {
    * Get the active app, or null if the home screen is displayed.
    * @see {@link https://developer.roku.com/docs/developer-program/debugging/external-control-api.md#queryactive-app-examples}
    */
-  active(): Promise<App | null> {
+  active(): Promise<RokuApp | null> {
     const endpoint = `${this.ip}/query/active-app`;
     debug(`GET ${endpoint}`);
     return fetch(endpoint)
@@ -158,7 +160,7 @@ export default class Client {
    * becomes userDeviceName, etc.
    * @see {@link https://developer.roku.com/docs/developer-program/debugging/external-control-api.md#querydevice-info-example}
    */
-  info(): Promise<DeviceInfo> {
+  info(): Promise<RokuDeviceInfo> {
     const endpoint = `${this.ip}/query/device-info`;
     debug(`GET ${endpoint}`);
     return fetch(endpoint)
@@ -170,7 +172,7 @@ export default class Client {
             result[camelcase(key)] = value;
             return result;
           },
-          {} as DeviceInfo,
+          {} as RokuDeviceInfo,
         ),
       );
   }
@@ -184,7 +186,7 @@ export default class Client {
    *     Should be the id from the id field of the app.
    * @return An object containing the fetch response.
    */
-  icon(appId: AppId): Promise<Icon> {
+  icon(appId: RokuAppId): Promise<RokuIcon> {
     const endpoint = `${this.ip}/query/icon/${appId}`;
     debug(`GET ${endpoint}`);
     return fetch(endpoint).then((response) => {
@@ -213,7 +215,7 @@ export default class Client {
    * @param appId The id of the app to launch.
    * @return A void promise which resolves when the app is launched.
    */
-  launch(appId: AppId): Promise<void> {
+  launch(appId: RokuAppId): Promise<void> {
     const endpoint = `${this.ip}/launch/${appId}`;
     debug(`POST ${endpoint}`);
     return fetch(endpoint, { method: 'POST' }).then((res) => {

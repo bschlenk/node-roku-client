@@ -20,12 +20,12 @@ Discover & control Roku devices from NodeJS.
 
 ```js
 // es2015
-import Client, { keys } from 'roku-client';
+import { RokuClient, Keys } from 'roku-client';
 
 // commonjs
-const { Client, keys } = require('roku-client');
+const { RokuClient, Keys } = require('roku-client');
 
-Client.discover(/* timeout, defaults to 10 seconds */)
+RokuClient.discover(/* timeout, defaults to 10 seconds */)
   .then((client) => {
     console.log(`roku device found at ${client.ip}`);
     return client.apps();
@@ -39,26 +39,26 @@ Client.discover(/* timeout, defaults to 10 seconds */)
   });
 
 // Or, if the roku address is already known
-const client = new Client('http://192.168.1.17:8060');
-client.keypress(keys.VOLUME_UP);
+const client = new RokuClient('http://192.168.1.17:8060');
+client.keypress(Keys.VOLUME_UP);
 ```
 
-## Client.discover()
+## RokuClient.discover()
 
-Invoking `Client.discover()` will return a promise which resolves to a
-Client object on success. The Client will be initialized to the address
+Invoking `RokuClient.discover()` will return a promise which resolves to a
+`RokuClient` object on success. The `RokuClient` will be initialized to the address
 of the first device to respond. This client object will contain the
 methods needed to control a roku device. Commands are sent to the Roku
 device via `HTTP` protocol as found on the [docs][1].
 
-If there are multiple Roku devices on the network, `Clint.discoverAll()`
+If there are multiple Roku devices on the network, `RokuClient.discoverAll()`
 can be called which will wait the full timeout and return a promise that
 resolves to an array of clients for all the addresses found.
 
 ```js
-import Client from 'roku-client';
+import { RokuClient } from 'roku-client';
 
-Client.discoverAll(10).then((clients) => {
+RokuClient.discoverAll(10).then((clients) => {
   console.log(clients.map((c) => c.ip));
   // ['http://192.168.1.17:8060', 'http://192.168.1.18:8060', ...]
 });
@@ -66,22 +66,22 @@ Client.discoverAll(10).then((clients) => {
 
 ## API Methods
 
-| **Method Name**                          | **Return Type**                                                             | **Details**                                                                                                      |
-| ---------------------------------------- | --------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| `ip`                                     | `string`                                                                    | The network ip and port `http://xxx.xxx.xxx.xxx:8060`                                                            |
-| `static .discover(timeout?: number)`     | `Promise<Client>`                                                           | Return a promise resolving to a new `Client` object for the first Roku device discovered on the network.         |
-| `static .discoverAll(timeout?: number)`  | `Promise<Client[]>`                                                         | Return a promise resolving to a list of `Client` objects corresponding to each roku device found on the network. |
-| `.apps()`                                | `Promise<{id: string, name: string, type: string, version: string}[]>`      | List of all apps installed on this device.                                                                       |
-| `.active()`                              | `Promise<{id: string, name: string, type: string, version: string}\|null>}` | A single object representing the active app, or null if the home screen is active.                               |
-| `.info()`                                | `Promise<Object>`                                                           | A map of this Roku device's properties. Varies from device to device.                                            |
-| `.keypress(key: string)`                 | `Promise<void>`                                                             | Send a keypress from [keys.js](lib/keys.js) or a single character to send that letter (e.g. to an input box).    |
-| `.keydown(key: string)`                  | `Promise<void>`                                                             | The same as `keypress` but tells the Roku to hold the key down.                                                  |
-| `.keyup(key: string)`                    | `Promise<void>`                                                             | The same as `keypress` but tells the Roku to release a key held with `keyup` ( a no-op if the key was not held). |
-| `.icon(appId: number)`                   | `Promise<Icon>`                                                             | Fetches the image and returns an object with the fetch response, extension, and mime type.                       |
-| `.launch(appId: number)`                 | `Promise<void>`                                                             | Launch the given app by its id.                                                                                  |
-| `.launchDtv(channel?: number \| string)` | `Promise<void>`                                                             | Launch the DTV tuner, optionally to a specific channel.                                                          |
-| `.text(text: string)`                    | `Promise<void>`                                                             | Send the text string as a series of `keypress` actions.                                                          |
-| `.command()`                             | `Commander`                                                                 | Returns a `Commander` instance, which allows for easily chaining key commands to send to the Roku.               |
+| **Method Name**                          | **Return Type**                                                             | **Details**                                                                                                          |
+| ---------------------------------------- | --------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| `ip`                                     | `string`                                                                    | The network ip and port `http://xxx.xxx.xxx.xxx:8060`                                                                |
+| `static .discover(timeout?: number)`     | `Promise<RokuClient>`                                                       | Return a promise resolving to a new `RokuClient` object for the first Roku device discovered on the network.         |
+| `static .discoverAll(timeout?: number)`  | `Promise<RokuClient[]>`                                                     | Return a promise resolving to a list of `RokuClient` objects corresponding to each roku device found on the network. |
+| `.apps()`                                | `Promise<{id: string, name: string, type: string, version: string}[]>`      | List of all apps installed on this device.                                                                           |
+| `.active()`                              | `Promise<{id: string, name: string, type: string, version: string}\|null>}` | A single object representing the active app, or null if the home screen is active.                                   |
+| `.info()`                                | `Promise<Object>`                                                           | A map of this Roku device's properties. Varies from device to device.                                                |
+| `.keypress(key: string)`                 | `Promise<void>`                                                             | Send a keypress from [keys.js](lib/keys.js) or a single character to send that letter (e.g. to an input box).        |
+| `.keydown(key: string)`                  | `Promise<void>`                                                             | The same as `keypress` but tells the Roku to hold the key down.                                                      |
+| `.keyup(key: string)`                    | `Promise<void>`                                                             | The same as `keypress` but tells the Roku to release a key held with `keyup` ( a no-op if the key was not held).     |
+| `.icon(appId: number)`                   | `Promise<Icon>`                                                             | Fetches the image and returns an object with the fetch response, extension, and mime type.                           |
+| `.launch(appId: number)`                 | `Promise<void>`                                                             | Launch the given app by its id.                                                                                      |
+| `.launchDtv(channel?: number \| string)` | `Promise<void>`                                                             | Launch the DTV tuner, optionally to a specific channel.                                                              |
+| `.text(text: string)`                    | `Promise<void>`                                                             | Send the text string as a series of `keypress` actions.                                                              |
+| `.command()`                             | `Commander`                                                                 | Returns a `Commander` instance, which allows for easily chaining key commands to send to the Roku.                   |
 
 ### Keypress Values
 
@@ -89,15 +89,15 @@ Client.discoverAll(10).then((clients) => {
 Roku. It can be accessed programmatically:
 
 ```js
-import { keys } from 'roku-client';
+import { Keys } from 'roku-client';
 
-keys.HOME; // 'Home'
-keys.LEFT; // 'Left'
+Keys.HOME; // 'Home'
+Keys.LEFT; // 'Left'
 ```
 
 ### Commander
 
-The `Client#command()` method provides a simpler interface over the
+The `RokuClient#command()` method provides a simpler interface over the
 keypress and text methods. It allows them to be chained and repeated and
 handles all promise chaining internally.
 
@@ -186,7 +186,7 @@ volumeUp5.send();
 I have replaced direct usage of
 [node-fetch](https://www.npmjs.com/package/node-fetch) with
 [fetch-ponyfill](https://www.npmjs.com/package/fetch-ponyfill), which
-should allow `node-roku-client` to be used in the browser. However, I
+should allow `roku-client` to be used in the browser. However, I
 have not yet tested this, and suspect that `node-ssdp` may cause issues
 in the browser. If anything, creating a client directly with the ip
 address should work as expected.

@@ -1,7 +1,20 @@
-import * as keys from './keys';
-import Client from './client';
-import { discover, discoverAll } from './discover';
+import * as Keys from './keys';
+import { RokuClient } from './client';
 
-export default Client;
+export default RokuClient;
+export * from './client';
+export * from './discover';
 
-export { Client, keys, discover, discoverAll };
+/**
+ * Import `RokuClient` instead.
+ * @deprecated
+ */
+const Client = RokuClient;
+
+/**
+ * Import `Keys` instead.
+ * @deprecated
+ */
+const keys = Keys;
+
+export { Keys, Client, keys };

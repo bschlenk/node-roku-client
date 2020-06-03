@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as stream from 'stream';
-import Client, { DEFAULT_PORT } from '../client';
+import { RokuClient, ROKU_DEFAULT_PORT } from '../client';
 import fetchPonyfill = require('fetch-ponyfill');
 import { FetchMock } from 'jest-fetch-mock';
 
@@ -25,10 +25,10 @@ function loadResponse(name: string, asBuffer = false) {
 }
 
 describe('Client', () => {
-  let client: Client;
+  let client: RokuClient;
 
   beforeEach(() => {
-    client = new Client(clientAddr);
+    client = new RokuClient(clientAddr);
     fetch.mockClear();
   });
 
@@ -38,8 +38,8 @@ describe('Client', () => {
         SERVER: 'Roku UPnP/1.0 MiniUPnPd/1.4',
         LOCATION: 'http://192.168.1.17:8060/dial/dd.xml',
       });
-      return Client.discover().then((c) => {
-        expect(c).toBeInstanceOf(Client);
+      return RokuClient.discover().then((c) => {
+        expect(c).toBeInstanceOf(RokuClient);
         expect(c.ip).toEqual('http://192.168.1.17:8060');
       });
     });
@@ -52,13 +52,13 @@ describe('Client', () => {
     });
 
     it('should add missing http://', () => {
-      const c = new Client('192.168.1.2:1111');
+      const c = new RokuClient('192.168.1.2:1111');
       expect(c.ip).toEqual('http://192.168.1.2:1111');
     });
 
     it('should add the default port if omitted', () => {
-      const c = new Client('192.168.1.2');
-      expect(c.ip).toEqual(`http://192.168.1.2:${DEFAULT_PORT}`);
+      const c = new RokuClient('192.168.1.2');
+      expect(c.ip).toEqual(`http://192.168.1.2:${ROKU_DEFAULT_PORT}`);
     });
   });
 

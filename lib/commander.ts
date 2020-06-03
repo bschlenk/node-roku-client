@@ -1,7 +1,7 @@
-import * as keys from './keys';
+import * as Keys from './keys';
 import { getCommand, KeyCommand, KeyName } from './keyCommand';
+import type { RokuClient } from './client';
 
-type Client = import('./client').default;
 type ClientInterface<T extends Record<string, KeyCommand>> = {
   [N in T[keyof T]['name']]: (count?: number) => Commander;
 };
@@ -16,12 +16,12 @@ type Command = [string, boolean, number?];
 const WAIT_COMMAND = '__WAIT';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export default interface Commander extends ClientInterface<typeof keys> {}
+export interface Commander extends ClientInterface<typeof Keys> {}
 
-export default class Commander {
+export class Commander {
   private commands: Command[] = [];
 
-  constructor(private readonly client: Client) {}
+  constructor(private readonly client: RokuClient) {}
 
   /**
    * Send the given string to the Roku device.
@@ -101,7 +101,7 @@ export default class Commander {
 }
 
 // add all keys as methods to Commander
-Object.values(keys).forEach((key) => {
+Object.values(Keys).forEach((key) => {
   (Commander.prototype as any)[key.name] = function (count = 1) {
     return this.keypress(key.command, count);
   };
