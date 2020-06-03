@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.1.0](https://github.com/bschlenk/node-roku-client/compare/v4.0.0...v4.1.0) (2020-06-03)
+
+
+### Features
+
+* export RokuClient and Keys ([5a3e809](https://github.com/bschlenk/node-roku-client/commit/5a3e809fa634cc5b9ad37291b7c655abf0a01318))
+
 ## [4.0.0](https://github.com/bschlenk/node-roku-client/compare/v3.2.0...v4.0.0) (2020-05-22)
 
 
