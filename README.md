@@ -1,7 +1,6 @@
 # node-roku-client
 
-[![npm][npm]][npm-url]
-[![travis][travis]][travis-url]
+[![npm][npm]][npm-url] [![travis][travis]][travis-url]
 [![codecov][codecov]][codecov-url]
 
 Discover & control Roku devices from NodeJS.
@@ -46,10 +45,10 @@ client.keypress(Keys.VOLUME_UP);
 ## RokuClient.discover()
 
 Invoking `RokuClient.discover()` will return a promise which resolves to a
-`RokuClient` object on success. The `RokuClient` will be initialized to the address
-of the first device to respond. This client object will contain the
-methods needed to control a roku device. Commands are sent to the Roku
-device via `HTTP` protocol as found on the [docs][1].
+`RokuClient` object on success. The `RokuClient` will be initialized to the
+address of the first device to respond. This client object will contain the
+methods needed to control a roku device. Commands are sent to the Roku device
+via `HTTP` protocol as found on the [docs][1].
 
 If there are multiple Roku devices on the network, `RokuClient.discoverAll()`
 can be called which will wait the full timeout and return a promise that
@@ -85,8 +84,8 @@ RokuClient.discoverAll(10).then((clients) => {
 
 ### Keypress Values
 
-[keys.js](lib/keys.js) contains a list of keypress values understood by
-Roku. It can be accessed programmatically:
+[keys.js](lib/keys.js) contains a list of keypress values understood by Roku. It
+can be accessed programmatically:
 
 ```js
 import { Keys } from 'roku-client';
@@ -97,19 +96,18 @@ Keys.LEFT; // 'Left'
 
 ### Commander
 
-The `RokuClient#command()` method provides a simpler interface over the
-keypress and text methods. It allows them to be chained and repeated and
-handles all promise chaining internally.
+The `RokuClient#command()` method provides a simpler interface over the keypress
+and text methods. It allows them to be chained and repeated and handles all
+promise chaining internally.
 
-Each key within the [keys.js](lib/keys.js) module is available on the
-commander instance in camelcase form. Additionally, a `.text()` method
-is available to send text strings. Each key command takes an optional
-number to specify the number of times to repeat the command, defaulting
-to `1`.
+Each key within the [keys.js](lib/keys.js) module is available on the commander
+instance in camelcase form. Additionally, a `.text()` method is available to
+send text strings. Each key command takes an optional number to specify the
+number of times to repeat the command, defaulting to `1`.
 
-After chaining the desired methods, call `.send()` to send them to the
-Roku. `.send()` returns a promise that completes when all buttons have
-been pressed, or when the Roku fails to respond to any of the commands.
+After chaining the desired methods, call `.send()` to send them to the Roku.
+`.send()` returns a promise that completes when all buttons have been pressed,
+or when the Roku fails to respond to any of the commands.
 
 Commander instances can be saved and reused later as macros.
 
@@ -185,11 +183,10 @@ volumeUp5.send();
 
 I have replaced direct usage of
 [node-fetch](https://www.npmjs.com/package/node-fetch) with
-[fetch-ponyfill](https://www.npmjs.com/package/fetch-ponyfill), which
-should allow `roku-client` to be used in the browser. However, I
-have not yet tested this, and suspect that `node-ssdp` may cause issues
-in the browser. If anything, creating a client directly with the ip
-address should work as expected.
+[fetch-ponyfill](https://www.npmjs.com/package/fetch-ponyfill), which should
+allow `roku-client` to be used in the browser. However, I have not yet tested
+this, and suspect that `node-ssdp` may cause issues in the browser. If anything,
+creating a client directly with the ip address should work as expected.
 
 ## Testing
 
@@ -208,11 +205,15 @@ Tested on OSX & raspberry pi w/ raspbian jessie, and with Roku TV.
 
 <!-- urls -->
 
-[1]: https://developer.roku.com/docs/developer-program/debugging/external-control-api.md
-[2]: https://developer.roku.com/docs/developer-program/debugging/external-control-api.md#keypress-key-values
+[1]:
+  https://developer.roku.com/docs/developer-program/debugging/external-control-api.md
+[2]:
+  https://developer.roku.com/docs/developer-program/debugging/external-control-api.md#keypress-key-values
 [npm]: https://img.shields.io/npm/v/roku-client.svg?logo=npm
 [npm-url]: https://npmjs.com/package/roku-client
-[travis]: https://img.shields.io/travis/bschlenk/node-roku-client/master.svg?logo=travis
+[travis]:
+  https://img.shields.io/travis/bschlenk/node-roku-client/master.svg?logo=travis
 [travis-url]: https://travis-ci.org/bschlenk/node-roku-client
-[codecov]: https://img.shields.io/codecov/c/github/bschlenk/node-roku-client.svg?logo=codecov
+[codecov]:
+  https://img.shields.io/codecov/c/github/bschlenk/node-roku-client.svg?logo=codecov
 [codecov-url]: https://codecov.io/gh/bschlenk/node-roku-client
