@@ -13,7 +13,7 @@ export type KeyName = keyof KeyNameInterface<Keys>;
 
 export type KeyType = KeyCommand | string;
 
-export function getCommand(key: KeyType) {
+export function getCommand(key: KeyType): string {
   if (typeof key === 'string') {
     return key;
   }

@@ -11,12 +11,11 @@ const HEADERS = {
 };
 
 describe('discover', () => {
-  it('should resolve to the first roku ip address found', () => {
+  it('should resolve to the first roku ip address found', async () => {
     require('node-ssdp').__setHeaders(HEADERS);
 
-    discover().then((ipAddress) => {
-      expect(ipAddress).toEqual('http://192.168.1.17:8060');
-    });
+    const ipAddress = await discover();
+    expect(ipAddress).toEqual('http://192.168.1.17:8060');
   });
 
   it('should fail after the configured timeout', (done) => {

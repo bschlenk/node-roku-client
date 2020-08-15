@@ -137,33 +137,31 @@ describe('Client', () => {
         });
       }));
 
-    it('should send a Lit_ command if a single character is passed in', () => {
-      client.keypress('a').then(() => {
-        expect(fetch).toHaveBeenCalledWith(`${clientAddr}/keypress/Lit_a`, {
-          method: 'POST',
-        });
+    it('should send a Lit_ command if a single character is passed in', async () => {
+      await client.keypress('a');
+      expect(fetch).toHaveBeenCalledWith(`${clientAddr}/keypress/Lit_a`, {
+        method: 'POST',
       });
     });
 
-    it('should url encode Lit_ commands for utf-8 characters', () => {
-      client.keypress('€').then(() => {
-        expect(fetch).toHaveBeenCalledWith(
-          `${clientAddr}/keypress/Lit_%E2%82%AC`,
-          {
-            method: 'POST',
-          },
-        );
-      });
+    it('should url encode Lit_ commands for utf-8 characters', async () => {
+      await client.keypress('€');
+      expect(fetch).toHaveBeenCalledWith(
+        `${clientAddr}/keypress/Lit_%E2%82%AC`,
+        {
+          method: 'POST',
+        },
+      );
     });
   });
 
   describe('#keydown()', () => {
-    it('should press and hold the pause', () =>
-      client.keydown('Pause').then(() => {
-        expect(fetch).toHaveBeenCalledWith(`${clientAddr}/keydown/Pause`, {
-          method: 'POST',
-        });
-      }));
+    it('should press and hold the pause', async () => {
+      await client.keydown('Pause');
+      expect(fetch).toHaveBeenCalledWith(`${clientAddr}/keydown/Pause`, {
+        method: 'POST',
+      });
+    });
   });
 
   describe('#keyup()', () => {
@@ -200,34 +198,31 @@ describe('Client', () => {
   });
 
   describe('#launchDtv()', () => {
-    it('should call launch/tvinput.dtv', () => {
-      client.launchDtv().then(() => {
-        expect(fetch).toHaveBeenCalledWith(`${client.ip}/launch/tvinput.dtv`, {
+    it('should call launch/tvinput.dtv', async () => {
+      await client.launchDtv();
+      expect(fetch).toHaveBeenCalledWith(`${client.ip}/launch/tvinput.dtv`, {
+        method: 'POST',
+      });
+    });
+
+    it('should pass a channel string to launch', async () => {
+      await client.launchDtv('1.1');
+      expect(fetch).toHaveBeenCalledWith(
+        `${client.ip}/launch/tvinput.dtv?ch=1.1`,
+        {
           method: 'POST',
-        });
-      });
+        },
+      );
     });
 
-    it('should pass a channel string to launch', () => {
-      client.launchDtv('1.1').then(() => {
-        expect(fetch).toHaveBeenCalledWith(
-          `${client.ip}/launch/tvinput.dtv?ch=1.1`,
-          {
-            method: 'POST',
-          },
-        );
-      });
-    });
-
-    it('should pass a channel number to launch', () => {
-      client.launchDtv(8.5).then(() => {
-        expect(fetch).toHaveBeenCalledWith(
-          `${client.ip}/launch/tvinput.dtv?ch=8.5`,
-          {
-            method: 'POST',
-          },
-        );
-      });
+    it('should pass a channel number to launch', async () => {
+      await client.launchDtv(8.5);
+      expect(fetch).toHaveBeenCalledWith(
+        `${client.ip}/launch/tvinput.dtv?ch=8.5`,
+        {
+          method: 'POST',
+        },
+      );
     });
   });
 
