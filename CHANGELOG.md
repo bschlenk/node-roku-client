@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.2.0](https://github.com/bschlenk/node-roku-client/compare/v4.0.0...v4.2.0) (2020-08-15)
+
+
+### Features
+
+* add keys STAR and OPTIONS as aliases to INFO ([4c30973](https://github.com/bschlenk/node-roku-client/commit/4c3097362d4e5475c3b7d8cc77bcdc2f98088dc7))
+  * The * button on the remote is technically called "info", even though
+    it is never used to show information. Aliasing it to "STAR" and
+    "OPTIONS" helps improve clarity.
+  * `star` and `options` can be used from the `command()` interface
+
 ## [4.1.0](https://github.com/bschlenk/node-roku-client/compare/v4.0.0...v4.1.0) (2020-06-03)
 
 
