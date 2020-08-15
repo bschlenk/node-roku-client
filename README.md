@@ -73,7 +73,7 @@ RokuClient.discoverAll(10).then((clients) => {
 | `.apps()`                                | `Promise<{id: string, name: string, type: string, version: string}[]>`      | List of all apps installed on this device.                                                                           |
 | `.active()`                              | `Promise<{id: string, name: string, type: string, version: string}\|null>}` | A single object representing the active app, or null if the home screen is active.                                   |
 | `.info()`                                | `Promise<Object>`                                                           | A map of this Roku device's properties. Varies from device to device.                                                |
-| `.keypress(key: string)`                 | `Promise<void>`                                                             | Send a keypress from [keys.js](lib/keys.js) or a single character to send that letter (e.g. to an input box).        |
+| `.keypress(key: string)`                 | `Promise<void>`                                                             | Send a keypress from [keys.ts] or a single character to send that letter (e.g. to an input box).        |
 | `.keydown(key: string)`                  | `Promise<void>`                                                             | The same as `keypress` but tells the Roku to hold the key down.                                                      |
 | `.keyup(key: string)`                    | `Promise<void>`                                                             | The same as `keypress` but tells the Roku to release a key held with `keyup` ( a no-op if the key was not held).     |
 | `.icon(appId: number)`                   | `Promise<Icon>`                                                             | Fetches the image and returns an object with the fetch response, extension, and mime type.                           |
@@ -84,7 +84,7 @@ RokuClient.discoverAll(10).then((clients) => {
 
 ### Keypress Values
 
-[keys.js](lib/keys.js) contains a list of keypress values understood by Roku. It
+[keys.ts] contains a list of keypress values understood by Roku. It
 can be accessed programmatically:
 
 ```js
@@ -100,7 +100,7 @@ The `RokuClient#command()` method provides a simpler interface over the keypress
 and text methods. It allows them to be chained and repeated and handles all
 promise chaining internally.
 
-Each key within the [keys.js](lib/keys.js) module is available on the commander
+Each key within the [keys.ts] module is available on the commander
 instance in camelcase form. Additionally, a `.text()` method is available to
 send text strings. Each key command takes an optional number to specify the
 number of times to repeat the command, defaulting to `1`.
@@ -217,3 +217,4 @@ Tested on OSX & raspberry pi w/ raspbian jessie, and with Roku TV.
 [codecov]:
   https://img.shields.io/codecov/c/github/bschlenk/node-roku-client.svg?logo=codecov
 [codecov-url]: https://codecov.io/gh/bschlenk/node-roku-client
+[keys.ts]: lib/keys.ts
