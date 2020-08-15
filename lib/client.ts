@@ -314,8 +314,6 @@ export class RokuClient {
    * to send a full string. After composing the command, `send` should
    * be called to perform the scripted commands. The result of calling
    * `.command()` can be stored in a variable and modified before calling send.
-   * Additional calls to send are essentially no-ops, so the returned command
-   * object should not be reused.
    *
    * @example
    * client.command()
