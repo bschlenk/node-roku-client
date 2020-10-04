@@ -64,7 +64,7 @@ export class Commander {
    *   .select()
    *   .send();
    */
-  exec(fn: (commander: Commander) => Commander | null | undefined): Commander {
+  exec(fn: (commander: Commander) => void): Commander {
     fn(this);
     return this;
   }
