@@ -20,8 +20,8 @@ function parseAddress(location: string): string {
  */
 class RokuFinder extends EventEmitter {
   private readonly client: SSDPClient;
-  private intervalId: NodeJS.Timer | null = null;
-  private timeoutId: NodeJS.Timer | null = null;
+  private intervalId!: NodeJS.Timeout;
+  private timeoutId!: NodeJS.Timeout;
   private running = false;
 
   constructor() {
@@ -61,8 +61,8 @@ class RokuFinder extends EventEmitter {
   }
 
   stop() {
-    clearInterval(this.intervalId!);
-    clearTimeout(this.timeoutId!);
+    clearInterval(this.intervalId);
+    clearTimeout(this.timeoutId);
     this.running = false;
     this.client.stop();
   }
