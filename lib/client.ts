@@ -5,14 +5,12 @@ import _debug = require('debug');
 import { discover, discoverAll } from './discover';
 import { Commander } from './commander';
 import { getCommand, KeyType } from './keyCommand';
+import { RokuDeviceInfo } from './device-info';
+import { maybeBoolean } from './utils';
 
 const { fetch } = fetchPonyfill();
 
 const debug = _debug('roku-client:client');
-
-// TODO: make this an interface with the possible values
-/** The keys that can exist in a roku device info object. */
-export type RokuDeviceInfo = Record<string, string>;
 
 /** The ids used by roku to identify an app. */
 export type RokuAppId = number | string;
@@ -165,15 +163,18 @@ export class RokuClient {
     debug(`GET ${endpoint}`);
     return fetch(endpoint)
       .then(parseXML)
-      .then((data) =>
-        Object.entries(data['device-info'] as Record<string, string[]>).reduce(
-          // the xml parser wraps values in an array
-          (result, [key, [value]]) => {
-            result[camelcase(key)] = value;
-            return result;
-          },
-          {} as RokuDeviceInfo,
-        ),
+      .then(
+        (data) =>
+          Object.entries(
+            data['device-info'] as Record<string, string[]>,
+          ).reduce<Record<string, string | boolean>>(
+            // the xml parser wraps values in an array
+            (result, [key, [value]]) => {
+              result[camelcase(key)] = maybeBoolean(value);
+              return result;
+            },
+            {},
+          ) as any,
       );
   }
 

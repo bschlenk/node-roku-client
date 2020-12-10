@@ -123,8 +123,9 @@ describe('Client', () => {
       return client.info().then((info) => {
         expect(info).toBeInstanceOf(Object);
         expect(Object.keys(info).length).toEqual(29);
-        expect(info['model-name']).toBeUndefined();
+        expect((info as any)['model-name']).toBeUndefined();
         expect(info.modelName).toEqual('Roku 3');
+        expect(info.secureDevice).toBe(true);
       });
     });
   });
