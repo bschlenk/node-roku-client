@@ -1,5 +1,5 @@
 import fetchPonyfill = require('fetch-ponyfill');
-import { parseStringPromise as parseString } from 'xml2js';
+import { parseStringPromise as parseXml } from 'xml2js';
 import _debug = require('debug');
 import { discover, discoverAll } from './discover';
 import { Commander } from './commander';
@@ -41,17 +41,6 @@ export interface RokuIcon {
   extension?: string;
   /** The fetch response. */
   response: Response;
-}
-
-/**
- * Return a promise of the parsed fetch response xml.
- * @param res A fetch response object.
- */
-function parseXML(res: Response): Promise<any> {
-  if (!res.ok) {
-    throw new Error(`Request failed: ${res.statusText}`);
-  }
-  return res.text().then((data) => parseString(data));
 }
 
 /**
@@ -117,38 +106,29 @@ export class RokuClient {
    * Get a list of apps installed on this device.
    * @see {@link https://developer.roku.com/docs/developer-program/debugging/external-control-api.md#queryapps-example}
    */
-  apps(): Promise<RokuApp[]> {
-    const endpoint = `${this.ip}/query/apps`;
-    debug(`GET ${endpoint}`);
-    return fetch(endpoint)
-      .then(parseXML)
-      .then(({ apps }) => apps.app.map(appXMLToJS));
+  async apps(): Promise<RokuApp[]> {
+    const { apps } = await this._getXml('query/apps');
+    return apps.app.map(appXMLToJS);
   }
 
   /**
    * Get the active app, or null if the home screen is displayed.
    * @see {@link https://developer.roku.com/docs/developer-program/debugging/external-control-api.md#queryactive-app-examples}
    */
-  active(): Promise<RokuApp | null> {
-    const endpoint = `${this.ip}/query/active-app`;
-    debug(`GET ${endpoint}`);
-    return fetch(endpoint)
-      .then(parseXML)
-      .then((data) => {
-        const { app } = data['active-app'];
-        if (app.length !== 1) {
-          throw new Error(
-            `expected 1 active app but received ${app.length}: ${app}`,
-          );
-        }
-        const activeApp = app[0];
-        // If no app is currently active, a single field is returned without
-        // any properties
-        if (!activeApp.$ || !activeApp.$.id) {
-          return null;
-        }
-        return appXMLToJS(activeApp);
-      });
+  async active(): Promise<RokuApp | null> {
+    const xml = await this._getXml('query/active-app');
+    const { app } = xml['active-app'];
+    if (app.length !== 1) {
+      throw new Error(
+        `expected 1 active app but received ${app.length}: ${app}`,
+      );
+    }
+    const activeApp = app[0];
+    // If no app is active, a single field is returned without any properties
+    if (!activeApp.$ || !activeApp.$.id) {
+      return null;
+    }
+    return appXMLToJS(activeApp);
   }
 
   /**
@@ -157,24 +137,17 @@ export class RokuClient {
    * becomes userDeviceName, etc.
    * @see {@link https://developer.roku.com/docs/developer-program/debugging/external-control-api.md#querydevice-info-example}
    */
-  info(): Promise<RokuDeviceInfo> {
-    const endpoint = `${this.ip}/query/device-info`;
-    debug(`GET ${endpoint}`);
-    return fetch(endpoint)
-      .then(parseXML)
-      .then(
-        (data) =>
-          Object.entries(
-            data['device-info'] as Record<string, string[]>,
-          ).reduce<Record<string, string | boolean>>(
-            // the xml parser wraps values in an array
-            (result, [key, [value]]) => {
-              result[camelcase(key)] = maybeBoolean(value);
-              return result;
-            },
-            {},
-          ) as any,
-      );
+  async info(): Promise<RokuDeviceInfo> {
+    const xml = await this._getXml('query/device-info');
+    const info = xml['device-info'] as Record<string, string[]>;
+    return Object.entries(info).reduce<Record<string, string | boolean>>(
+      // the xml parser wraps values in an array
+      (result, [key, [value]]) => {
+        result[camelcase(key)] = maybeBoolean(value);
+        return result;
+      },
+      {},
+    ) as any;
   }
 
   /**
@@ -186,27 +159,19 @@ export class RokuClient {
    *     Should be the id from the id field of the app.
    * @return An object containing the fetch response.
    */
-  icon(appId: RokuAppId): Promise<RokuIcon> {
-    const endpoint = `${this.ip}/query/icon/${appId}`;
-    debug(`GET ${endpoint}`);
-    return fetch(endpoint).then((response) => {
-      if (!response.ok) {
-        throw new Error(
-          `Failed to fetch icon for app ${appId}: ${response.statusText}`,
-        );
-      }
+  async icon(appId: RokuAppId): Promise<RokuIcon> {
+    const response = await this._get(`query/icon/${appId}`);
 
-      const type = response.headers.get('content-type') || undefined;
-      let extension = undefined;
-      if (type) {
-        const match = /image\/(.*)/.exec(type);
-        if (match) {
-          extension = `.${match[1]}`;
-        }
+    const type = response.headers.get('content-type') || undefined;
+    let extension = undefined;
+    if (type) {
+      const match = /image\/(.*)/.exec(type);
+      if (match) {
+        extension = `.${match[1]}`;
       }
+    }
 
-      return { type, extension, response };
-    });
+    return { type, extension, response };
   }
 
   /**
@@ -215,14 +180,8 @@ export class RokuClient {
    * @param appId The id of the app to launch.
    * @return A void promise which resolves when the app is launched.
    */
-  launch(appId: RokuAppId): Promise<void> {
-    const endpoint = `${this.ip}/launch/${appId}`;
-    debug(`POST ${endpoint}`);
-    return fetch(endpoint, { method: 'POST' }).then((res) => {
-      if (!res.ok) {
-        throw new Error(`Failed to call ${endpoint}: ${res.statusText}`);
-      }
-    });
+  async launch(appId: RokuAppId): Promise<void> {
+    await this._post(`launch/${appId}`);
   }
 
   /**
@@ -245,18 +204,12 @@ export class RokuClient {
    * @param func The name of the Roku endpoint function.
    * @param key The key to press.
    */
-  private keyhelper(func: string, key: KeyType): Promise<void> {
+  private async keyhelper(func: string, key: KeyType): Promise<void> {
     const command = getCommand(key);
     // if a single key is sent, treat it as a letter
     const keyCmd =
       command.length === 1 ? `Lit_${encodeURIComponent(command)}` : command;
-    const endpoint = `${this.ip}/${func}/${keyCmd}`;
-    debug(`POST ${endpoint}`);
-    return fetch(endpoint, { method: 'POST' }).then((res) => {
-      if (!res.ok) {
-        throw new Error(`Failed to call ${endpoint}: ${res.statusText}`);
-      }
-    });
+    await this._post(`${func}/${keyCmd}`);
   }
 
   /**
@@ -297,13 +250,10 @@ export class RokuClient {
    * @param text The message to send.
    * @return A promise which resolves when the text has successfully been sent.
    */
-  text(text: string): Promise<void> {
-    return text
-      .split('')
-      .reduce(
-        (promise, letter) => promise.then(() => this.keypress(letter)),
-        Promise.resolve(),
-      );
+  async text(text: string): Promise<void> {
+    for (const char of text) {
+      await this.keypress(char);
+    }
   }
 
   /**
@@ -328,5 +278,31 @@ export class RokuClient {
    */
   command(): Commander {
     return new Commander(this);
+  }
+
+  private async _get(path: string) {
+    const endpoint = `${this.ip}/${path}`;
+    debug(`GET ${endpoint}`);
+    const res = await fetch(endpoint);
+    if (!res.ok) {
+      throw new Error(`Failed to GET ${endpoint}: ${res.statusText}`);
+    }
+    return res;
+  }
+
+  private async _getXml(path: string) {
+    return this._get(path)
+      .then((res) => res.text())
+      .then(parseXml);
+  }
+
+  private async _post(path: string) {
+    const endpoint = `${this.ip}/${path}`;
+    debug(`POST ${endpoint}`);
+    const res = await fetch(endpoint, { method: 'POST' });
+    if (!res.ok) {
+      throw new Error(`Failed to POST ${endpoint}: ${res.statusText}`);
+    }
+    return res;
   }
 }
