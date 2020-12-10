@@ -1,12 +1,11 @@
 import fetchPonyfill = require('fetch-ponyfill');
-import camelcase = require('lodash.camelcase');
 import { parseStringPromise as parseString } from 'xml2js';
 import _debug = require('debug');
 import { discover, discoverAll } from './discover';
 import { Commander } from './commander';
 import { getCommand, KeyType } from './keyCommand';
 import { RokuDeviceInfo } from './device-info';
-import { maybeBoolean } from './utils';
+import { camelcase, maybeBoolean } from './utils';
 
 const { fetch } = fetchPonyfill();
 
