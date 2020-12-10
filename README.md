@@ -1,6 +1,6 @@
 # node-roku-client
 
-[![npm][npm]][npm-url] [![travis][travis]][travis-url]
+[![npm][npm]][npm-url] [![build][build]][build-url]
 [![codecov][codecov]][codecov-url]
 
 Discover & control Roku devices from NodeJS.
@@ -73,7 +73,7 @@ RokuClient.discoverAll(10).then((clients) => {
 | `.apps()`                                | `Promise<{id: string, name: string, type: string, version: string}[]>`      | List of all apps installed on this device.                                                                           |
 | `.active()`                              | `Promise<{id: string, name: string, type: string, version: string}\|null>}` | A single object representing the active app, or null if the home screen is active.                                   |
 | `.info()`                                | `Promise<Object>`                                                           | A map of this Roku device's properties. Varies from device to device.                                                |
-| `.keypress(key: string)`                 | `Promise<void>`                                                             | Send a keypress from [keys.ts] or a single character to send that letter (e.g. to an input box).        |
+| `.keypress(key: string)`                 | `Promise<void>`                                                             | Send a keypress from [keys.ts] or a single character to send that letter (e.g. to an input box).                     |
 | `.keydown(key: string)`                  | `Promise<void>`                                                             | The same as `keypress` but tells the Roku to hold the key down.                                                      |
 | `.keyup(key: string)`                    | `Promise<void>`                                                             | The same as `keypress` but tells the Roku to release a key held with `keyup` ( a no-op if the key was not held).     |
 | `.icon(appId: number)`                   | `Promise<Icon>`                                                             | Fetches the image and returns an object with the fetch response, extension, and mime type.                           |
@@ -84,8 +84,8 @@ RokuClient.discoverAll(10).then((clients) => {
 
 ### Keypress Values
 
-[keys.ts] contains a list of keypress values understood by Roku. It
-can be accessed programmatically:
+[keys.ts] contains a list of keypress values understood by Roku. It can be
+accessed programmatically:
 
 ```js
 import { Keys } from 'roku-client';
@@ -100,10 +100,10 @@ The `RokuClient#command()` method provides a simpler interface over the keypress
 and text methods. It allows them to be chained and repeated and handles all
 promise chaining internally.
 
-Each key within the [keys.ts] module is available on the commander
-instance in camelcase form. Additionally, a `.text()` method is available to
-send text strings. Each key command takes an optional number to specify the
-number of times to repeat the command, defaulting to `1`.
+Each key within the [keys.ts] module is available on the commander instance in
+camelcase form. Additionally, a `.text()` method is available to send text
+strings. Each key command takes an optional number to specify the number of
+times to repeat the command, defaulting to `1`.
 
 After chaining the desired methods, call `.send()` to send them to the Roku.
 `.send()` returns a promise that completes when all buttons have been pressed,
@@ -211,9 +211,10 @@ Tested on OSX & raspberry pi w/ raspbian jessie, and with Roku TV.
   https://developer.roku.com/docs/developer-program/debugging/external-control-api.md#keypress-key-values
 [npm]: https://img.shields.io/npm/v/roku-client.svg?logo=npm
 [npm-url]: https://npmjs.com/package/roku-client
-[travis]:
-  https://img.shields.io/travis/bschlenk/node-roku-client/master.svg?logo=travis
-[travis-url]: https://travis-ci.org/bschlenk/node-roku-client
+[build]:
+  https://img.shields.io/github/workflow/status/bschlenk/node-roku-client/Node.js%20CI?logo=github
+[build-url]:
+  https://github.com/bschlenk/node-roku-client/actions?query=workflow%3A%22Node.js+CI%22
 [codecov]:
   https://img.shields.io/codecov/c/github/bschlenk/node-roku-client.svg?logo=codecov
 [codecov-url]: https://codecov.io/gh/bschlenk/node-roku-client
