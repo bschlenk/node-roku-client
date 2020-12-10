@@ -6,7 +6,8 @@
     "node": ">=10"
   },
   "files": [
-    "dist"
+    "dist",
+    "!**/__tests__/"
   ],
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
