@@ -33,15 +33,15 @@ class Client {
     if (Array.isArray(headers)) {
       let index = 0;
       const { length } = headers;
-      process.nextTick(function recurseResponses() {
+      setTimeout(function recurseResponses() {
         callResponse(index);
         index += 1;
         if (index < length) {
-          process.nextTick(recurseResponses);
+          setTimeout(recurseResponses, 0);
         }
-      });
+      }, 0);
     } else {
-      process.nextTick(callResponse);
+      setTimeout(callResponse, 0);
     }
   }
 

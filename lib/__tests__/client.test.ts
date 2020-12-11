@@ -29,19 +29,49 @@ describe('Client', () => {
 
   beforeEach(() => {
     client = new RokuClient(clientAddr);
-    fetch.mockClear();
+    fetch.resetMocks();
+
+    jest.useFakeTimers();
   });
 
   describe('#discover()', () => {
-    it('should resolve to a client instance for the first address found', () => {
+    it('should resolve to a client instance for the first address found', async () => {
       require('node-ssdp').__setHeaders({
         SERVER: 'Roku UPnP/1.0 MiniUPnPd/1.4',
         LOCATION: 'http://192.168.1.17:8060/dial/dd.xml',
       });
-      return RokuClient.discover().then((c) => {
-        expect(c).toBeInstanceOf(RokuClient);
-        expect(c.ip).toEqual('http://192.168.1.17:8060');
-      });
+      const p = RokuClient.discover();
+      jest.runAllTimers();
+      const c = await p;
+      expect(c).toBeInstanceOf(RokuClient);
+      expect(c.ip).toEqual('http://192.168.1.17:8060');
+    });
+  });
+
+  describe('#discoverAll()', () => {
+    it('should resolve to an array of devices', async () => {
+      require('node-ssdp').__setHeaders([
+        {
+          SERVER: 'Roku',
+          LOCATION: 'http://192.168.1.17:8060',
+        },
+        {
+          SERVER: 'Roku',
+          LOCATION: 'http://192.168.1.18:8060',
+        },
+        {
+          SERVER: 'Roku',
+          LOCATION: 'http://192.168.1.19:8060',
+        },
+      ]);
+
+      const p = RokuClient.discoverAll(1000);
+      jest.advanceTimersByTime(1000);
+      const clients = await p;
+      expect(clients.length).toEqual(3);
+      expect(clients[0].ip).toEqual('http://192.168.1.17:8060');
+      expect(clients[1].ip).toEqual('http://192.168.1.18:8060');
+      expect(clients[2].ip).toEqual('http://192.168.1.19:8060');
     });
   });
 
@@ -63,28 +93,11 @@ describe('Client', () => {
   });
 
   describe('#apps()', () => {
-    it('should return a list of apps', () => {
+    it('should return a list of apps', async () => {
       fetch.mockResponse(loadResponse('apps'));
-      return client.apps().then((apps) => {
-        expect(apps).toBeInstanceOf(Array);
-        apps.forEach((app) => {
-          expect(app).toEqual(
-            expect.objectContaining({
-              id: expect.any(String),
-              name: expect.any(String),
-              type: expect.any(String),
-              version: expect.any(String),
-            }),
-          );
-        });
-      });
-    });
-  });
-
-  describe('#active()', () => {
-    it('should return the active app', () => {
-      fetch.mockResponse(loadResponse('active-app'));
-      return client.active().then((app) => {
+      const apps = await client.apps();
+      expect(apps).toBeInstanceOf(Array);
+      apps.forEach((app) => {
         expect(app).toEqual(
           expect.objectContaining({
             id: expect.any(String),
@@ -96,47 +109,57 @@ describe('Client', () => {
       });
     });
 
-    it('should return null if there is not an active app', () => {
+    it('should reject if the status is not ok', () => {
+      fetch.mockResponse('', { status: 404 });
+      return expect(client.apps()).rejects.toThrow(/^Failed to GET/);
+    });
+  });
+
+  describe('#active()', () => {
+    it('should return the active app', async () => {
+      fetch.mockResponse(loadResponse('active-app'));
+      const app = await client.active();
+      expect(app).toEqual(
+        expect.objectContaining({
+          id: expect.any(String),
+          name: expect.any(String),
+          type: expect.any(String),
+          version: expect.any(String),
+        }),
+      );
+    });
+
+    it('should return null if there is not an active app', async () => {
       fetch.mockResponse(loadResponse('active-app-none'));
-      return client.active().then((app) => {
-        expect(app).toBeNull();
-      });
+      const app = await client.active();
+      expect(app).toBeNull();
     });
 
     it('should reject if multiple apps are returned', () => {
       fetch.mockResponse(loadResponse('active-multiple'));
-      return client
-        .active()
-        .then(() => {
-          throw new Error('Should have thrown');
-        })
-        .catch((err) => {
-          expect(err).toBeDefined();
-          expect(err).toBeInstanceOf(Error);
-        });
+      return expect(client.active()).rejects.toThrow();
     });
   });
 
   describe('#info()', () => {
-    it('should return info for the roku device', () => {
+    it('should return info for the roku device', async () => {
       fetch.mockResponse(loadResponse('info'));
-      return client.info().then((info) => {
-        expect(info).toBeInstanceOf(Object);
-        expect(Object.keys(info).length).toEqual(29);
-        expect((info as any)['model-name']).toBeUndefined();
-        expect(info.modelName).toEqual('Roku 3');
-        expect(info.secureDevice).toBe(true);
-      });
+      const info = await client.info();
+      expect(info).toBeInstanceOf(Object);
+      expect(Object.keys(info).length).toEqual(29);
+      expect((info as any)['model-name']).toBeUndefined();
+      expect(info.modelName).toEqual('Roku 3');
+      expect(info.secureDevice).toBe(true);
     });
   });
 
   describe('#keypress()', () => {
-    it('should press the home button', () =>
-      client.keypress('Home').then(() => {
-        expect(fetch).toHaveBeenCalledWith(`${clientAddr}/keypress/Home`, {
-          method: 'POST',
-        });
-      }));
+    it('should press the home button', async () => {
+      await client.keypress('Home');
+      expect(fetch).toHaveBeenCalledWith(`${clientAddr}/keypress/Home`, {
+        method: 'POST',
+      });
+    });
 
     it('should send a Lit_ command if a single character is passed in', async () => {
       await client.keypress('a');
@@ -166,36 +189,68 @@ describe('Client', () => {
   });
 
   describe('#keyup()', () => {
-    it('should release the info button', () =>
-      client.keyup('Info').then(() => {
-        expect(fetch).toHaveBeenCalledWith(`${clientAddr}/keyup/Info`, {
-          method: 'POST',
-        });
-      }));
+    it('should release the info button', async () => {
+      await client.keyup('Info');
+      expect(fetch).toHaveBeenCalledWith(`${clientAddr}/keyup/Info`, {
+        method: 'POST',
+      });
+    });
   });
 
   describe('#icon()', () => {
-    it('should download the icon to the given folder', () => {
+    it('should fetch the icon', async () => {
       const response = new fetchObjects.Response(
         loadResponse('netflix.jpeg', true),
         { headers: new fetchObjects.Headers({ 'content-type': 'image/jpeg' }) },
       );
       fetch.mockImplementation(() => Promise.resolve(response));
-      return client.icon('12').then((icon) => {
-        expect(icon.type).toEqual('image/jpeg');
-        expect(icon.extension).toEqual('.jpeg');
-        expect(icon.response).toBe(response);
-      });
+      const icon = await client.icon('12');
+      expect(icon.type).toEqual('image/jpeg');
+      expect(icon.extension).toEqual('.jpeg');
+      expect(icon.response).toBe(response);
+    });
+
+    it('should be okay without a content-type', async () => {
+      const response = new fetchObjects.Response(
+        loadResponse('netflix.jpeg', true),
+        { headers: new fetchObjects.Headers({}) },
+      );
+      fetch.mockImplementation(() => Promise.resolve(response));
+      const icon = await client.icon('12');
+      expect(icon.type).toBeUndefined();
+      expect(icon.extension).toBeUndefined();
+      expect(icon.response).toBe(response);
+    });
+
+    it('should be okay if type is not image', async () => {
+      const response = new fetchObjects.Response(
+        loadResponse('netflix.jpeg', true),
+        {
+          headers: new fetchObjects.Headers({
+            'content-type': 'application/json',
+          }),
+        },
+      );
+      fetch.mockImplementation(() => Promise.resolve(response));
+      const icon = await client.icon('12');
+      expect(icon.type).toEqual('application/json');
+      expect(icon.extension).toBeUndefined();
+      expect(icon.response).toBe(response);
     });
   });
 
   describe('#launch()', () => {
-    it('should call launch for the given app id', () =>
-      client.launch('12345').then(() => {
-        expect(fetch).toHaveBeenCalledWith(`${client.ip}/launch/12345`, {
-          method: 'POST',
-        });
-      }));
+    it('should call launch for the given app id', async () => {
+      await client.launch('12345');
+      expect(fetch).toHaveBeenCalledWith(`${client.ip}/launch/12345`, {
+        method: 'POST',
+      });
+    });
+
+    it('should reject if the request status is not ok', () => {
+      fetch.mockResponse('', { status: 404 });
+      return expect(client.launch('12345')).rejects.toThrow(/^Failed to POST/);
+    });
   });
 
   describe('#launchDtv()', () => {
@@ -228,34 +283,29 @@ describe('Client', () => {
   });
 
   describe('#text()', () => {
-    it('should send a Lit_ command for each letter', () =>
-      client.text('hello').then(() => {
-        expect(fetch.mock.calls).toEqual([
-          [`${client.ip}/keypress/Lit_h`, { method: 'POST' }],
-          [`${client.ip}/keypress/Lit_e`, { method: 'POST' }],
-          [`${client.ip}/keypress/Lit_l`, { method: 'POST' }],
-          [`${client.ip}/keypress/Lit_l`, { method: 'POST' }],
-          [`${client.ip}/keypress/Lit_o`, { method: 'POST' }],
-        ]);
-      }));
+    it('should send a Lit_ command for each letter', async () => {
+      await client.text('hello');
+      expect(fetch.mock.calls).toEqual([
+        [`${client.ip}/keypress/Lit_h`, { method: 'POST' }],
+        [`${client.ip}/keypress/Lit_e`, { method: 'POST' }],
+        [`${client.ip}/keypress/Lit_l`, { method: 'POST' }],
+        [`${client.ip}/keypress/Lit_l`, { method: 'POST' }],
+        [`${client.ip}/keypress/Lit_o`, { method: 'POST' }],
+      ]);
+    });
   });
 
   describe('#command()', () => {
-    it('should allow chaining remote commands', () =>
-      client
-        .command()
-        .volumeUp()
-        .select()
-        .text('abc')
-        .send()
-        .then(() => {
-          expect(fetch.mock.calls).toEqual([
-            [`${client.ip}/keypress/VolumeUp`, { method: 'POST' }],
-            [`${client.ip}/keypress/Select`, { method: 'POST' }],
-            [`${client.ip}/keypress/Lit_a`, { method: 'POST' }],
-            [`${client.ip}/keypress/Lit_b`, { method: 'POST' }],
-            [`${client.ip}/keypress/Lit_c`, { method: 'POST' }],
-          ]);
-        }));
+    it('should allow chaining remote commands', async () => {
+      await client.command().volumeUp().select().text('abc').send();
+
+      expect(fetch.mock.calls).toEqual([
+        [`${client.ip}/keypress/VolumeUp`, { method: 'POST' }],
+        [`${client.ip}/keypress/Select`, { method: 'POST' }],
+        [`${client.ip}/keypress/Lit_a`, { method: 'POST' }],
+        [`${client.ip}/keypress/Lit_b`, { method: 'POST' }],
+        [`${client.ip}/keypress/Lit_c`, { method: 'POST' }],
+      ]);
+    });
   });
 });
