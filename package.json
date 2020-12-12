@@ -33,6 +33,9 @@
     },
     "./package.json": "./package.json"
   },
+  "browser": {
+    "./dist/discover.js": "./dist/discover-browser.js"
+  },
   "scripts": {
     "test:unit": "jest",
     "test:watch": "npm run test:unit -- --watch",
