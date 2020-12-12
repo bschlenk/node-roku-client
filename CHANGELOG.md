@@ -2,18 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.0.0-beta.1](https://github.com/bschlenk/node-roku-client/compare/v5.0.0-beta.0...v5.0.0-beta.1) (2020-12-12)
+
+
+### Features
+
+* use isomorphic-xml2js ([d36f1ba](https://github.com/bschlenk/node-roku-client/commit/d36f1ba47351ef18c4d49c973f364f0ba10bcf17))
+
 ## [5.0.0-beta.0](https://github.com/bschlenk/node-roku-client/compare/v4.0.0...v5.0.0-beta.0) (2020-12-12)
 
 
 ### ⚠ BREAKING CHANGES
 
-* This should make it usable from node 14 as an es module. However, it
-will also prevent importing other files from the pacakge.
+* This exports field should make node-client usable from node 14 as an es module.
+  However, it will also prevent importing other files from the package.
 * These deprecated exports are no longer available when importing from the
 package. Use the alternatives instead:
-
-- keys -> Keys
-- Client -> RokuClient
+  * keys -> Keys
+  * Client -> RokuClient
 * The info return value can now contain booleans as well as strings. The
 TypeScript definition of the object has been updated to include all
 possible values (https://github.com/bschlenk/homebridge-roku/issues/9)
