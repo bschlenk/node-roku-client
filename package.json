@@ -2,6 +2,20 @@
   "name": "roku-client",
   "version": "4.2.0",
   "description": "Send commands to your Roku devices",
+  "keywords": [
+    "roku",
+    "ssdp"
+  ],
+  "homepage": "https://github.com/bschlenk/node-roku-client",
+  "bugs": {
+    "url": "https://github.com/bschlenk/node-roku-client/issues"
+  },
+  "license": "Apache-2.0",
+  "author": "Brian Schlenker <bschlenk@umich.edu> (http://github.com/bschlenk)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bschlenk/node-roku-client"
+  },
   "engines": {
     "node": ">=10"
   },
@@ -20,25 +34,6 @@
     "release": "standard-version",
     "prepublishOnly": "npm run test && npm run build"
   },
-  "husky": {
-    "hooks": {
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
-    }
-  },
-  "keywords": [
-    "roku",
-    "ssdp"
-  ],
-  "bugs": {
-    "url": "https://github.com/bschlenk/node-roku-client/issues"
-  },
-  "homepage": "https://github.com/bschlenk/node-roku-client",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/bschlenk/node-roku-client"
-  },
-  "author": "Brian Schlenker <bschlenk@umich.edu> (http://github.com/bschlenk)",
-  "license": "Apache-2.0",
   "dependencies": {
     "debug": "^4.3.1",
     "fetch-ponyfill": "^7.0.0",
@@ -65,5 +60,10 @@
     "standard-version": "^9.0.0",
     "ts-jest": "^26.4.4",
     "typescript": "^4.1.2"
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
   }
 }
