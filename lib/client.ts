@@ -1,6 +1,6 @@
-import fetchPonyfill = require('fetch-ponyfill');
+import fetchPonyfill from 'fetch-ponyfill';
 import { parseStringPromise as parseXml } from 'xml2js';
-import _debug = require('debug');
+import _debug from 'debug';
 import { discover, discoverAll } from './discover';
 import { Commander } from './commander';
 import { getCommand, KeyType } from './keyCommand';

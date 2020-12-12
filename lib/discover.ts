@@ -1,7 +1,7 @@
 import * as url from 'url';
 import { EventEmitter } from 'events';
 import { Client as SSDPClient, Headers } from 'node-ssdp';
-import _debug = require('debug');
+import _debug from 'debug';
 
 const debug = _debug('roku-client:discover');
 

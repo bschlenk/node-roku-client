@@ -1,12 +1,14 @@
 {
   "compilerOptions": {
     "module": "commonjs",
+    "moduleResolution": "node",
     "target": "es2018",
     "lib": ["es2018", "dom"],
     "strict": true,
     "sourceMap": true,
     "declaration": true,
     "skipLibCheck": true,
+    "esModuleInterop": true,
     "outDir": "./dist"
   },
   "include": ["lib"]

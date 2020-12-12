@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as stream from 'stream';
 import { RokuClient, ROKU_DEFAULT_PORT } from '../client';
-import fetchPonyfill = require('fetch-ponyfill');
+import fetchPonyfill from 'fetch-ponyfill';
 import { FetchMock } from 'jest-fetch-mock';
 
 const fetchObjects = fetchPonyfill();
