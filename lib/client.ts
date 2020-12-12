@@ -5,11 +5,14 @@ import { discover, discoverAll } from './discover';
 import { Commander } from './commander';
 import { getCommand, KeyType } from './keyCommand';
 import { RokuDeviceInfo } from './device-info';
-import { camelcase, maybeBoolean } from './utils';
+import { camelcase, maybeBoolean, queryString, QueryStringObj } from './utils';
 
 const { fetch } = fetchPonyfill();
 
 const debug = _debug('roku-client:client');
+
+/** The default port a roku device will use for remote commands. */
+export const ROKU_DEFAULT_PORT = 8060;
 
 /** The ids used by roku to identify an app. */
 export type RokuAppId = number | string;
@@ -28,9 +31,6 @@ export interface RokuApp {
   version: string;
 }
 
-/** The default port a roku device will use for remote commands. */
-export const ROKU_DEFAULT_PORT = 8060;
-
 /**
  * The response from calling the icon method.
  */
@@ -41,6 +41,18 @@ export interface RokuIcon {
   extension?: string;
   /** The fetch response. */
   response: Response;
+}
+
+export interface RokuSearchParams {
+  keyword?: string;
+  title?: string;
+  type?: 'movie' | 'tv-show' | 'person' | 'channel' | 'game';
+  tmsid?: string;
+  season?: number;
+  showUnavailable?: boolean;
+  matchAny?: boolean;
+  provider?: string | number | string[] | number[];
+  launch?: boolean;
 }
 
 /**
@@ -198,6 +210,44 @@ export class RokuClient {
   }
 
   /**
+   * Open the Roku search page with the given search params. The query may be a
+   * string, in which case it will be used as the `keyword` in the search.
+   * Othewise, query should be a `RokuSearchParams` object, allowing for a more
+   * customized search.
+   * @see {@link https://developer.roku.com/docs/developer-program/debugging/external-control-api.md#search-examples}
+   * @param query The search query.
+   * @return A promise which resolves when the search is complete.
+   */
+  async search(query: string | RokuSearchParams): Promise<void> {
+    let q: QueryStringObj;
+    if (typeof query === 'string') {
+      q = { keyword: query };
+    } else {
+      const { showUnavailable, matchAny, provider, ...rest } = query;
+      q = rest as any;
+
+      if (showUnavailable) {
+        q['show-unavailable'] = showUnavailable;
+      }
+      if (matchAny) {
+        q['match-any'] = matchAny;
+      }
+      if (provider) {
+        let key = 'provider';
+        if (
+          (Array.isArray(provider) && typeof provider[0] === 'number') ||
+          typeof provider === 'number'
+        ) {
+          key += '-id';
+        }
+        q[key] = Array.isArray(provider) ? provider.join(',') : provider;
+      }
+    }
+
+    await this._post('search/browse', q);
+  }
+
+  /**
    * Helper used by all keypress methods. Converts single characters
    * to `Lit_` commands to send the letter to the Roku.
    * @see {@link https://developer.roku.com/docs/developer-program/debugging/external-control-api.md#keypress-key-values}
@@ -296,8 +346,11 @@ export class RokuClient {
       .then(parseXml);
   }
 
-  private async _post(path: string) {
-    const endpoint = `${this.ip}/${path}`;
+  private async _post(path: string, query?: QueryStringObj) {
+    let endpoint = `${this.ip}/${path}`;
+    if (query) {
+      endpoint += '?' + queryString(query);
+    }
     debug(`POST ${endpoint}`);
     const res = await fetch(endpoint, { method: 'POST' });
     if (!res.ok) {
