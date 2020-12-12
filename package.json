@@ -1,6 +1,6 @@
 {
   "name": "roku-client",
-  "version": "4.2.0",
+  "version": "5.0.0-beta.0",
   "description": "Send commands to your Roku devices",
   "keywords": [
     "roku",
