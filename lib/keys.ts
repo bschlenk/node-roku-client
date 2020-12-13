@@ -50,3 +50,5 @@ export const INPUT_AV1 = key('InputAV1', 'inputAV1');
 
 // For devices that support being turned on/off
 export const POWER = key('Power', 'power');
+export const POWER_OFF = key('PowerOff', 'powerOff');
+export const POWER_ON = key('PowerOn', 'powerOn');
