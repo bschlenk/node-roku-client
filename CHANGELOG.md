@@ -2,52 +2,33 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-## [5.0.0-beta.2](https://github.com/bschlenk/node-roku-client/compare/v5.0.0-beta.1...v5.0.0-beta.2) (2020-12-13)
-
-
-### Bug Fixes
-
-* revert browser compat commits ([b80c593](https://github.com/bschlenk/node-roku-client/commit/b80c593525b950062ae4363943a990557ab10a1b))
-
-## [5.0.0-beta.1](https://github.com/bschlenk/node-roku-client/compare/v5.0.0-beta.0...v5.0.0-beta.1) (2020-12-12)
-
-
-### Features
-
-* use isomorphic-xml2js ([d36f1ba](https://github.com/bschlenk/node-roku-client/commit/d36f1ba47351ef18c4d49c973f364f0ba10bcf17))
-
-## [5.0.0-beta.0](https://github.com/bschlenk/node-roku-client/compare/v4.0.0...v5.0.0-beta.0) (2020-12-12)
-
+## [5.0.0](https://github.com/bschlenk/node-roku-client/compare/v4.2.0...v5.0.0) (2020-12-13)
 
 ### ⚠ BREAKING CHANGES
 
-* This exports field should make node-client usable from node 14 as an es module.
-  However, it will also prevent importing other files from the package.
-* These deprecated exports are no longer available when importing from the
-package. Use the alternatives instead:
-  * keys -> Keys
-  * Client -> RokuClient
-* The info return value can now contain booleans as well as strings. The
-TypeScript definition of the object has been updated to include all
-possible values (https://github.com/bschlenk/homebridge-roku/issues/9)
-instead of a generic string/string object.
+* add package.json exports field ([0d76459](https://github.com/bschlenk/node-roku-client/commit/0d7645926cdd1685e99a078dede54852c8ca11da))
+  * [exports](https://nodejs.org/api/packages.html#packages_exports) field
+    should make node-client usable from node 14 as an es module. However,
+    it also prevents importing other files from the package.
+* remove deprecated exports ([9564e81](https://github.com/bschlenk/node-roku-client/commit/9564e81b89389160a6ac597fe5b2edd2336c678e))
+  * Removed these deprecated exports from the package, use alternatives shown:
+    * keys -> Keys
+    * Client -> RokuClient
+* info return value is more strongly typed ([15c2f03](https://github.com/bschlenk/node-roku-client/commit/15c2f03a9714aa2938919f8e1cd444177895fefd))
+  * The RokuClient#info() return value can now contain booleans as well as
+    strings. The TypeScript definition of the object has been updated to
+    include [all possible values](https://github.com/bschlenk/homebridge-roku/issues/9)
+    instead of a generic string/string object.
+* enable esModuleInterop ([9655ccb](https://github.com/bschlenk/node-roku-client/commit/9655ccb4fecfbac94780946f47ee34ef0fd61092))
+  * This allows importing dependencies more easily, but I _think_ it
+    means that consumers also need this setting enabled.
 
 ### Features
 
-* add package.json exports field ([0d76459](https://github.com/bschlenk/node-roku-client/commit/0d7645926cdd1685e99a078dede54852c8ca11da))
 * add search api ([e390e3d](https://github.com/bschlenk/node-roku-client/commit/e390e3d7678022377776c87d301ab9ab6819c578))
-* enable esModuleInterop ([9655ccb](https://github.com/bschlenk/node-roku-client/commit/9655ccb4fecfbac94780946f47ee34ef0fd61092))
-* export RokuClient and Keys ([5a3e809](https://github.com/bschlenk/node-roku-client/commit/5a3e809fa634cc5b9ad37291b7c655abf0a01318))
-* info return value is more strongly typed ([15c2f03](https://github.com/bschlenk/node-roku-client/commit/15c2f03a9714aa2938919f8e1cd444177895fefd))
-* remove deprecated exports ([9564e81](https://github.com/bschlenk/node-roku-client/commit/9564e81b89389160a6ac597fe5b2edd2336c678e))
-* stub discover api for browsers ([8d35643](https://github.com/bschlenk/node-roku-client/commit/8d35643dda9cfc2c7d13b7840d0077be97a45ebe))
-
 
 ### Bug Fixes
 
-* discover ts types ([6e18bca](https://github.com/bschlenk/node-roku-client/commit/6e18bca2929f8b1349211a764c3aa33ab10af229))
-* ts errors ([e7311f3](https://github.com/bschlenk/node-roku-client/commit/e7311f3e70e61a1173dba207c32e578401d251ec))
-* **eslint:** address all errors ([7e540ba](https://github.com/bschlenk/node-roku-client/commit/7e540bacd5aedf6366e3e27ca3a76b662c3cfa37))
 * **types:** commander exec callback is now a void function ([1e56327](https://github.com/bschlenk/node-roku-client/commit/1e563274db8df2e0ee97aad92e0ca54ae4f015ef))
 
 ## [4.2.0](https://github.com/bschlenk/node-roku-client/compare/v4.0.0...v4.2.0) (2020-08-15)
