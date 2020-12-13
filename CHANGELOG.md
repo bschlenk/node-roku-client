@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.0.1](https://github.com/bschlenk/node-roku-client/compare/v5.0.0...v5.0.1) (2020-12-13)
+
+
+### Bug Fixes
+
+* export RokuDeviceInfo interface ([10c88b9](https://github.com/bschlenk/node-roku-client/commit/10c88b9adb8a91c650f4685008c2ce6bbca0f577))
+
 ## [5.0.0](https://github.com/bschlenk/node-roku-client/compare/v4.2.0...v5.0.0) (2020-12-13)
 
 ### ⚠ BREAKING CHANGES
