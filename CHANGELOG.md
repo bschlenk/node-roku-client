@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.0.0-beta.2](https://github.com/bschlenk/node-roku-client/compare/v5.0.0-beta.1...v5.0.0-beta.2) (2020-12-13)
+
+
+### Bug Fixes
+
+* revert browser compat commits ([b80c593](https://github.com/bschlenk/node-roku-client/commit/b80c593525b950062ae4363943a990557ab10a1b))
+
 ## [5.0.0-beta.1](https://github.com/bschlenk/node-roku-client/compare/v5.0.0-beta.0...v5.0.0-beta.1) (2020-12-12)
 
 
