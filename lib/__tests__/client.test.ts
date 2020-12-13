@@ -308,4 +308,87 @@ describe('Client', () => {
       ]);
     });
   });
+
+  describe('#search()', () => {
+    it('should treat a string arg as the keyword', async () => {
+      await client.search('pokemon');
+
+      expect(fetch).toHaveBeenCalledWith(
+        `${client.ip}/search/browse?keyword=pokemon`,
+        {
+          method: 'POST',
+        },
+      );
+    });
+
+    it('should accept an object for complext searches', async () => {
+      await client.search({
+        keyword: 'hello',
+        showUnavailable: true,
+        matchAny: true,
+      });
+
+      expect(fetch).toHaveBeenCalledWith(
+        `${client.ip}/search/browse?keyword=hello&show-unavailable=true&match-any=true`,
+        {
+          method: 'POST',
+        },
+      );
+    });
+
+    it('should use provider-id if it is given as a number', async () => {
+      await client.search({ keyword: 'hello', provider: 123 });
+
+      expect(fetch).toHaveBeenCalledWith(
+        `${client.ip}/search/browse?keyword=hello&provider-id=123`,
+        {
+          method: 'POST',
+        },
+      );
+    });
+
+    it('should use provider if it is given as a string', async () => {
+      await client.search({ keyword: 'hello', provider: 'netflix' });
+
+      expect(fetch).toHaveBeenCalledWith(
+        `${client.ip}/search/browse?keyword=hello&provider=netflix`,
+        {
+          method: 'POST',
+        },
+      );
+    });
+
+    it('should accept provider as an array of numbers', async () => {
+      await client.search({ title: 'borat', provider: [1, 2, 3] });
+
+      expect(fetch).toHaveBeenCalledWith(
+        `${client.ip}/search/browse?title=borat&provider-id=1%2C2%2C3`,
+        {
+          method: 'POST',
+        },
+      );
+    });
+
+    it('should accept provider as an array of strings', async () => {
+      await client.search({ title: 'dumbo', provider: ['disney', 'amazon'] });
+
+      expect(fetch).toHaveBeenCalledWith(
+        `${client.ip}/search/browse?title=dumbo&provider=disney%2Camazon`,
+        {
+          method: 'POST',
+        },
+      );
+    });
+
+    it('should url encode the request', async () => {
+      await client.search({ title: 'Amélie' });
+
+      expect(fetch).toHaveBeenCalledWith(
+        `${client.ip}/search/browse?title=Am%C3%A9lie`,
+        {
+          method: 'POST',
+        },
+      );
+    });
+  });
 });
