@@ -1,6 +1,6 @@
 /**
  * Create a mapping of keys to make them easier to remember.
- * @see https://sdkdocs.roku.com/display/sdkdoc/External+Control+Guide#ExternalControlGuide-KeypressKeyValues
+ * @see {@link https://developer.roku.com/docs/developer-program/debugging/external-control-api.md#keypress-key-values}
  */
 
 function key<T extends string, U extends string>(command: T, name: U) {
