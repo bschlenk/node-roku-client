@@ -391,4 +391,12 @@ describe('Client', () => {
       );
     });
   });
+
+  describe('#mediaPlayer()', () => {
+    it('should parse the response', async () => {
+      fetch.mockResponse(loadResponse('media-player'));
+      const res = await client.mediaPlayer();
+      expect(res).toMatchSnapshot();
+    });
+  });
 });

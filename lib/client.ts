@@ -55,6 +55,42 @@ export interface RokuSearchParams {
   launch?: boolean;
 }
 
+export interface RokuMediaInfo {
+  error: boolean;
+  state: string;
+  plugin?: {
+    bandwidth: string;
+    id: string;
+    name: string;
+  };
+  format?: {
+    audio: string;
+    captions: string;
+    container: string;
+    drm: string;
+    video: string;
+    videoRes: string;
+  };
+  buffering?: {
+    current: string;
+    max: string;
+    target: string;
+  };
+  newStream?: {
+    speed: string;
+  };
+  position?: string;
+  duration?: string;
+  isLive?: boolean;
+  runtime?: string;
+  streamSegmentBitrate?: {
+    bitrate: string;
+    mediaSequence: string;
+    segmentType: string;
+    time: string;
+  };
+}
+
 /**
  * Convert the xml version of a roku app
  * to a cleaned up js version.
@@ -229,6 +265,29 @@ export class RokuClient {
     }
 
     await this._post('search/browse', q);
+  }
+
+  /**
+   * Get the media player info of this Roku device.
+   * @see {@link https://developer.roku.com/docs/developer-program/debugging/external-control-api.md#querymedia-player-example}
+   */
+  async mediaPlayer(): Promise<RokuMediaInfo> {
+    const data = await this._getXml('query/media-player');
+    const media: any = {};
+
+    for (const [key, value] of Object.entries(data.player)) {
+      if (key === '$') {
+        Object.assign(media, value);
+        continue;
+      }
+      if ((value as any).$) {
+        media[key] = (value as any).$;
+      } else {
+        media[key] = value;
+      }
+    }
+
+    return media;
   }
 
   /**

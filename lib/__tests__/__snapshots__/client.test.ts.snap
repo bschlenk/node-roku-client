@@ -1,0 +1,39 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Client #mediaPlayer() should parse the response 1`] = `
+Object {
+  "buffering": Object {
+    "current": "1000",
+    "max": "1000",
+    "target": "0",
+  },
+  "duration": "887999 ms",
+  "error": false,
+  "format": Object {
+    "audio": "aac",
+    "captions": "none",
+    "container": "mp4",
+    "drm": "none",
+    "video": "mpeg4_15",
+    "videoRes": "1280x546",
+  },
+  "isLive": false,
+  "newStream": Object {
+    "speed": "128000 bps",
+  },
+  "plugin": Object {
+    "bandwidth": "44692475 bps",
+    "id": "dev",
+    "name": "MultiLive",
+  },
+  "position": "6916 ms",
+  "runtime": "887999 ms",
+  "state": "play",
+  "streamSegment": Object {
+    "bitrate": "0",
+    "mediaSequence": "1",
+    "segmentType": "mux",
+    "time": "0",
+  },
+}
+`;

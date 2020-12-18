@@ -1,0 +1,11 @@
+<player error="false" state="play">
+    <plugin bandwidth="44692475 bps" id="dev" name="MultiLive"/>
+    <format audio="aac" captions="none" container="mp4" drm="none" video="mpeg4_15" video_res="1280x546"/>
+    <buffering current="1000" max="1000" target="0"/>
+    <new_stream speed="128000 bps"/>
+    <position>6916 ms</position>
+    <duration>887999 ms</duration>
+    <is_live>false</is_live>
+    <runtime>887999 ms</runtime>
+    <stream_segment bitrate="0" media_sequence="1" segment_type="mux" time="0"/>
+</player>
