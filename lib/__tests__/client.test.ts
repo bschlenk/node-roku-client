@@ -150,6 +150,7 @@ describe('Client', () => {
       expect((info as any)['model-name']).toBeUndefined();
       expect(info.modelName).toEqual('Roku 3');
       expect(info.secureDevice).toBe(true);
+      expect(info).toMatchSnapshot();
     });
   });
 

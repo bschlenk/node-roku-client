@@ -1,5 +1,39 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Client #info() should return info for the roku device 1`] = `
+Object {
+  "advertisingId": "ec7f71ee-35d7-5a2b-bafd-e4b9f3947337",
+  "country": "US",
+  "developerEnabled": false,
+  "deviceId": "4E652H070911",
+  "ethernetMac": "ac:3a:7a:80:ae:08",
+  "headphonesConnected": false,
+  "keyedDeveloperId": "",
+  "language": "en",
+  "locale": "en_US",
+  "modelName": "Roku 3",
+  "modelNumber": "4230X",
+  "modelRegion": "US",
+  "networkType": "wifi",
+  "notificationsEnabled": true,
+  "notificationsFirstUse": true,
+  "powerMode": "PowerOn",
+  "searchEnabled": true,
+  "secureDevice": true,
+  "serialNumber": "4E652H070911",
+  "softwareBuild": "4100",
+  "softwareVersion": "7.2.0",
+  "supportsSuspend": false,
+  "timeZone": "US/Hawaii",
+  "timeZoneOffset": "-600",
+  "udn": "04546142-6001-1014-80ff-ac3a7a80ae09",
+  "userDeviceName": "",
+  "vendorName": "Roku",
+  "voiceSearchEnabled": true,
+  "wifiMac": "ac:3a:7a:80:ae:09",
+}
+`;
+
 exports[`Client #mediaPlayer() should parse the response 1`] = `
 Object {
   "buffering": Object {
