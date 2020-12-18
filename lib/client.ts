@@ -1,11 +1,11 @@
 import fetchPonyfill from 'fetch-ponyfill';
-import { parseStringPromise as parseXml } from 'xml2js';
 import _debug from 'debug';
+import { parseXml } from './xml';
 import { discover, discoverAll } from './discover';
 import { Commander } from './commander';
 import { getCommand, KeyType } from './keyCommand';
 import { RokuDeviceInfo } from './device-info';
-import { camelcase, maybeBoolean, queryString, QueryStringObj } from './utils';
+import { queryString, QueryStringObj } from './utils';
 
 const { fetch } = fetchPonyfill();
 
@@ -60,14 +60,7 @@ export interface RokuSearchParams {
  * to a cleaned up js version.
  */
 function appXMLToJS(app: any): RokuApp {
-  const { _: name } = app;
-  const { id, type, version } = app.$;
-  return {
-    id,
-    name,
-    type,
-    version,
-  };
+  return { name: app._, ...app.$ };
 }
 
 /**
@@ -129,18 +122,17 @@ export class RokuClient {
    */
   async active(): Promise<RokuApp | null> {
     const xml = await this._getXml('query/active-app');
-    const { app } = xml['active-app'];
-    if (app.length !== 1) {
+    const { app } = xml.activeApp;
+    if (Array.isArray(app)) {
       throw new Error(
         `expected 1 active app but received ${app.length}: ${app}`,
       );
     }
-    const activeApp = app[0];
     // If no app is active, a single field is returned without any properties
-    if (!activeApp.$ || !activeApp.$.id) {
+    if (!app.$ || !app.$.id) {
       return null;
     }
-    return appXMLToJS(activeApp);
+    return appXMLToJS(app);
   }
 
   /**
@@ -151,15 +143,7 @@ export class RokuClient {
    */
   async info(): Promise<RokuDeviceInfo> {
     const xml = await this._getXml('query/device-info');
-    const info = xml['device-info'] as Record<string, string[]>;
-    return Object.entries(info).reduce<Record<string, string | boolean>>(
-      // the xml parser wraps values in an array
-      (result, [key, [value]]) => {
-        result[camelcase(key)] = maybeBoolean(value);
-        return result;
-      },
-      {},
-    ) as any;
+    return xml.deviceInfo;
   }
 
   /**
