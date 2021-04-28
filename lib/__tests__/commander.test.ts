@@ -17,6 +17,10 @@ describe('Commander', () => {
     commander = new Commander(client);
   });
 
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
   it('should allow chaining methods', () =>
     commander
       .up(2)
@@ -70,22 +74,22 @@ describe('Commander', () => {
         expect(methods).toEqual(['Down', 'Up']);
       }));
 
-  it('should allow waiting between commands', () => {
+  it('should allow waiting between commands', async () => {
     jest.useFakeTimers();
 
     const cmd = commander.wait(2000).up().send();
 
-    return new Promise((resolve) => {
-      setImmediate(() => {
-        expect(methods.length).toBe(0);
-        jest.runAllTimers();
-        resolve(
-          cmd.then(() => {
-            expect(methods).toEqual(['Up']);
-          }),
-        );
-      });
-    });
+    expect(methods.length).toBe(0);
+
+    // resolve the first promise, up to the setTimeout
+    await Promise.resolve();
+
+    // cause the setTimeout to finish
+    jest.runAllTimers();
+
+    await cmd;
+
+    expect(methods).toEqual(['Up']);
   });
 
   it('should allow sending more than once', async () => {

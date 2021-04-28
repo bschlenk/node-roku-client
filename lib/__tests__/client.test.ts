@@ -21,7 +21,7 @@ function loadResponse(name: string, asBuffer = false) {
   }
   const bufferStream = new stream.PassThrough();
   bufferStream.end(data);
-  return (bufferStream as unknown) as ReadableStream;
+  return bufferStream as unknown as ReadableStream;
 }
 
 describe('Client', () => {

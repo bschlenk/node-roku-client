@@ -56,8 +56,8 @@ class RokuFinder extends EventEmitter {
     };
 
     search();
-    this.intervalId = (setInterval(search, 1000) as unknown) as number;
-    this.timeoutId = (setTimeout(done, timeout) as unknown) as number;
+    this.intervalId = setInterval(search, 1000) as unknown as number;
+    this.timeoutId = setTimeout(done, timeout) as unknown as number;
   }
 
   stop() {
