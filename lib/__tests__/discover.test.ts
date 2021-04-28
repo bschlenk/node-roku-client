@@ -3,8 +3,7 @@ import { discover, discoverAll } from '../discover';
 const HEADERS = {
   'CACHE-CONTROL': 'max-age=3600',
   ST: 'urn:dial-multiscreen-org:service:dial:1',
-  USN:
-    'uuid:00000000-0000-0000-0000-000000000000::urn:dial-multiscreen-org:service:dial:1',
+  USN: 'uuid:00000000-0000-0000-0000-000000000000::urn:dial-multiscreen-org:service:dial:1',
   EXT: '',
   SERVER: 'Roku UPnP/1.0 MiniUPnPd/1.4',
   LOCATION: 'http://192.168.1.17:8060/dial/dd.xml',
@@ -13,6 +12,10 @@ const HEADERS = {
 describe('discover', () => {
   beforeEach(() => {
     jest.useFakeTimers();
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
   });
 
   describe('discover', () => {
