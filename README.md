@@ -193,7 +193,7 @@ Tested on OSX & raspberry pi w/ raspbian jessie, and with Roku TV.
 [2]: https://developer.roku.com/docs/developer-program/debugging/external-control-api.md#keypress-key-values
 [npm]: https://img.shields.io/npm/v/roku-client.svg?logo=npm
 [npm-url]: https://npmjs.com/package/roku-client
-[build]: https://img.shields.io/github/workflow/status/bschlenk/node-roku-client/Node.js%20CI?logo=github
+[build]: https://img.shields.io/github/actions/workflow/status/bschlenk/node-roku-client/main.yml?logo=github&branch=master
 [build-url]: https://github.com/bschlenk/node-roku-client/actions?query=workflow%3A%22Node.js+CI%22
 [codecov]: https://img.shields.io/codecov/c/github/bschlenk/node-roku-client.svg?logo=codecov
 [codecov-url]: https://codecov.io/gh/bschlenk/node-roku-client
