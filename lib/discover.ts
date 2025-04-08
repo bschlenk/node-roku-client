@@ -2,7 +2,9 @@ import { EventEmitter } from 'node:events'
 import * as url from 'node:url'
 
 import _debug from 'debug'
-import { Client as SSDPClient, Headers } from 'node-ssdp'
+import SSDP from 'node-ssdp'
+
+const { Client: SSDPClient } = SSDP
 
 const debug = _debug('roku-client:discover')
 
@@ -20,7 +22,7 @@ function parseAddress(location: string): string {
  * network.
  */
 class RokuFinder extends EventEmitter<{ found: [string]; timeout: [] }> {
-  private readonly client: SSDPClient
+  private readonly client = new SSDPClient()
   private intervalId!: number
   private timeoutId!: number
   private running = false
@@ -28,9 +30,7 @@ class RokuFinder extends EventEmitter<{ found: [string]; timeout: [] }> {
   constructor() {
     super()
 
-    this.client = new SSDPClient()
-
-    this.client.on('response', (headers: Headers) => {
+    this.client.on('response', (headers) => {
       if (!this.running) {
         return
       }
