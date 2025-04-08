@@ -6,7 +6,7 @@ Discover & control Roku devices from NodeJS.
 
 **requirements:**
 
-- node `10 or higher`
+- node `18 or higher`
 - a Roku device connected to your network
 - a router/network that supports UPnP (for ssdp)
 
@@ -17,24 +17,15 @@ Discover & control Roku devices from NodeJS.
 ## Usage
 
 ```js
-// es2015
 import { RokuClient, Keys } from 'roku-client'
 
-// commonjs
-const { RokuClient, Keys } = require('roku-client')
+const client = await RokuClient.discover(/* timeout, defaults to 10 seconds */)
+console.log(`roku device found at ${client.ip}`)
 
-RokuClient.discover(/* timeout, defaults to 10 seconds */)
-  .then((client) => {
-    console.log(`roku device found at ${client.ip}`)
-    return client.apps()
-  })
-  .then((apps) => {
-    apps.forEach((app) => console.log(app))
-    // [{ id, name, type, version }, ...]
-  })
-  .catch((err) => {
-    console.error(err.stack)
-  })
+const apps = await client.apps()
+
+apps.forEach((app) => console.log(app))
+// [{ id, name, type, version }, ...]
 
 // Or, if the roku address is already known
 const client = new RokuClient('http://192.168.1.17:8060')
@@ -174,7 +165,7 @@ If you have a good reason for this library to work in browsers, let me know by o
 
 ## Testing
 
-`$ npm run test`
+`$ pnpm test`
 
 This will run the linter, unit tests, and coverage.
 
