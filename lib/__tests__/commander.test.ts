@@ -1,6 +1,8 @@
-import { RokuClient } from '../client'
-import { Commander } from '../commander'
-import * as Keys from '../keys'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { RokuClient } from '../client.js'
+import { Commander } from '../commander.js'
+import * as Keys from '../keys.js'
 
 describe('Commander', () => {
   let methods: any[]
@@ -18,7 +20,7 @@ describe('Commander', () => {
   })
 
   afterEach(() => {
-    jest.useRealTimers()
+    vi.useRealTimers()
   })
 
   it('should allow chaining methods', () =>
@@ -75,7 +77,7 @@ describe('Commander', () => {
       }))
 
   it('should allow waiting between commands', async () => {
-    jest.useFakeTimers()
+    vi.useFakeTimers()
 
     const cmd = commander.wait(2000).up().send()
 
@@ -85,7 +87,7 @@ describe('Commander', () => {
     await Promise.resolve()
 
     // cause the setTimeout to finish
-    jest.runAllTimers()
+    vi.runAllTimers()
 
     await cmd
 

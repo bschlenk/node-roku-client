@@ -1,7 +1,8 @@
-import * as url from 'url'
-import { EventEmitter } from 'events'
-import { Client as SSDPClient, Headers } from 'node-ssdp'
+import { EventEmitter } from 'node:events'
+import * as url from 'node:url'
+
 import _debug from 'debug'
+import { Client as SSDPClient, Headers } from 'node-ssdp'
 
 const debug = _debug('roku-client:discover')
 
@@ -18,7 +19,7 @@ function parseAddress(location: string): string {
  * Helper class abstracting the lifecycle of locating Roku devices on the
  * network.
  */
-class RokuFinder extends EventEmitter {
+class RokuFinder extends EventEmitter<{ found: [string]; timeout: [] }> {
   private readonly client: SSDPClient
   private intervalId!: number
   private timeoutId!: number
@@ -75,7 +76,7 @@ class RokuFinder extends EventEmitter {
  * @return A promise resolving to a Roku device's address.
  */
 export function discover(timeout: number = DEFAULT_TIMEOUT): Promise<string> {
-  return new Promise((resolve, reject) => {
+  return new Promise<string>((resolve, reject) => {
     const finder = new RokuFinder()
     const startTime = Date.now()
 

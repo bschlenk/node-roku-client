@@ -1,13 +1,14 @@
-type Keys = typeof import('./keys')
+type Keys = typeof import('./keys.js')
 
 export interface KeyCommand {
   command: string
   name: string
 }
 
-type KeyNameInterface<T extends Record<string, KeyCommand>> = {
-  [N in T[keyof T]['command']]: any
-}
+type KeyNameInterface<T extends Record<string, KeyCommand>> = Record<
+  T[keyof T]['command'],
+  any
+>
 
 export type KeyName = keyof KeyNameInterface<Keys>
 

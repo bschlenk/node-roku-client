@@ -1,4 +1,6 @@
-import { camelcase, queryString } from '../utils'
+import { describe, expect, it } from 'vitest'
+
+import { camelcase, queryString } from '../utils.js'
 
 describe('utils', () => {
   describe('camelcase', () => {

@@ -1,13 +1,21 @@
-import fetchPonyfill from 'fetch-ponyfill'
-import _debug from 'debug'
-import { parseXml } from './xml'
-import { discover, discoverAll } from './discover'
-import { Commander } from './commander'
-import { getCommand, KeyType } from './keyCommand'
-import { RokuDeviceInfo } from './device-info'
-import { queryString, QueryStringObj } from './utils'
+/*
+eslint-disable
+@typescript-eslint/no-unsafe-call,
+@typescript-eslint/no-unsafe-return,
+@typescript-eslint/no-unsafe-argument,
+@typescript-eslint/no-unsafe-assignment,
+@typescript-eslint/no-unsafe-member-access,
+@typescript-eslint/restrict-template-expressions,
+*/
 
-const { fetch } = fetchPonyfill()
+import _debug from 'debug'
+
+import { Commander } from './commander.js'
+import { RokuDeviceInfo } from './device-info.js'
+import { discover, discoverAll } from './discover.js'
+import { getCommand, KeyType } from './keyCommand.js'
+import { queryString, QueryStringObj } from './utils.js'
+import { parseXml } from './xml.js'
 
 const debug = _debug('roku-client:client')
 
@@ -92,14 +100,6 @@ export interface RokuMediaInfo {
 }
 
 /**
- * Convert the xml version of a roku app
- * to a cleaned up js version.
- */
-function appXMLToJS(app: any): RokuApp {
-  return { name: app._, ...app.$ }
-}
-
-/**
  * The Roku client class. Contains methods to talk to a roku device.
  */
 export class RokuClient {
@@ -165,7 +165,7 @@ export class RokuClient {
       )
     }
     // If no app is active, a single field is returned without any properties
-    if (!app.$ || !app.$.id) {
+    if (!app.$?.id) {
       return null
     }
     return appXMLToJS(app)
@@ -194,6 +194,7 @@ export class RokuClient {
   async icon(appId: RokuAppId): Promise<RokuIcon> {
     const response = await this._get(`query/icon/${appId}`)
 
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     const type = response.headers.get('content-type') || undefined
     let extension = undefined
     if (type) {
@@ -401,4 +402,12 @@ export class RokuClient {
     }
     return res
   }
+}
+
+/**
+ * Convert the xml version of a roku app
+ * to a cleaned up js version.
+ */
+function appXMLToJS(app: any): RokuApp {
+  return { name: app._, ...app.$ }
 }

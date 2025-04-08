@@ -1,6 +1,7 @@
 import { Parser } from 'xml2js'
-import { parseBooleans } from 'xml2js/lib/processors'
-import { camelcase } from './utils'
+import { parseBooleans } from 'xml2js/lib/processors.js'
+
+import { camelcase } from './utils.js'
 
 const parser = new Parser({
   explicitArray: false,

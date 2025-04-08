@@ -23,50 +23,41 @@
     "dist",
     "!**/__tests__/"
   ],
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "type": "commonjs",
+  "type": "module",
   "exports": {
-    ".": {
-      "require": "./dist/index.js",
-      "import": "./index.mjs"
-    },
+    ".": "./dist/index.js",
     "./package.json": "./package.json"
   },
   "scripts": {
-    "test:unit": "jest",
-    "test:watch": "npm run test:unit -- --watch",
+    "test:unit": "vitest run",
+    "test:watch": "vitest",
     "lint": "eslint --ext .ts lib",
-    "test": "npm run lint && npm run test:unit",
+    "lint:fix": "pnpm lint --fix",
+    "test": "pnpm lint && pnpm test:unit",
     "build": "tsc",
     "release": "standard-version",
     "prepare": "husky install",
-    "prepublishOnly": "npm run test && npm run build"
+    "prepublishOnly": "pnpm test && pnpm build"
   },
   "dependencies": {
-    "debug": "^4.3.1",
-    "fetch-ponyfill": "^7.1.0",
+    "debug": "^4.4.0",
     "node-ssdp": "^4.0.1",
-    "xml2js": "^0.4.23"
+    "xml2js": "^0.6.2"
   },
   "devDependencies": {
-    "@commitlint/cli": "^12.1.4",
-    "@commitlint/config-conventional": "^12.1.4",
-    "@types/debug": "^4.1.5",
-    "@types/jest": "^26.0.23",
-    "@types/node": "^14.17.4",
-    "@types/xml2js": "^0.4.8",
-    "@typescript-eslint/eslint-plugin": "^4.28.1",
-    "@typescript-eslint/parser": "^4.28.1",
-    "eslint": "^7.29.0",
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-import": "^2.23.4",
-    "husky": "^6.0.0",
-    "jest": "^27.0.6",
-    "jest-fetch-mock": "^3.0.3",
-    "prettier": "^2.3.2",
-    "standard-version": "^9.3.0",
-    "ts-jest": "^27.0.3",
-    "typescript": "^4.3.4"
-  }
+    "@bschlenk/eslint-config": "^0.0.3",
+    "@commitlint/cli": "^19.8.0",
+    "@commitlint/config-conventional": "^19.8.0",
+    "@types/debug": "^4.1.12",
+    "@types/node": "^22.14.0",
+    "@types/xml2js": "^0.4.14",
+    "eslint": "^9.24.0",
+    "husky": "^9.1.7",
+    "prettier": "^3.5.3",
+    "standard-version": "^9.5.0",
+    "typescript": "^5.8.3",
+    "vitest": "^3.1.1",
+    "vitest-fetch-mock": "^0.4.5"
+  },
+  "packageManager": "pnpm@9.12.0"
 }

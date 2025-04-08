@@ -1,10 +1,12 @@
-import * as Keys from './keys'
-import { getCommand, KeyCommand, KeyName } from './keyCommand'
-import type { RokuClient } from './client'
+import type { RokuClient } from './client.js'
+import { getCommand, KeyCommand, KeyName } from './keyCommand.js'
+import * as Keys from './keys.js'
+import { wait } from './utils.js'
 
-type ClientInterface<T extends Record<string, KeyCommand>> = {
-  [N in T[keyof T]['name']]: (count?: number) => Commander
-}
+type ClientInterface<T extends Record<string, KeyCommand>> = Record<
+  T[keyof T]['name'],
+  (count?: number) => Commander
+>
 
 /**
  * A command is a tuple of the string command and whether the command
@@ -15,7 +17,6 @@ type Command = [string, boolean, number?]
 
 const WAIT_COMMAND = '__WAIT'
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface Commander extends ClientInterface<typeof Keys> {}
 
 export class Commander {
@@ -100,6 +101,13 @@ export class Commander {
   }
 }
 
+/*
+eslint-disable
+@typescript-eslint/no-unsafe-member-access,
+@typescript-eslint/no-unsafe-return,
+@typescript-eslint/no-unsafe-call,
+*/
+
 // add all keys as methods to Commander
 Object.values(Keys).forEach((key) => {
   ;(Commander.prototype as any)[key.name] = function (count = 1) {
@@ -107,6 +115,9 @@ Object.values(Keys).forEach((key) => {
   }
 })
 
-function wait(timeout: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, timeout))
-}
+/*
+eslint-enable
+@typescript-eslint/no-unsafe-member-access,
+@typescript-eslint/no-unsafe-return,
+@typescript-eslint/no-unsafe-call,
+*/

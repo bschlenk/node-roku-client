@@ -1,12 +1,13 @@
-import * as fs from 'fs'
-import * as path from 'path'
-import * as stream from 'stream'
-import { RokuClient, ROKU_DEFAULT_PORT } from '../client'
-import fetchPonyfill from 'fetch-ponyfill'
-import { FetchMock } from 'jest-fetch-mock'
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 
-const fetchObjects = fetchPonyfill()
-const fetch = fetchObjects.fetch as FetchMock
+import fs from 'node:fs'
+import path from 'node:path'
+import stream from 'node:stream'
+
+import { __setHeaders } from 'node-ssdp'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { ROKU_DEFAULT_PORT, RokuClient } from '../client.js'
 
 const clientAddr = 'http://192.168.1.61:8060'
 
@@ -29,19 +30,19 @@ describe('Client', () => {
 
   beforeEach(() => {
     client = new RokuClient(clientAddr)
-    fetch.resetMocks()
+    fetchMock.resetMocks()
 
-    jest.useFakeTimers()
+    vi.useFakeTimers()
   })
 
   describe('#discover()', () => {
     it('should resolve to a client instance for the first address found', async () => {
-      require('node-ssdp').__setHeaders({
+      __setHeaders({
         SERVER: 'Roku UPnP/1.0 MiniUPnPd/1.4',
         LOCATION: 'http://192.168.1.17:8060/dial/dd.xml',
       })
       const p = RokuClient.discover()
-      jest.runAllTimers()
+      vi.runAllTimers()
       const c = await p
       expect(c).toBeInstanceOf(RokuClient)
       expect(c.ip).toEqual('http://192.168.1.17:8060')
@@ -50,7 +51,7 @@ describe('Client', () => {
 
   describe('#discoverAll()', () => {
     it('should resolve to an array of devices', async () => {
-      require('node-ssdp').__setHeaders([
+      __setHeaders([
         {
           SERVER: 'Roku',
           LOCATION: 'http://192.168.1.17:8060',
@@ -66,7 +67,7 @@ describe('Client', () => {
       ])
 
       const p = RokuClient.discoverAll(1000)
-      jest.advanceTimersByTime(1000)
+      vi.advanceTimersByTime(1000)
       const clients = await p
       expect(clients.length).toEqual(3)
       expect(clients[0].ip).toEqual('http://192.168.1.17:8060')
@@ -94,7 +95,7 @@ describe('Client', () => {
 
   describe('#apps()', () => {
     it('should return a list of apps', async () => {
-      fetch.mockResponse(loadResponse('apps'))
+      fetchMock.mockResponse(loadResponse('apps'))
       const apps = await client.apps()
       expect(apps).toBeInstanceOf(Array)
       apps.forEach((app) => {
@@ -110,14 +111,14 @@ describe('Client', () => {
     })
 
     it('should reject if the status is not ok', () => {
-      fetch.mockResponse('', { status: 404 })
+      fetchMock.mockResponse('', { status: 404 })
       return expect(client.apps()).rejects.toThrow(/^Failed to GET/)
     })
   })
 
   describe('#active()', () => {
     it('should return the active app', async () => {
-      fetch.mockResponse(loadResponse('active-app'))
+      fetchMock.mockResponse(loadResponse('active-app'))
       const app = await client.active()
       expect(app).toEqual(
         expect.objectContaining({
@@ -130,24 +131,24 @@ describe('Client', () => {
     })
 
     it('should return null if there is not an active app', async () => {
-      fetch.mockResponse(loadResponse('active-app-none'))
+      fetchMock.mockResponse(loadResponse('active-app-none'))
       const app = await client.active()
       expect(app).toBeNull()
     })
 
     it('should reject if multiple apps are returned', () => {
-      fetch.mockResponse(loadResponse('active-multiple'))
+      fetchMock.mockResponse(loadResponse('active-multiple'))
       return expect(client.active()).rejects.toThrow()
     })
   })
 
   describe('#info()', () => {
     it('should return info for the roku device', async () => {
-      fetch.mockResponse(loadResponse('info'))
+      fetchMock.mockResponse(loadResponse('info'))
       const info = await client.info()
       expect(info).toBeInstanceOf(Object)
       expect(Object.keys(info).length).toEqual(29)
-      expect((info as any)['model-name']).toBeUndefined()
+      expect(info).not.toHaveProperty('model-name')
       expect(info.modelName).toEqual('Roku 3')
       expect(info.secureDevice).toBe(true)
       expect(info).toMatchSnapshot()
@@ -200,11 +201,10 @@ describe('Client', () => {
 
   describe('#icon()', () => {
     it('should fetch the icon', async () => {
-      const response = new fetchObjects.Response(
-        loadResponse('netflix.jpeg', true),
-        { headers: new fetchObjects.Headers({ 'content-type': 'image/jpeg' }) },
-      )
-      fetch.mockImplementation(() => Promise.resolve(response))
+      const response = new Response(loadResponse('netflix.jpeg', true), {
+        headers: new Headers({ 'content-type': 'image/jpeg' }),
+      })
+      fetchMock.mockImplementation(() => Promise.resolve(response))
       const icon = await client.icon('12')
       expect(icon.type).toEqual('image/jpeg')
       expect(icon.extension).toEqual('.jpeg')
@@ -212,11 +212,10 @@ describe('Client', () => {
     })
 
     it('should be okay without a content-type', async () => {
-      const response = new fetchObjects.Response(
-        loadResponse('netflix.jpeg', true),
-        { headers: new fetchObjects.Headers({}) },
-      )
-      fetch.mockImplementation(() => Promise.resolve(response))
+      const response = new Response(loadResponse('netflix.jpeg', true), {
+        headers: new Headers({}),
+      })
+      fetchMock.mockImplementation(() => Promise.resolve(response))
       const icon = await client.icon('12')
       expect(icon.type).toBeUndefined()
       expect(icon.extension).toBeUndefined()
@@ -224,15 +223,12 @@ describe('Client', () => {
     })
 
     it('should be okay if type is not image', async () => {
-      const response = new fetchObjects.Response(
-        loadResponse('netflix.jpeg', true),
-        {
-          headers: new fetchObjects.Headers({
-            'content-type': 'application/json',
-          }),
-        },
-      )
-      fetch.mockImplementation(() => Promise.resolve(response))
+      const response = new Response(loadResponse('netflix.jpeg', true), {
+        headers: new Headers({
+          'content-type': 'application/json',
+        }),
+      })
+      fetchMock.mockImplementation(() => Promise.resolve(response))
       const icon = await client.icon('12')
       expect(icon.type).toEqual('application/json')
       expect(icon.extension).toBeUndefined()
@@ -249,7 +245,7 @@ describe('Client', () => {
     })
 
     it('should reject if the request status is not ok', () => {
-      fetch.mockResponse('', { status: 404 })
+      fetchMock.mockResponse('', { status: 404 })
       return expect(client.launch('12345')).rejects.toThrow(/^Failed to POST/)
     })
   })
@@ -286,7 +282,7 @@ describe('Client', () => {
   describe('#text()', () => {
     it('should send a Lit_ command for each letter', async () => {
       await client.text('hello')
-      expect(fetch.mock.calls).toEqual([
+      expect(fetchMock.mock.calls).toEqual([
         [`${client.ip}/keypress/Lit_h`, { method: 'POST' }],
         [`${client.ip}/keypress/Lit_e`, { method: 'POST' }],
         [`${client.ip}/keypress/Lit_l`, { method: 'POST' }],
@@ -300,7 +296,7 @@ describe('Client', () => {
     it('should allow chaining remote commands', async () => {
       await client.command().volumeUp().select().text('abc').send()
 
-      expect(fetch.mock.calls).toEqual([
+      expect(fetchMock.mock.calls).toEqual([
         [`${client.ip}/keypress/VolumeUp`, { method: 'POST' }],
         [`${client.ip}/keypress/Select`, { method: 'POST' }],
         [`${client.ip}/keypress/Lit_a`, { method: 'POST' }],
@@ -395,7 +391,7 @@ describe('Client', () => {
 
   describe('#mediaPlayer()', () => {
     it('should parse the response', async () => {
-      fetch.mockResponse(loadResponse('media-player'))
+      fetchMock.mockResponse(loadResponse('media-player'))
       const res = await client.mediaPlayer()
       expect(res).toMatchSnapshot()
     })

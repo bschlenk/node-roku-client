@@ -168,7 +168,7 @@ volumeUp5.send()
 
 ## Usage in the Browser
 
-I spent some time trying to get this package to work from a browser. Mainly I was trying to load it from [skypack.dev] so I could write a demo website. I ran into a few issues - xml2js doesn't work in the browser, so I tried out isomorphic-xml2js. Browsers also can't send udp packets, so the whole discovery mechanism is out of the question. I was able to stub that part out with a "browsers" field in package.json. The final nail in the coffin is that roku devices don't set CORS headers, so even after getting the library to run, browsers block the requests. At this point I've decided there isn't any point in making this library isomorphic. In the future I might replace [fetch-ponyfill] with something more light weight.
+I spent some time trying to get this package to work from a browser. Mainly I was trying to load it from [skypack.dev] so I could write a demo website. I ran into a few issues - xml2js doesn't work in the browser, so I tried out isomorphic-xml2js. Browsers also can't send udp packets, so the whole discovery mechanism is out of the question. I was able to stub that part out with a "browsers" field in package.json. The final nail in the coffin is that roku devices don't set CORS headers, so even after getting the library to run, browsers block the requests. At this point I've decided there isn't any point in making this library isomorphic.
 
 If you have a good reason for this library to work in browsers, let me know by opening an issue!
 
@@ -200,5 +200,3 @@ Tested on OSX & raspberry pi w/ raspbian jessie, and with Roku TV.
 [keys.ts]: lib/keys.ts
 [device-info.ts]: https://github.com/bschlenk/node-roku-client/blob/master/lib/device-info.ts
 [skypack.dev]: https://www.skypack.dev
-[node-fetch]: https://www.npmjs.com/package/node-fetch
-[fetch-ponyfill]: https://www.npmjs.com/package/fetch-ponyfill

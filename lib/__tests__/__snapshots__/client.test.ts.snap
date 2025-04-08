@@ -1,7 +1,7 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Client #info() should return info for the roku device 1`] = `
-Object {
+exports[`Client > #info() > should return info for the roku device 1`] = `
+{
   "advertisingId": "ec7f71ee-35d7-5a2b-bafd-e4b9f3947337",
   "country": "US",
   "developerEnabled": false,
@@ -34,16 +34,16 @@ Object {
 }
 `;
 
-exports[`Client #mediaPlayer() should parse the response 1`] = `
-Object {
-  "buffering": Object {
+exports[`Client > #mediaPlayer() > should parse the response 1`] = `
+{
+  "buffering": {
     "current": "1000",
     "max": "1000",
     "target": "0",
   },
   "duration": "887999 ms",
   "error": false,
-  "format": Object {
+  "format": {
     "audio": "aac",
     "captions": "none",
     "container": "mp4",
@@ -52,10 +52,10 @@ Object {
     "videoRes": "1280x546",
   },
   "isLive": false,
-  "newStream": Object {
+  "newStream": {
     "speed": "128000 bps",
   },
-  "plugin": Object {
+  "plugin": {
     "bandwidth": "44692475 bps",
     "id": "dev",
     "name": "MultiLive",
@@ -63,7 +63,7 @@ Object {
   "position": "6916 ms",
   "runtime": "887999 ms",
   "state": "play",
-  "streamSegment": Object {
+  "streamSegment": {
     "bitrate": "0",
     "mediaSequence": "1",
     "segmentType": "mux",
