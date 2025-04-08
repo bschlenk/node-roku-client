@@ -17,7 +17,7 @@
     "url": "https://github.com/bschlenk/node-roku-client"
   },
   "engines": {
-    "node": ">=10"
+    "node": ">=18"
   },
   "files": [
     "dist",
@@ -51,6 +51,7 @@
     "@types/debug": "^4.1.12",
     "@types/node": "^22.14.0",
     "@types/xml2js": "^0.4.14",
+    "@vitest/coverage-v8": "^3.1.1",
     "eslint": "^9.24.0",
     "husky": "^9.1.7",
     "prettier": "^3.5.3",
