@@ -1,13 +1,13 @@
 export function camelcase(str: string): string {
-  const [first, ...rest] = str.split(/[-_]/);
-  return first + rest.map(capitalize).join('');
+  const [first, ...rest] = str.split(/[-_]/)
+  return first + rest.map(capitalize).join('')
 }
 
 export function capitalize(str: string): string {
-  return str[0].toUpperCase() + str.substr(1);
+  return str[0].toUpperCase() + str.substr(1)
 }
 
-export type QueryStringObj = Record<string, string | number | boolean>;
+export type QueryStringObj = Record<string, string | number | boolean>
 
 export function queryString(obj: QueryStringObj): string {
   return Object.entries(obj)
@@ -15,5 +15,5 @@ export function queryString(obj: QueryStringObj): string {
       ([key, value]) =>
         `${encodeURIComponent(key)}=${encodeURIComponent(value)}`,
     )
-    .join('&');
+    .join('&')
 }

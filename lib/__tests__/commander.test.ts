@@ -1,25 +1,25 @@
-import { RokuClient } from '../client';
-import { Commander } from '../commander';
-import * as Keys from '../keys';
+import { RokuClient } from '../client'
+import { Commander } from '../commander'
+import * as Keys from '../keys'
 
 describe('Commander', () => {
-  let methods: any[];
-  let client: RokuClient;
-  let commander: Commander;
+  let methods: any[]
+  let client: RokuClient
+  let commander: Commander
 
   beforeEach(() => {
-    methods = [];
-    client = new RokuClient('address');
+    methods = []
+    client = new RokuClient('address')
     client.keypress = function (command) {
-      methods.push(command);
-      return Promise.resolve();
-    };
-    commander = new Commander(client);
-  });
+      methods.push(command)
+      return Promise.resolve()
+    }
+    commander = new Commander(client)
+  })
 
   afterEach(() => {
-    jest.useRealTimers();
-  });
+    jest.useRealTimers()
+  })
 
   it('should allow chaining methods', () =>
     commander
@@ -46,8 +46,8 @@ describe('Commander', () => {
           'b',
           'a',
           'Enter',
-        ]);
-      }));
+        ])
+      }))
 
   it('should allow for key strings to be used', () =>
     commander
@@ -62,8 +62,8 @@ describe('Commander', () => {
           'VolumeUp',
           'VolumeMute',
           'Power',
-        ]);
-      }));
+        ])
+      }))
 
   it('should allow commands to be added in the exec method', () =>
     commander
@@ -71,36 +71,36 @@ describe('Commander', () => {
       .up()
       .send()
       .then(() => {
-        expect(methods).toEqual(['Down', 'Up']);
-      }));
+        expect(methods).toEqual(['Down', 'Up'])
+      }))
 
   it('should allow waiting between commands', async () => {
-    jest.useFakeTimers();
+    jest.useFakeTimers()
 
-    const cmd = commander.wait(2000).up().send();
+    const cmd = commander.wait(2000).up().send()
 
-    expect(methods.length).toBe(0);
+    expect(methods.length).toBe(0)
 
     // resolve the first promise, up to the setTimeout
-    await Promise.resolve();
+    await Promise.resolve()
 
     // cause the setTimeout to finish
-    jest.runAllTimers();
+    jest.runAllTimers()
 
-    await cmd;
+    await cmd
 
-    expect(methods).toEqual(['Up']);
-  });
+    expect(methods).toEqual(['Up'])
+  })
 
   it('should allow sending more than once', async () => {
-    commander.up(2).down(2).left().right();
+    commander.up(2).down(2).left().right()
 
-    await commander.send();
-    expect(methods).toEqual(['Up', 'Up', 'Down', 'Down', 'Left', 'Right']);
+    await commander.send()
+    expect(methods).toEqual(['Up', 'Up', 'Down', 'Down', 'Left', 'Right'])
 
-    methods = [];
+    methods = []
 
-    await commander.send();
-    expect(methods).toEqual(['Up', 'Up', 'Down', 'Down', 'Left', 'Right']);
-  });
-});
+    await commander.send()
+    expect(methods).toEqual(['Up', 'Up', 'Down', 'Down', 'Left', 'Right'])
+  })
+})

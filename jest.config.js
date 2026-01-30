@@ -16,4 +16,4 @@ module.exports = {
   setupFilesAfterEnv: ['<rootDir>/lib/setupTests.js'],
   testEnvironment: 'node',
   testPathIgnorePatterns: ['<rootDir>/node_modules/', '<rootDir>/dist/'],
-};
+}

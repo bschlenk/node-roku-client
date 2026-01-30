@@ -1,4 +1,4 @@
-import { discover, discoverAll } from '../discover';
+import { discover, discoverAll } from '../discover'
 
 const HEADERS = {
   'CACHE-CONTROL': 'max-age=3600',
@@ -7,36 +7,36 @@ const HEADERS = {
   EXT: '',
   SERVER: 'Roku UPnP/1.0 MiniUPnPd/1.4',
   LOCATION: 'http://192.168.1.17:8060/dial/dd.xml',
-};
+}
 
 describe('discover', () => {
   beforeEach(() => {
-    jest.useFakeTimers();
-  });
+    jest.useFakeTimers()
+  })
 
   afterEach(() => {
-    jest.useRealTimers();
-  });
+    jest.useRealTimers()
+  })
 
   describe('discover', () => {
     it('should resolve to the first roku ip address found', async () => {
-      require('node-ssdp').__setHeaders(HEADERS);
+      require('node-ssdp').__setHeaders(HEADERS)
 
-      const p = discover();
-      jest.runAllTimers();
+      const p = discover()
+      jest.runAllTimers()
 
-      const address = await p;
-      expect(address).toEqual('http://192.168.1.17:8060');
-    });
+      const address = await p
+      expect(address).toEqual('http://192.168.1.17:8060')
+    })
 
     it('should fail after the configured timeout', () => {
-      require('node-ssdp').__setHeaders({});
+      require('node-ssdp').__setHeaders({})
 
-      const p = discover(1000);
-      jest.advanceTimersByTime(1000);
+      const p = discover(1000)
+      jest.advanceTimersByTime(1000)
 
-      return expect(p).rejects.toThrow();
-    });
+      return expect(p).rejects.toThrow()
+    })
 
     it('should not find devices that are not roku', async () => {
       require('node-ssdp').__setHeaders([
@@ -52,15 +52,15 @@ describe('discover', () => {
           SERVER: 'Roku',
           LOCATION: 'http://192.168.1.19:8060',
         },
-      ]);
+      ])
 
-      const p = discover(1000);
-      jest.runAllTimers();
+      const p = discover(1000)
+      jest.runAllTimers()
 
-      const address = await p;
-      expect(address).toEqual('http://192.168.1.19:8060');
-    });
-  });
+      const address = await p
+      expect(address).toEqual('http://192.168.1.19:8060')
+    })
+  })
 
   describe('discoverAll', () => {
     it('should find all devices', async () => {
@@ -77,18 +77,18 @@ describe('discover', () => {
           SERVER: 'Roku',
           LOCATION: 'http://192.168.1.19:8060',
         },
-      ]);
+      ])
 
-      const p = discoverAll(1000);
-      jest.advanceTimersByTime(1000);
+      const p = discoverAll(1000)
+      jest.advanceTimersByTime(1000)
 
-      const addresses = await p;
+      const addresses = await p
       expect(addresses).toEqual([
         'http://192.168.1.17:8060',
         'http://192.168.1.18:8060',
         'http://192.168.1.19:8060',
-      ]);
-    });
+      ])
+    })
 
     it('should not include duplicate addresses', async () => {
       require('node-ssdp').__setHeaders([
@@ -104,23 +104,23 @@ describe('discover', () => {
           SERVER: 'Roku',
           LOCATION: 'http://192.168.1.17:8060',
         },
-      ]);
+      ])
 
-      const p = discoverAll(1000);
-      jest.advanceTimersByTime(1000);
+      const p = discoverAll(1000)
+      jest.advanceTimersByTime(1000)
 
-      const addresses = await p;
-      expect(addresses).toEqual(['http://192.168.1.17:8060']);
-    });
+      const addresses = await p
+      expect(addresses).toEqual(['http://192.168.1.17:8060'])
+    })
 
     it('should reject if no devices are found', () => {
-      require('node-ssdp').__setHeaders(null);
+      require('node-ssdp').__setHeaders(null)
 
-      const p = discoverAll(1000);
-      jest.advanceTimersByTime(1000);
+      const p = discoverAll(1000)
+      jest.advanceTimersByTime(1000)
 
-      return expect(p).rejects.toThrow(/^Could not find any Roku devices/);
-    });
+      return expect(p).rejects.toThrow(/^Could not find any Roku devices/)
+    })
 
     it('should ignore responses after stopping', async () => {
       require('node-ssdp').__setHeaders([
@@ -136,26 +136,26 @@ describe('discover', () => {
           SERVER: 'Roku',
           LOCATION: 'http://192.168.1.19:8060',
         },
-      ]);
+      ])
 
-      const p = discoverAll(0);
-      jest.advanceTimersByTime(100);
+      const p = discoverAll(0)
+      jest.advanceTimersByTime(100)
 
-      const addresses = await p;
-      expect(addresses).toEqual(['http://192.168.1.17:8060']);
-    });
+      const addresses = await p
+      expect(addresses).toEqual(['http://192.168.1.17:8060'])
+    })
 
     it('should use the default timeout if none given', async () => {
       require('node-ssdp').__setHeaders({
         SERVER: 'Roku',
         LOCATION: 'http://192.168.1.17:8060',
-      });
+      })
 
-      const p = discoverAll();
-      jest.advanceTimersByTime(10000);
+      const p = discoverAll()
+      jest.advanceTimersByTime(10000)
 
-      const addresses = await p;
-      expect(addresses).toEqual(['http://192.168.1.17:8060']);
-    });
-  });
-});
+      const addresses = await p
+      expect(addresses).toEqual(['http://192.168.1.17:8060'])
+    })
+  })
+})
