@@ -13,7 +13,7 @@ import _debug from 'debug'
 import { Commander } from './commander.js'
 import { RokuDeviceInfo } from './device-info.js'
 import { discover, discoverAll } from './discover.js'
-import { getCommand, KeyType } from './keyCommand.js'
+import { getCommand, KeyType } from './key-command.js'
 import { queryString, QueryStringObj } from './utils.js'
 import { parseXml } from './xml.js'
 

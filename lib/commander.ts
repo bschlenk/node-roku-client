@@ -1,5 +1,5 @@
 import type { RokuClient } from './client.js'
-import { getCommand, KeyCommand, KeyName } from './keyCommand.js'
+import { getCommand, KeyCommand, KeyName } from './key-command.js'
 import * as Keys from './keys.js'
 import { wait } from './utils.js'
 
