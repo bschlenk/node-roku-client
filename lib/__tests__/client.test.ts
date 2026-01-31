@@ -16,7 +16,7 @@ function loadResponse(name: string, asBuffer: false): string
 function loadResponse(name: string, asBuffer: true): ReadableStream
 function loadResponse(name: string, asBuffer = false) {
   const file = name.includes('.') ? name : `${name}.xml`
-  const data = fs.readFileSync(path.join(__dirname, 'assets', file))
+  const data = fs.readFileSync(path.join(import.meta.dirname, 'assets', file))
   if (!asBuffer) {
     return data.toString('utf-8')
   }
@@ -42,7 +42,6 @@ describe('Client', () => {
         LOCATION: 'http://192.168.1.17:8060/dial/dd.xml',
       })
       const p = RokuClient.discover()
-      vi.runAllTimers()
       const c = await p
       expect(c).toBeInstanceOf(RokuClient)
       expect(c.ip).toEqual('http://192.168.1.17:8060')

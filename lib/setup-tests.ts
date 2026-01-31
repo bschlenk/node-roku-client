@@ -3,9 +3,7 @@ import createFetchMock from 'vitest-fetch-mock'
 
 type Headers = Record<string, string>
 
-vi.mock('node-ssdp', async () => {
-  const ssdp = await vi.importActual('node-ssdp')
-
+vi.mock('node-ssdp', () => {
   let headers: Headers | Headers[] | null = null
 
   class Client {
@@ -31,18 +29,16 @@ vi.mock('node-ssdp', async () => {
         }
       }
 
+      // For single response, call immediately
+      // For array responses, schedule them at increasing intervals to simulate staggered arrivals
       if (Array.isArray(headers)) {
-        let index = 0
-        const { length } = headers
-        setTimeout(function recurseResponses() {
-          callResponse(index)
-          index += 1
-          if (index < length) {
-            setTimeout(recurseResponses, 0)
-          }
-        }, 0)
+        headers.forEach((_, index) => {
+          // Schedule each response with a small delay (10ms apart)
+          // This allows tests to control when responses fire using fake timers
+          setTimeout(() => callResponse(index), index * 10)
+        })
       } else {
-        setTimeout(callResponse, 0)
+        callResponse()
       }
     }
 
@@ -65,7 +61,11 @@ vi.mock('node-ssdp', async () => {
     headers = h
   }
 
-  return { ...ssdp, Client, __setHeaders }
+  return {
+    default: { Client },
+    Client,
+    __setHeaders,
+  }
 })
 
 const fetchMocker = createFetchMock(vi)

@@ -31,9 +31,8 @@ class RokuFinder extends EventEmitter<{ found: [string]; timeout: [] }> {
     super()
 
     this.client.on('response', (headers) => {
-      if (!this.running) {
-        return
-      }
+      if (!this.running) return
+
       const { SERVER, LOCATION } = headers
       if (SERVER && LOCATION && SERVER.includes('Roku')) {
         const address = parseAddress(LOCATION)

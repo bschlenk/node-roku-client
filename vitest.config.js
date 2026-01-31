@@ -2,11 +2,12 @@ import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
   test: {
-    setupFiles: ['./lib/setupTests.js'],
+    include: ['lib/**/*.test.ts'],
+    setupFiles: ['./lib/setup-tests.ts'],
     coverage: {
       enabled: true,
       include: ['lib/**/*.ts'],
-      exclude: ['lib/setupTests.ts'],
+      exclude: ['lib/setup-tests.ts'],
     },
   },
 })

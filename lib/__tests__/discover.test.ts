@@ -30,8 +30,7 @@ describe('discover', () => {
       __setHeaders(HEADERS)
 
       const p = discover()
-      vi.runAllTimers()
-
+      // Don't advance timers - the mock should fire immediately
       const address = await p
       expect(address).toEqual('http://192.168.1.17:8060')
     })
@@ -62,7 +61,8 @@ describe('discover', () => {
       ])
 
       const p = discover(1000)
-      vi.runAllTimers()
+      // Array responses use setTimeout, need to advance timers to reach the Roku device at index 2
+      vi.advanceTimersByTime(20)
 
       const address = await p
       expect(address).toEqual('http://192.168.1.19:8060')
@@ -145,8 +145,9 @@ describe('discover', () => {
         },
       ])
 
-      const p = discoverAll(0)
-      vi.advanceTimersByTime(100)
+      const p = discoverAll(1)
+      // Advance just to the timeout, before all responses can fire
+      vi.advanceTimersByTime(1)
 
       const addresses = await p
       expect(addresses).toEqual(['http://192.168.1.17:8060'])
