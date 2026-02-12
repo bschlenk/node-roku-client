@@ -69,9 +69,40 @@ describe('Client', () => {
       vi.advanceTimersByTime(1000)
       const clients = await p
       expect(clients.length).toEqual(3)
-      expect(clients[0].ip).toEqual('http://192.168.1.17:8060')
-      expect(clients[1].ip).toEqual('http://192.168.1.18:8060')
-      expect(clients[2].ip).toEqual('http://192.168.1.19:8060')
+      expect(clients[0].ip).toEqual(new URL('http://192.168.1.17:8060/'))
+      expect(clients[1].ip).toEqual(new URL('http://192.168.1.18:8060/'))
+      expect(clients[2].ip).toEqual(new URL('http://192.168.1.19:8060/'))
+    })
+  })
+
+  describe('#discoverEach()', () => {
+    it('should call the callback as results come in', async () => {
+      __setHeaders([
+        {
+          SERVER: 'Roku',
+          LOCATION: 'http://192.168.1.17:8060',
+        },
+        {
+          SERVER: 'Roku',
+          LOCATION: 'http://192.168.1.18:8060',
+        },
+        {
+          SERVER: 'Roku',
+          LOCATION: 'http://192.168.1.19:8060',
+        },
+      ])
+
+      const clients: RokuClient[] = []
+      const p = RokuClient.discoverEach((client) => {
+        clients.push(client)
+      }, 1000)
+      vi.advanceTimersByTime(1000)
+      await p
+
+      expect(clients.length).toEqual(3)
+      expect(clients[0].ip).toEqual(new URL('http://192.168.1.17:8060/'))
+      expect(clients[1].ip).toEqual(new URL('http://192.168.1.18:8060/'))
+      expect(clients[2].ip).toEqual(new URL('http://192.168.1.19:8060/'))
     })
   })
 

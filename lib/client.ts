@@ -2,7 +2,7 @@ import _debug from 'debug'
 
 import { Commander } from './commander.js'
 import { RokuDeviceInfo } from './device-info.js'
-import { discover, discoverAll } from './discover.js'
+import { discover, discoverAll, discoverEach } from './discover.js'
 import { getCommand, KeyType } from './key-command.js'
 import { queryString, QueryStringObj } from './utils.js'
 import { parseXml } from './xml.js'
@@ -118,6 +118,21 @@ export class RokuClient {
     return discoverAll(timeout).then((ips) =>
       ips.map((ip) => new RokuClient(ip)),
     )
+  }
+
+  /**
+   * Discover Roku devices on the network as they are found. This method invokes
+   * the callback for each device found, allowing you to process devices as they
+   * are discovered rather than waiting for the full timeout.
+   * @param callback The function to call for each device found, receives a `Client` object.
+   * @param timeout The time in ms to wait before giving up.
+   * @return A promise that resolves when the timeout completes.
+   */
+  static discoverEach(
+    callback: (client: RokuClient) => void,
+    timeout?: number,
+  ): Promise<void> {
+    return discoverEach((ip) => callback(new RokuClient(ip)), timeout)
   }
 
   /**

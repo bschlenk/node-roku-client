@@ -1,7 +1,7 @@
 import { __setHeaders } from 'node-ssdp'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { discover, discoverAll } from '../discover.js'
+import { discover, discoverAll, discoverEach } from '../discover.js'
 
 declare module 'node-ssdp' {
   function __setHeaders(headers: Headers | Headers[] | null): void
@@ -163,7 +163,112 @@ describe('discover', () => {
       vi.advanceTimersByTime(10000)
 
       const addresses = await p
-      expect(addresses).toEqual(['http://192.168.1.17:8060'])
+      expect(addresses).toEqual([new URL('http://192.168.1.17:8060/')])
+    })
+  })
+
+  describe('discoverEach', () => {
+    it('should call the callback as results come in', async () => {
+      __setHeaders([
+        {
+          SERVER: 'Roku',
+          LOCATION: 'http://192.168.1.17:8060',
+        },
+        {
+          SERVER: 'Roku',
+          LOCATION: 'http://192.168.1.18:8060',
+        },
+        {
+          SERVER: 'Roku',
+          LOCATION: 'http://192.168.1.19:8060',
+        },
+      ])
+
+      const addresses: URL[] = []
+      let done = false
+      const p = discoverEach((address) => {
+        addresses.push(address)
+      }, 1000).then(() => {
+        done = true
+      })
+
+      vi.advanceTimersByTime(1)
+
+      expect(addresses[addresses.length - 1]).toEqual(
+        new URL('http://192.168.1.17:8060/'),
+      )
+
+      vi.advanceTimersByTime(10)
+
+      expect(addresses[addresses.length - 1]).toEqual(
+        new URL('http://192.168.1.18:8060/'),
+      )
+
+      vi.advanceTimersByTime(20)
+
+      expect(addresses[addresses.length - 1]).toEqual(
+        new URL('http://192.168.1.19:8060/'),
+      )
+
+      expect(done).toBeFalsy()
+
+      vi.advanceTimersByTime(1000)
+      await p
+
+      expect(done).toBeTruthy()
+    })
+
+    it('should not notify for duplicate addresses', async () => {
+      __setHeaders([
+        {
+          SERVER: 'Roku',
+          LOCATION: 'http://192.168.1.17:8060',
+        },
+        {
+          SERVER: 'Roku',
+          LOCATION: 'http://192.168.1.17:8060',
+        },
+        {
+          SERVER: 'Roku',
+          LOCATION: 'http://192.168.1.17:8060',
+        },
+      ])
+
+      const addresses: URL[] = []
+      const p = discoverEach((address) => {
+        addresses.push(address)
+      }, 1000)
+      vi.advanceTimersByTime(1000)
+
+      await p
+      expect(addresses).toEqual([new URL('http://192.168.1.17:8060/')])
+    })
+
+    it('should ignore responses after stopping', async () => {
+      __setHeaders([
+        {
+          SERVER: 'Roku',
+          LOCATION: 'http://192.168.1.17:8060',
+        },
+        {
+          SERVER: 'Roku',
+          LOCATION: 'http://192.168.1.18:8060',
+        },
+        {
+          SERVER: 'Roku',
+          LOCATION: 'http://192.168.1.19:8060',
+        },
+      ])
+
+      const addresses: URL[] = []
+      const p = discoverEach((address) => {
+        addresses.push(address)
+      }, 1)
+      // Advance just to the timeout, before all responses can fire
+      vi.advanceTimersByTime(1)
+
+      await p
+      expect(addresses).toEqual([new URL('http://192.168.1.17:8060/')])
     })
   })
 })

@@ -75,6 +75,45 @@ export function discoverAll(timeout: number = DEFAULT_TIMEOUT): Promise<URL[]> {
 }
 
 /**
+ * Discover Roku devices on the network as they are found. This method invokes
+ * the callback for each device found, allowing you to process devices as they
+ * are discovered rather than waiting for the full timeout.
+ * @param callback Called for each device found, receives the device address.
+ * @param timeout The time to wait in ms before giving up.
+ * @return A promise that resolves when the timeout completes.
+ */
+export function discoverEach(
+  callback: (address: URL) => void,
+  timeout: number = DEFAULT_TIMEOUT,
+): Promise<void> {
+  return new Promise((resolve) => {
+    const finder = new RokuFinder()
+    const addresses = new Set<string>()
+    const startTime = Date.now()
+
+    function elapsedTime() {
+      return Date.now() - startTime
+    }
+
+    finder.on('found', (address) => {
+      if (addresses.has(address)) return
+      debug(`found Roku device at ${address} after ${elapsedTime()}ms`)
+      addresses.add(address)
+      callback(new URL(address))
+    })
+
+    finder.on('timeout', () => {
+      const time = elapsedTime()
+      const count = addresses.size
+      debug(`discovery completed after ${time}ms, found ${count} devices`)
+      resolve()
+    })
+
+    finder.start(timeout)
+  })
+}
+
+/**
  * Helper class abstracting the lifecycle of locating Roku devices on the
  * network.
  */
