@@ -21,6 +21,7 @@
   },
   "files": [
     "dist",
+    "index.mjs",
     "!**/__tests__/"
   ],
   "main": "dist/index.js",
