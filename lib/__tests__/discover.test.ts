@@ -32,7 +32,7 @@ describe('discover', () => {
       const p = discover()
       // Don't advance timers - the mock should fire immediately
       const address = await p
-      expect(address).toEqual('http://192.168.1.17:8060')
+      expect(address).toEqual(new URL('http://192.168.1.17:8060/'))
     })
 
     it('should fail after the configured timeout', () => {
@@ -65,7 +65,7 @@ describe('discover', () => {
       vi.advanceTimersByTime(20)
 
       const address = await p
-      expect(address).toEqual('http://192.168.1.19:8060')
+      expect(address).toEqual(new URL('http://192.168.1.19:8060/'))
     })
   })
 
@@ -91,9 +91,9 @@ describe('discover', () => {
 
       const addresses = await p
       expect(addresses).toEqual([
-        'http://192.168.1.17:8060',
-        'http://192.168.1.18:8060',
-        'http://192.168.1.19:8060',
+        new URL('http://192.168.1.17:8060/'),
+        new URL('http://192.168.1.18:8060/'),
+        new URL('http://192.168.1.19:8060/'),
       ])
     })
 
@@ -117,7 +117,7 @@ describe('discover', () => {
       vi.advanceTimersByTime(1000)
 
       const addresses = await p
-      expect(addresses).toEqual(['http://192.168.1.17:8060'])
+      expect(addresses).toEqual([new URL('http://192.168.1.17:8060/')])
     })
 
     it('should reject if no devices are found', () => {
@@ -150,7 +150,7 @@ describe('discover', () => {
       vi.advanceTimersByTime(1)
 
       const addresses = await p
-      expect(addresses).toEqual(['http://192.168.1.17:8060'])
+      expect(addresses).toEqual([new URL('http://192.168.1.17:8060/')])
     })
 
     it('should use the default timeout if none given', async () => {

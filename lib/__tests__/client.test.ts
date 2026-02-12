@@ -44,7 +44,7 @@ describe('Client', () => {
       const p = RokuClient.discover()
       const c = await p
       expect(c).toBeInstanceOf(RokuClient)
-      expect(c.ip).toEqual('http://192.168.1.17:8060')
+      expect(c.ip).toEqual(new URL('http://192.168.1.17:8060'))
     })
   })
 
@@ -78,17 +78,17 @@ describe('Client', () => {
   describe('#constructor()', () => {
     it('should construct a new Client object', () => {
       expect(client).toBeDefined()
-      expect(client.ip).toEqual(clientAddr)
+      expect(client.ip).toEqual(new URL(clientAddr))
     })
 
     it('should add missing http://', () => {
       const c = new RokuClient('192.168.1.2:1111')
-      expect(c.ip).toEqual('http://192.168.1.2:1111')
+      expect(c.ip).toEqual(new URL('http://192.168.1.2:1111'))
     })
 
     it('should add the default port if omitted', () => {
       const c = new RokuClient('192.168.1.2')
-      expect(c.ip).toEqual(`http://192.168.1.2:${ROKU_DEFAULT_PORT}`)
+      expect(c.ip).toEqual(new URL(`http://192.168.1.2:${ROKU_DEFAULT_PORT}`))
     })
   })
 
@@ -157,25 +157,24 @@ describe('Client', () => {
   describe('#keypress()', () => {
     it('should press the home button', async () => {
       await client.keypress('Home')
-      expect(fetch).toHaveBeenCalledWith(`${clientAddr}/keypress/Home`, {
+      expect(fetch).toHaveBeenCalledWith(new URL('/keypress/Home', client.ip), {
         method: 'POST',
       })
     })
 
     it('should send a Lit_ command if a single character is passed in', async () => {
       await client.keypress('a')
-      expect(fetch).toHaveBeenCalledWith(`${clientAddr}/keypress/Lit_a`, {
-        method: 'POST',
-      })
+      expect(fetch).toHaveBeenCalledWith(
+        new URL('/keypress/Lit_a', client.ip),
+        { method: 'POST' },
+      )
     })
 
     it('should url encode Lit_ commands for utf-8 characters', async () => {
       await client.keypress('€')
       expect(fetch).toHaveBeenCalledWith(
-        `${clientAddr}/keypress/Lit_%E2%82%AC`,
-        {
-          method: 'POST',
-        },
+        new URL('/keypress/Lit_%E2%82%AC', client.ip),
+        { method: 'POST' },
       )
     })
   })
@@ -183,7 +182,7 @@ describe('Client', () => {
   describe('#keydown()', () => {
     it('should press and hold the pause', async () => {
       await client.keydown('Pause')
-      expect(fetch).toHaveBeenCalledWith(`${clientAddr}/keydown/Pause`, {
+      expect(fetch).toHaveBeenCalledWith(new URL('/keydown/Pause', client.ip), {
         method: 'POST',
       })
     })
@@ -192,7 +191,7 @@ describe('Client', () => {
   describe('#keyup()', () => {
     it('should release the info button', async () => {
       await client.keyup('Info')
-      expect(fetch).toHaveBeenCalledWith(`${clientAddr}/keyup/Info`, {
+      expect(fetch).toHaveBeenCalledWith(new URL('/keyup/Info', client.ip), {
         method: 'POST',
       })
     })
@@ -238,7 +237,7 @@ describe('Client', () => {
   describe('#launch()', () => {
     it('should call launch for the given app id', async () => {
       await client.launch('12345')
-      expect(fetch).toHaveBeenCalledWith(`${client.ip}/launch/12345`, {
+      expect(fetch).toHaveBeenCalledWith(new URL('/launch/12345', client.ip), {
         method: 'POST',
       })
     })
@@ -252,28 +251,25 @@ describe('Client', () => {
   describe('#launchDtv()', () => {
     it('should call launch/tvinput.dtv', async () => {
       await client.launchDtv()
-      expect(fetch).toHaveBeenCalledWith(`${client.ip}/launch/tvinput.dtv`, {
-        method: 'POST',
-      })
+      expect(fetch).toHaveBeenCalledWith(
+        new URL('/launch/tvinput.dtv', client.ip),
+        { method: 'POST' },
+      )
     })
 
     it('should pass a channel string to launch', async () => {
       await client.launchDtv('1.1')
       expect(fetch).toHaveBeenCalledWith(
-        `${client.ip}/launch/tvinput.dtv?ch=1.1`,
-        {
-          method: 'POST',
-        },
+        new URL('/launch/tvinput.dtv?ch=1.1', client.ip),
+        { method: 'POST' },
       )
     })
 
     it('should pass a channel number to launch', async () => {
       await client.launchDtv(8.5)
       expect(fetch).toHaveBeenCalledWith(
-        `${client.ip}/launch/tvinput.dtv?ch=8.5`,
-        {
-          method: 'POST',
-        },
+        new URL('/launch/tvinput.dtv?ch=8.5', client.ip),
+        { method: 'POST' },
       )
     })
   })
@@ -282,11 +278,11 @@ describe('Client', () => {
     it('should send a Lit_ command for each letter', async () => {
       await client.text('hello')
       expect(fetchMock.mock.calls).toEqual([
-        [`${client.ip}/keypress/Lit_h`, { method: 'POST' }],
-        [`${client.ip}/keypress/Lit_e`, { method: 'POST' }],
-        [`${client.ip}/keypress/Lit_l`, { method: 'POST' }],
-        [`${client.ip}/keypress/Lit_l`, { method: 'POST' }],
-        [`${client.ip}/keypress/Lit_o`, { method: 'POST' }],
+        [new URL('/keypress/Lit_h', client.ip), { method: 'POST' }],
+        [new URL('/keypress/Lit_e', client.ip), { method: 'POST' }],
+        [new URL('/keypress/Lit_l', client.ip), { method: 'POST' }],
+        [new URL('/keypress/Lit_l', client.ip), { method: 'POST' }],
+        [new URL('/keypress/Lit_o', client.ip), { method: 'POST' }],
       ])
     })
   })
@@ -296,11 +292,11 @@ describe('Client', () => {
       await client.command().volumeUp().select().text('abc').send()
 
       expect(fetchMock.mock.calls).toEqual([
-        [`${client.ip}/keypress/VolumeUp`, { method: 'POST' }],
-        [`${client.ip}/keypress/Select`, { method: 'POST' }],
-        [`${client.ip}/keypress/Lit_a`, { method: 'POST' }],
-        [`${client.ip}/keypress/Lit_b`, { method: 'POST' }],
-        [`${client.ip}/keypress/Lit_c`, { method: 'POST' }],
+        [new URL('/keypress/VolumeUp', client.ip), { method: 'POST' }],
+        [new URL('/keypress/Select', client.ip), { method: 'POST' }],
+        [new URL('/keypress/Lit_a', client.ip), { method: 'POST' }],
+        [new URL('/keypress/Lit_b', client.ip), { method: 'POST' }],
+        [new URL('/keypress/Lit_c', client.ip), { method: 'POST' }],
       ])
     })
   })
@@ -310,10 +306,8 @@ describe('Client', () => {
       await client.search('pokemon')
 
       expect(fetch).toHaveBeenCalledWith(
-        `${client.ip}/search/browse?keyword=pokemon`,
-        {
-          method: 'POST',
-        },
+        new URL('/search/browse?keyword=pokemon', client.ip),
+        { method: 'POST' },
       )
     })
 
@@ -325,10 +319,11 @@ describe('Client', () => {
       })
 
       expect(fetch).toHaveBeenCalledWith(
-        `${client.ip}/search/browse?keyword=hello&show-unavailable=true&match-any=true`,
-        {
-          method: 'POST',
-        },
+        new URL(
+          '/search/browse?keyword=hello&show-unavailable=true&match-any=true',
+          client.ip,
+        ),
+        { method: 'POST' },
       )
     })
 
@@ -336,10 +331,8 @@ describe('Client', () => {
       await client.search({ keyword: 'hello', provider: 123 })
 
       expect(fetch).toHaveBeenCalledWith(
-        `${client.ip}/search/browse?keyword=hello&provider-id=123`,
-        {
-          method: 'POST',
-        },
+        new URL('/search/browse?keyword=hello&provider-id=123', client.ip),
+        { method: 'POST' },
       )
     })
 
@@ -347,10 +340,8 @@ describe('Client', () => {
       await client.search({ keyword: 'hello', provider: 'netflix' })
 
       expect(fetch).toHaveBeenCalledWith(
-        `${client.ip}/search/browse?keyword=hello&provider=netflix`,
-        {
-          method: 'POST',
-        },
+        new URL('/search/browse?keyword=hello&provider=netflix', client.ip),
+        { method: 'POST' },
       )
     })
 
@@ -358,10 +349,8 @@ describe('Client', () => {
       await client.search({ title: 'borat', provider: [1, 2, 3] })
 
       expect(fetch).toHaveBeenCalledWith(
-        `${client.ip}/search/browse?title=borat&provider-id=1%2C2%2C3`,
-        {
-          method: 'POST',
-        },
+        new URL('/search/browse?title=borat&provider-id=1%2C2%2C3', client.ip),
+        { method: 'POST' },
       )
     })
 
@@ -369,10 +358,11 @@ describe('Client', () => {
       await client.search({ title: 'dumbo', provider: ['disney', 'amazon'] })
 
       expect(fetch).toHaveBeenCalledWith(
-        `${client.ip}/search/browse?title=dumbo&provider=disney%2Camazon`,
-        {
-          method: 'POST',
-        },
+        new URL(
+          '/search/browse?title=dumbo&provider=disney%2Camazon',
+          client.ip,
+        ),
+        { method: 'POST' },
       )
     })
 
@@ -380,10 +370,8 @@ describe('Client', () => {
       await client.search({ title: 'Amélie' })
 
       expect(fetch).toHaveBeenCalledWith(
-        `${client.ip}/search/browse?title=Am%C3%A9lie`,
-        {
-          method: 'POST',
-        },
+        new URL('/search/browse?title=Am%C3%A9lie', client.ip),
+        { method: 'POST' },
       )
     })
   })

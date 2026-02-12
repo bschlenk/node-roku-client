@@ -11,6 +11,6 @@ const parser = new Parser({
   valueProcessors: [parseBooleans],
 })
 
-export function parseXml(xml: string): any {
+export function parseXml(xml: string): unknown {
   return parser.parseStringPromise(xml)
 }

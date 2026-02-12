@@ -1,13 +1,3 @@
-/*
-eslint-disable
-@typescript-eslint/no-unsafe-call,
-@typescript-eslint/no-unsafe-return,
-@typescript-eslint/no-unsafe-argument,
-@typescript-eslint/no-unsafe-assignment,
-@typescript-eslint/no-unsafe-member-access,
-@typescript-eslint/restrict-template-expressions,
-*/
-
 import _debug from 'debug'
 
 import { Commander } from './commander.js'
@@ -20,7 +10,7 @@ import { parseXml } from './xml.js'
 const debug = _debug('roku-client:client')
 
 /** The default port a roku device will use for remote commands. */
-export const ROKU_DEFAULT_PORT = 8060
+export const ROKU_DEFAULT_PORT = '8060'
 
 /** The ids used by roku to identify an app. */
 export type RokuAppId = number | string
@@ -103,6 +93,9 @@ export interface RokuMediaInfo {
  * The Roku client class. Contains methods to talk to a roku device.
  */
 export class RokuClient {
+  /** The URL of the Roku device, including the port. */
+  ip: URL
+
   /**
    * Return a promise resolving to a new `Client` object for the first Roku
    * device discovered on the network. This method resolves to a single
@@ -132,15 +125,15 @@ export class RokuClient {
    * @param ip The address of the Roku device on the network. If no port is
    *     given, then the default roku remote port will be used.
    */
-  constructor(readonly ip: string) {
-    if (!ip.startsWith('http://')) {
+  constructor(ip: string | URL) {
+    if (typeof ip === 'string' && !ip.startsWith('http://')) {
       ip = `http://${ip}`
     }
-    // no port at end
-    if (!/:\d+$/.test(ip)) {
-      ip = `${ip}:${ROKU_DEFAULT_PORT}`
-    }
-    this.ip = ip
+
+    const url = new URL(ip)
+    if (!url.port) url.port = ROKU_DEFAULT_PORT
+
+    this.ip = url
   }
 
   /**
@@ -148,7 +141,9 @@ export class RokuClient {
    * @see {@link https://developer.roku.com/docs/developer-program/debugging/external-control-api.md#queryapps-example}
    */
   async apps(): Promise<RokuApp[]> {
-    const { apps } = await this._getXml('query/apps')
+    const { apps } = await this._getXml<{
+      apps: { app: { _: string; $: Record<string, unknown> }[] }
+    }>('query/apps')
     return apps.app.map(appXMLToJS)
   }
 
@@ -157,18 +152,17 @@ export class RokuClient {
    * @see {@link https://developer.roku.com/docs/developer-program/debugging/external-control-api.md#queryactive-app-examples}
    */
   async active(): Promise<RokuApp | null> {
-    const xml = await this._getXml('query/active-app')
+    const xml = await this._getXml<{
+      activeApp: { app: { _: string; $: Record<string, unknown> } }
+    }>('query/active-app')
     const { app } = xml.activeApp
     if (Array.isArray(app)) {
       throw new Error(
-        `expected 1 active app but received ${app.length}: ${app}`,
+        `expected 1 active app but received ${app.length}: ${JSON.stringify(app)}`,
       )
     }
     // If no app is active, a single field is returned without any properties
-    if (!app.$?.id) {
-      return null
-    }
-    return appXMLToJS(app)
+    return !app.$?.id ? null : appXMLToJS(app)
   }
 
   /**
@@ -178,7 +172,9 @@ export class RokuClient {
    * @see {@link https://developer.roku.com/docs/developer-program/debugging/external-control-api.md#querydevice-info-example}
    */
   async info(): Promise<RokuDeviceInfo> {
-    const xml = await this._getXml('query/device-info')
+    const xml = await this._getXml<{ deviceInfo: RokuDeviceInfo }>(
+      'query/device-info',
+    )
     return xml.deviceInfo
   }
 
@@ -245,7 +241,7 @@ export class RokuClient {
       q = { keyword: query }
     } else {
       const { showUnavailable, matchAny, provider, ...rest } = query
-      q = rest as any
+      q = rest
 
       if (showUnavailable) {
         q['show-unavailable'] = showUnavailable
@@ -273,9 +269,12 @@ export class RokuClient {
    * @see {@link https://developer.roku.com/docs/developer-program/debugging/external-control-api.md#querymedia-player-example}
    */
   async mediaPlayer(): Promise<RokuMediaInfo> {
-    const data = await this._getXml('query/media-player')
+    const data = await this._getXml<{ player: Record<string, unknown> }>(
+      'query/media-player',
+    )
     const media: any = {}
 
+    /* eslint-disable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment */
     for (const [key, value] of Object.entries(data.player)) {
       if (key === '$') {
         Object.assign(media, value)
@@ -287,8 +286,9 @@ export class RokuClient {
         media[key] = value
       }
     }
+    /* eslint-enable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment */
 
-    return media
+    return media as RokuMediaInfo
   }
 
   /**
@@ -375,7 +375,7 @@ export class RokuClient {
   }
 
   private async _get(path: string) {
-    const endpoint = `${this.ip}/${path}`
+    const endpoint = new URL(path, this.ip)
     debug(`GET ${endpoint}`)
     const res = await fetch(endpoint)
     if (!res.ok) {
@@ -384,17 +384,16 @@ export class RokuClient {
     return res
   }
 
-  private async _getXml(path: string) {
+  private async _getXml<T = unknown>(path: string): Promise<T> {
     return this._get(path)
       .then((res) => res.text())
-      .then(parseXml)
+      .then(parseXml) as Promise<T>
   }
 
   private async _post(path: string, query?: QueryStringObj) {
-    let endpoint = `${this.ip}/${path}`
-    if (query) {
-      endpoint += '?' + queryString(query)
-    }
+    const endpoint = new URL(path, this.ip)
+    if (query) endpoint.search = queryString(query)
+
     debug(`POST ${endpoint}`)
     const res = await fetch(endpoint, { method: 'POST' })
     if (!res.ok) {
@@ -408,6 +407,6 @@ export class RokuClient {
  * Convert the xml version of a roku app
  * to a cleaned up js version.
  */
-function appXMLToJS(app: any): RokuApp {
-  return { name: app._, ...app.$ }
+function appXMLToJS(app: { _: string; $: Record<string, unknown> }): RokuApp {
+  return { name: app._, ...app.$ } as RokuApp
 }
