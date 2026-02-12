@@ -10,6 +10,10 @@ Discover & control Roku devices from NodeJS.
 - a Roku device connected to your network
 - a router/network that supports UPnP (for ssdp)
 
+As of the latest Roku update, you also need to enable full API access:
+
+- Settings → System → Advanced system settings → Control by mobile apps → Network access → Enabled
+
 ## Installation
 
 `$ npm install roku-client`
