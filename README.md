@@ -47,6 +47,16 @@ RokuClient.discoverAll().then((clients) => {
 })
 ```
 
+You can also handle clients as they are found with the `RokuClient.discoverEach()` method, which accepts a callback that is called the moment a client is found. This can be better than having to wait the full timeout before being able to use any client.
+
+```js
+import { RokuClient } from 'roku-client'
+
+RokuClient.discoverEach((client) => {
+  console.log(client.ip)
+})
+```
+
 ## API Methods
 
 | **Method Name** | **Return Type** | **Details** |
@@ -54,6 +64,7 @@ RokuClient.discoverAll().then((clients) => {
 | `ip` | `string` | The network ip and port `http://xxx.xxx.xxx.xxx:8060` |
 | `static .discover(timeout?: number)` | `Promise<RokuClient>` | Return a promise resolving to a new `RokuClient` object for the first Roku device discovered on the network. |
 | `static .discoverAll(timeout?: number)` | `Promise<RokuClient[]>` | Return a promise resolving to a list of `RokuClient` objects corresponding to each roku device found on the network. |
+| `static .discoverEach(cb: (client: RokuClient) => void, timeout?: number)` | `Promise<void>` | Call `cb` each time a new Roku device is discovered. Return a promise resolving when the given `timeout` is up. |
 | `.apps()` | `Promise<{id: string, name: string, type: string, version: string}[]>` | List of all apps installed on this device. |
 | `.active()` | `Promise<{id: string, name: string, type: string, version: string} \| null>}` | A single object representing the active app, or null if the home screen is active. |
 | `.info()` | `Promise<Object>` | A map of this Roku device's properties. Varies from device to device. See [device-info.ts] for the full interface. |
