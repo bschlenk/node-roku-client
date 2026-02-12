@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.0.0](https://github.com/bschlenk/node-roku-client/compare/v5.2.0...v6.0.0) (2026-02-12)
+
+
+### ⚠ BREAKING CHANGES
+
+* the package is now entirely `type: module`, with no commonjs
+* ip is now a URL
+* requires node >= 18
+
+### Features
+
+* new discoverEach method, allowing discovery of devices in realtime
+
+### Other
+
+* replaced fetch-ponyfill with native fetch
+* tests rewritten to use vite
+
+
 ## [5.2.0](https://github.com/bschlenk/node-roku-client/compare/v5.1.0...v5.2.0) (2020-12-19)
 
 
