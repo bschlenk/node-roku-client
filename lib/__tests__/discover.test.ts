@@ -1,4 +1,11 @@
-import { discover, discoverAll } from '../discover';
+import { __setHeaders } from 'node-ssdp'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { discover, discoverAll, discoverEach } from '../discover.js'
+
+declare module 'node-ssdp' {
+  function __setHeaders(headers: Headers | Headers[] | null): void
+}
 
 const HEADERS = {
   'CACHE-CONTROL': 'max-age=3600',
@@ -7,39 +14,38 @@ const HEADERS = {
   EXT: '',
   SERVER: 'Roku UPnP/1.0 MiniUPnPd/1.4',
   LOCATION: 'http://192.168.1.17:8060/dial/dd.xml',
-};
+}
 
 describe('discover', () => {
   beforeEach(() => {
-    jest.useFakeTimers();
-  });
+    vi.useFakeTimers()
+  })
 
   afterEach(() => {
-    jest.useRealTimers();
-  });
+    vi.useRealTimers()
+  })
 
   describe('discover', () => {
     it('should resolve to the first roku ip address found', async () => {
-      require('node-ssdp').__setHeaders(HEADERS);
+      __setHeaders(HEADERS)
 
-      const p = discover();
-      jest.runAllTimers();
-
-      const address = await p;
-      expect(address).toEqual('http://192.168.1.17:8060');
-    });
+      const p = discover()
+      // Don't advance timers - the mock should fire immediately
+      const address = await p
+      expect(address).toEqual(new URL('http://192.168.1.17:8060/'))
+    })
 
     it('should fail after the configured timeout', () => {
-      require('node-ssdp').__setHeaders({});
+      __setHeaders(null)
 
-      const p = discover(1000);
-      jest.advanceTimersByTime(1000);
+      const p = discover(1000)
+      vi.advanceTimersByTime(1000)
 
-      return expect(p).rejects.toThrow();
-    });
+      return expect(p).rejects.toThrow()
+    })
 
     it('should not find devices that are not roku', async () => {
-      require('node-ssdp').__setHeaders([
+      __setHeaders([
         {
           SERVER: 'Some other thing',
           LOCATION: 'http://192.168.1.17:8060',
@@ -52,19 +58,20 @@ describe('discover', () => {
           SERVER: 'Roku',
           LOCATION: 'http://192.168.1.19:8060',
         },
-      ]);
+      ])
 
-      const p = discover(1000);
-      jest.runAllTimers();
+      const p = discover(1000)
+      // Array responses use setTimeout, need to advance timers to reach the Roku device at index 2
+      vi.advanceTimersByTime(20)
 
-      const address = await p;
-      expect(address).toEqual('http://192.168.1.19:8060');
-    });
-  });
+      const address = await p
+      expect(address).toEqual(new URL('http://192.168.1.19:8060/'))
+    })
+  })
 
   describe('discoverAll', () => {
     it('should find all devices', async () => {
-      require('node-ssdp').__setHeaders([
+      __setHeaders([
         {
           SERVER: 'Roku',
           LOCATION: 'http://192.168.1.17:8060',
@@ -77,21 +84,21 @@ describe('discover', () => {
           SERVER: 'Roku',
           LOCATION: 'http://192.168.1.19:8060',
         },
-      ]);
+      ])
 
-      const p = discoverAll(1000);
-      jest.advanceTimersByTime(1000);
+      const p = discoverAll(1000)
+      vi.advanceTimersByTime(1000)
 
-      const addresses = await p;
+      const addresses = await p
       expect(addresses).toEqual([
-        'http://192.168.1.17:8060',
-        'http://192.168.1.18:8060',
-        'http://192.168.1.19:8060',
-      ]);
-    });
+        new URL('http://192.168.1.17:8060/'),
+        new URL('http://192.168.1.18:8060/'),
+        new URL('http://192.168.1.19:8060/'),
+      ])
+    })
 
     it('should not include duplicate addresses', async () => {
-      require('node-ssdp').__setHeaders([
+      __setHeaders([
         {
           SERVER: 'Roku',
           LOCATION: 'http://192.168.1.17:8060',
@@ -104,26 +111,26 @@ describe('discover', () => {
           SERVER: 'Roku',
           LOCATION: 'http://192.168.1.17:8060',
         },
-      ]);
+      ])
 
-      const p = discoverAll(1000);
-      jest.advanceTimersByTime(1000);
+      const p = discoverAll(1000)
+      vi.advanceTimersByTime(1000)
 
-      const addresses = await p;
-      expect(addresses).toEqual(['http://192.168.1.17:8060']);
-    });
+      const addresses = await p
+      expect(addresses).toEqual([new URL('http://192.168.1.17:8060/')])
+    })
 
     it('should reject if no devices are found', () => {
-      require('node-ssdp').__setHeaders(null);
+      __setHeaders(null)
 
-      const p = discoverAll(1000);
-      jest.advanceTimersByTime(1000);
+      const p = discoverAll(1000)
+      vi.advanceTimersByTime(1000)
 
-      return expect(p).rejects.toThrow(/^Could not find any Roku devices/);
-    });
+      return expect(p).rejects.toThrow(/^Could not find any Roku devices/)
+    })
 
     it('should ignore responses after stopping', async () => {
-      require('node-ssdp').__setHeaders([
+      __setHeaders([
         {
           SERVER: 'Roku',
           LOCATION: 'http://192.168.1.17:8060',
@@ -136,26 +143,132 @@ describe('discover', () => {
           SERVER: 'Roku',
           LOCATION: 'http://192.168.1.19:8060',
         },
-      ]);
+      ])
 
-      const p = discoverAll(0);
-      jest.advanceTimersByTime(100);
+      const p = discoverAll(1)
+      // Advance just to the timeout, before all responses can fire
+      vi.advanceTimersByTime(1)
 
-      const addresses = await p;
-      expect(addresses).toEqual(['http://192.168.1.17:8060']);
-    });
+      const addresses = await p
+      expect(addresses).toEqual([new URL('http://192.168.1.17:8060/')])
+    })
 
     it('should use the default timeout if none given', async () => {
-      require('node-ssdp').__setHeaders({
+      __setHeaders({
         SERVER: 'Roku',
         LOCATION: 'http://192.168.1.17:8060',
-      });
+      })
 
-      const p = discoverAll();
-      jest.advanceTimersByTime(10000);
+      const p = discoverAll()
+      vi.advanceTimersByTime(10000)
 
-      const addresses = await p;
-      expect(addresses).toEqual(['http://192.168.1.17:8060']);
-    });
-  });
-});
+      const addresses = await p
+      expect(addresses).toEqual([new URL('http://192.168.1.17:8060/')])
+    })
+  })
+
+  describe('discoverEach', () => {
+    it('should call the callback as results come in', async () => {
+      __setHeaders([
+        {
+          SERVER: 'Roku',
+          LOCATION: 'http://192.168.1.17:8060',
+        },
+        {
+          SERVER: 'Roku',
+          LOCATION: 'http://192.168.1.18:8060',
+        },
+        {
+          SERVER: 'Roku',
+          LOCATION: 'http://192.168.1.19:8060',
+        },
+      ])
+
+      const addresses: URL[] = []
+      let done = false
+      const p = discoverEach((address) => {
+        addresses.push(address)
+      }, 1000).then(() => {
+        done = true
+      })
+
+      vi.advanceTimersByTime(1)
+
+      expect(addresses[addresses.length - 1]).toEqual(
+        new URL('http://192.168.1.17:8060/'),
+      )
+
+      vi.advanceTimersByTime(10)
+
+      expect(addresses[addresses.length - 1]).toEqual(
+        new URL('http://192.168.1.18:8060/'),
+      )
+
+      vi.advanceTimersByTime(20)
+
+      expect(addresses[addresses.length - 1]).toEqual(
+        new URL('http://192.168.1.19:8060/'),
+      )
+
+      expect(done).toBeFalsy()
+
+      vi.advanceTimersByTime(1000)
+      await p
+
+      expect(done).toBeTruthy()
+    })
+
+    it('should not notify for duplicate addresses', async () => {
+      __setHeaders([
+        {
+          SERVER: 'Roku',
+          LOCATION: 'http://192.168.1.17:8060',
+        },
+        {
+          SERVER: 'Roku',
+          LOCATION: 'http://192.168.1.17:8060',
+        },
+        {
+          SERVER: 'Roku',
+          LOCATION: 'http://192.168.1.17:8060',
+        },
+      ])
+
+      const addresses: URL[] = []
+      const p = discoverEach((address) => {
+        addresses.push(address)
+      }, 1000)
+      vi.advanceTimersByTime(1000)
+
+      await p
+      expect(addresses).toEqual([new URL('http://192.168.1.17:8060/')])
+    })
+
+    it('should ignore responses after stopping', async () => {
+      __setHeaders([
+        {
+          SERVER: 'Roku',
+          LOCATION: 'http://192.168.1.17:8060',
+        },
+        {
+          SERVER: 'Roku',
+          LOCATION: 'http://192.168.1.18:8060',
+        },
+        {
+          SERVER: 'Roku',
+          LOCATION: 'http://192.168.1.19:8060',
+        },
+      ])
+
+      const addresses: URL[] = []
+      const p = discoverEach((address) => {
+        addresses.push(address)
+      }, 1)
+      // Advance just to the timeout, before all responses can fire
+      vi.advanceTimersByTime(1)
+
+      await p
+      expect(addresses).toEqual([new URL('http://192.168.1.17:8060/')])
+    })
+  })
+})

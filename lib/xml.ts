@@ -1,6 +1,7 @@
-import { Parser } from 'xml2js';
-import { parseBooleans } from 'xml2js/lib/processors';
-import { camelcase } from './utils';
+import { Parser } from 'xml2js'
+import { parseBooleans } from 'xml2js/lib/processors.js'
+
+import { camelcase } from './utils.js'
 
 const parser = new Parser({
   explicitArray: false,
@@ -8,8 +9,8 @@ const parser = new Parser({
   attrNameProcessors: [camelcase],
   attrValueProcessors: [parseBooleans],
   valueProcessors: [parseBooleans],
-});
+})
 
-export function parseXml(xml: string): any {
-  return parser.parseStringPromise(xml);
+export function parseXml(xml: string): unknown {
+  return parser.parseStringPromise(xml)
 }

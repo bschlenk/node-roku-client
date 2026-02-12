@@ -1,25 +1,26 @@
-import * as Keys from './keys';
-import { getCommand, KeyCommand, KeyName } from './keyCommand';
-import type { RokuClient } from './client';
+import type { RokuClient } from './client.js'
+import { getCommand, KeyCommand, KeyName } from './key-command.js'
+import * as Keys from './keys.js'
+import { wait } from './utils.js'
 
-type ClientInterface<T extends Record<string, KeyCommand>> = {
-  [N in T[keyof T]['name']]: (count?: number) => Commander;
-};
+type ClientInterface<T extends Record<string, KeyCommand>> = Record<
+  T[keyof T]['name'],
+  (count?: number) => Commander
+>
 
 /**
  * A command is a tuple of the string command and whether the command
  * is simply text, and in the case of a wait command, the number of millis to
  * wait for.
  */
-type Command = [string, boolean, number?];
+type Command = [string, boolean, number?]
 
-const WAIT_COMMAND = '__WAIT';
+const WAIT_COMMAND = '__WAIT'
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface Commander extends ClientInterface<typeof Keys> {}
 
 export class Commander {
-  private commands: Command[] = [];
+  private commands: Command[] = []
 
   constructor(private readonly client: RokuClient) {}
 
@@ -29,8 +30,8 @@ export class Commander {
    * @return This `Commander` instance for chaining.
    */
   text(text: string): Commander {
-    this.commands.push([text, true]);
-    return this;
+    this.commands.push([text, true])
+    return this
   }
 
   /**
@@ -41,11 +42,11 @@ export class Commander {
    * @param count The number of times to press the key.
    */
   keypress(key: KeyName | KeyCommand, count = 1): Commander {
-    const command = getCommand(key);
+    const command = getCommand(key)
     for (let i = 0; i < count; i += 1) {
-      this.commands.push([command, false]);
+      this.commands.push([command, false])
     }
-    return this;
+    return this
   }
 
   /**
@@ -65,8 +66,8 @@ export class Commander {
    *   .send();
    */
   exec(fn: (commander: Commander) => void): Commander {
-    fn(this);
-    return this;
+    fn(this)
+    return this
   }
 
   /**
@@ -75,8 +76,8 @@ export class Commander {
    * @return This `Commander` instance for chaining.
    */
   wait(timeout: number): Commander {
-    this.commands.push([WAIT_COMMAND, false, timeout]);
-    return this;
+    this.commands.push([WAIT_COMMAND, false, timeout])
+    return this
   }
 
   /**
@@ -86,27 +87,37 @@ export class Commander {
     return this.commands.reduce(
       (promise, command) => promise.then(() => this.runCommand(command)),
       Promise.resolve(),
-    );
+    )
   }
 
   private runCommand([command, isText, timeout = 0]: Command): Promise<void> {
     if (isText) {
-      return this.client.text(command);
+      return this.client.text(command)
     }
     if (command === WAIT_COMMAND) {
-      return wait(timeout);
+      return wait(timeout)
     }
-    return this.client.keypress(command);
+    return this.client.keypress(command)
   }
 }
 
+/*
+eslint-disable
+@typescript-eslint/no-unsafe-member-access,
+@typescript-eslint/no-unsafe-return,
+@typescript-eslint/no-unsafe-call,
+*/
+
 // add all keys as methods to Commander
 Object.values(Keys).forEach((key) => {
-  (Commander.prototype as any)[key.name] = function (count = 1) {
-    return this.keypress(key.command, count);
-  };
-});
+  ;(Commander.prototype as any)[key.name] = function (count = 1) {
+    return this.keypress(key.command, count)
+  }
+})
 
-function wait(timeout: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, timeout));
-}
+/*
+eslint-enable
+@typescript-eslint/no-unsafe-member-access,
+@typescript-eslint/no-unsafe-return,
+@typescript-eslint/no-unsafe-call,
+*/
